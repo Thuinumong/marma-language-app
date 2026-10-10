@@ -1,0 +1,8 @@
+{
+  "appId": "com.marma.language",
+  "appName": "Marma Language",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
