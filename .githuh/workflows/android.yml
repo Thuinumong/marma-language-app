@@ -27,10 +27,25 @@ jobs:
         run: |
           mkdir -p www
           cp index.html manifest.json sw.js icon-*.png www/
+          npx esbuild native-entry.js --bundle --minify --format=iife --outfile=www/native.js
 
       - name: Create Android project
         run: |
           npx cap add android
+          python3 - <<'PY'
+          p='android/app/src/main/AndroidManifest.xml'
+          s=open(p,encoding='utf-8').read()
+          f='''<intent-filter>
+              <action android:name="android.intent.action.VIEW" />
+              <category android:name="android.intent.category.DEFAULT" />
+              <category android:name="android.intent.category.BROWSABLE" />
+              <data android:scheme="com.marma.language" android:host="login" />
+          </intent-filter>
+          '''
+          assert '</activity>' in s
+          s=s.replace('</activity>',f+'</activity>',1)
+          open(p,'w',encoding='utf-8').write(s)
+          PY
           npx cap sync android
 
       - name: Build debug APK
