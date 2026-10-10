@@ -13,6 +13,13 @@ function createWindow() {
     webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true }
   });
   Menu.setApplicationMenu(null);
+  // F12 (or Ctrl+Shift+I) opens the developer console - handy to see why a login fails
+  win.webContents.on('before-input-event', (e, input) => {
+    if (input.type === 'keyDown' && (input.key === 'F12' || (input.control && input.shift && input.key.toLowerCase() === 'i'))) {
+      win.webContents.toggleDevTools();
+      e.preventDefault();
+    }
+  });
   win.loadFile(path.join(__dirname, 'app', 'index.html'));
   // links that open a new window go to the normal browser
   win.webContents.setWindowOpenHandler(({ url }) => {
