@@ -1,0 +1,59 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install Capacitor
+        run: npm install
+
+      - name: Copy web files into www
+        run: |
+          mkdir -p www
+          cp index.html manifest.json sw.js icon-*.png www/
+          npx esbuild native-entry.js --bundle --minify --format=iife --outfile=www/native.js
+
+      - name: Create Android project
+        run: |
+          npx cap add android
+          python3 - <<'PY'
+          p='android/app/src/main/AndroidManifest.xml'
+          s=open(p,encoding='utf-8').read()
+          f='''<intent-filter>
+              <action android:name="android.intent.action.VIEW" />
+              <category android:name="android.intent.category.DEFAULT" />
+              <category android:name="android.intent.category.BROWSABLE" />
+              <data android:scheme="com.marma.language" android:host="login" />
+          </intent-filter>
+          '''
+          assert '</activity>' in s
+          s=s.replace('</activity>',f+'</activity>',1)
+          open(p,'w',encoding='utf-8').write(s)
+          PY
+          npx cap sync android
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: marma-language-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk

@@ -1,0 +1,36 @@
+name: Build PC app (Windows)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Copy web files into desktop/app
+        shell: bash
+        run: |
+          mkdir -p desktop/app
+          cp index.html manifest.json sw.js icon-*.png desktop/app/
+
+      - name: Install
+        working-directory: desktop
+        run: npm install
+
+      - name: Build exe
+        working-directory: desktop
+        run: npm run dist
+
+      - name: Upload exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: marma-language-windows
+          path: desktop/dist/*.exe

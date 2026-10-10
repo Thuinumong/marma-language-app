@@ -83,14 +83,6 @@ const hpw=(p,sl=Math.random().toString(36).slice(2,10)+Date.now().toString(36))=
 const pwOk=(u,p)=>{if(!u.pass)return false;if(u.pass.startsWith('h2:')){const a=u.pass.split(':');return sha256(a[1]+p)===a[2]}return u.pass===btoa(unescape(encodeURIComponent(p)))};
 const normPhone=x=>{x=String(x||'').replace(/[০-৯]/g,d=>'০১২৩৪৫৬৭৮৯'.indexOf(d)).replace(/[\s\-().]/g,'');const m=x.match(/^\+?880(1\d{9})$/);return m?'0'+m[1]:x};
 const okPhone=x=>/^\+?\d{7,15}$/.test(x),okMail=x=>/\S+@\S+\.\S+/.test(x);
-// ---- Forgot-password OTP ----
-// This app has no server. To really send the code by email/SMS, put the URL of your own
-// endpoint here. The app will POST {to, via:'email'|'sms', code, app:'Marma Language'} to it.
-// While it is empty, the app runs in DEMO mode and shows the code on the screen instead.
-const OTP_ENDPOINT='';
-const genOtp=()=>{try{const a=new Uint32Array(1);crypto.getRandomValues(a);return String(a[0]%1000000).padStart(6,'0')}catch(e){return String(Math.floor(Math.random()*1000000)).padStart(6,'0')}};
-async function sendOtp(to,code){const via=to.includes('@')?'email':'sms';if(!OTP_ENDPOINT)return 'demo';
- const r=await fetch(OTP_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to,via,code,app:'Marma Language'})});if(!r.ok)throw new Error('send');return 'sent'}
 const parseId=x=>{x=String(x||'').trim();if(!x)return null;if(x.includes('@')){x=x.toLowerCase();return okMail(x)?{email:x,phone:'',key:x}:null}const p=normPhone(x);return okPhone(p)?{email:'',phone:p,key:p}:null};
 const findUser=i=>USERS.find(u=>i.email?u.email===i.email:u.phone===i.phone);
 const contact=u=>[u.email,u.phone].filter(Boolean).join(' · ');
@@ -100,8 +92,10 @@ const CONTACT_EMAIL=''; // put your support email here, e.g. 'you@example.com' -
 const PRIV=[
 ['Overview','সারসংক্ষেপ','Marma Language is a free app to learn and preserve the Marma language. This policy explains what information the app uses and how it is handled. Last updated: 10 October 2026.','Marma Language মারমা ভাষা শেখা ও সংরক্ষণের একটি বিনামূল্যের অ্যাপ। এই নীতিতে বলা হয়েছে অ্যাপ কোন তথ্য ব্যবহার করে এবং কীভাবে সামলায়। সর্বশেষ আপডেট: ১০ অক্টোবর ২০২৬।'],
 ['Information you give us','আপনি যে তথ্য দেন','Your name, email address and/or phone number, a password, an optional profile photo, your favourites and ratings, and any stories, poems or comments you write. Admins may also add words, tables and audio clips.','আপনার নাম, ইমেইল ও/বা ফোন নম্বর, পাসওয়ার্ড, ঐচ্ছিক প্রোফাইল ছবি, ফেভারিট ও রেটিং, এবং আপনার লেখা গল্প, কবিতা ও মন্তব্য। অ্যাডমিনরা শব্দ, টেবিল ও অডিও ক্লিপও যোগ করতে পারেন।'],
-['Where your data is stored','তথ্য কোথায় থাকে','In this version everything is stored only on your own device (in the app/browser storage). Nothing is sent to our servers. Passwords are saved in a scrambled (hashed) form, not as plain text. Because the data lives on your device, clearing app data or uninstalling the app deletes it. The only thing the app loads from the internet is its fonts (from Google Fonts).','এই সংস্করণে সব তথ্য শুধু আপনার নিজের ডিভাইসে (অ্যাপ/ব্রাউজারের স্টোরেজে) থাকে। আমাদের কোনো সার্ভারে কিছু পাঠানো হয় না। পাসওয়ার্ড সরাসরি নয়, হ্যাশ করা অবস্থায় সেভ হয়। তথ্য ডিভাইসে থাকে বলে অ্যাপের ডাটা মুছলে বা অ্যাপ আনইনস্টল করলে তা মুছে যায়। অ্যাপ ইন্টারনেট থেকে শুধু ফন্ট (Google Fonts) লোড করে।'],
+['Where your data is stored','তথ্য কোথায় থাকে','Your account and the shared content (words, tables, stories, comments, ratings) are stored in our online database (Supabase) so they can sync between your devices and with other users. A copy is also kept on your device so the app works without internet. Passwords are handled by the login service and are never stored as plain text. Clearing the app data removes only the copy on your device. The app also loads its fonts from Google Fonts.','আপনার অ্যাকাউন্ট ও শেয়ার করা কনটেন্ট (শব্দ, টেবিল, গল্প, মন্তব্য, রেটিং) আমাদের অনলাইন ডাটাবেসে (Supabase) থাকে, যাতে আপনার সব ডিভাইসে ও অন্য ইউজারদের সাথে সিঙ্ক হয়। ইন্টারনেট ছাড়া চালানোর জন্য একটি কপি আপনার ডিভাইসেও থাকে। পাসওয়ার্ড লগইন সার্ভিস সামলায়, সরাসরি লেখা অবস্থায় রাখা হয় না। অ্যাপের ডাটা মুছলে শুধু ডিভাইসের কপি মোছে। অ্যাপ ফন্ট Google Fonts থেকে লোড করে।'],
 ['How it is used','কীভাবে ব্যবহার হয়','Only to run the app: logging you in, showing your profile, saving your favourites and showing your posts. We do not sell your information, share it with advertisers or show ads.','শুধু অ্যাপ চালাতে: লগ ইন, প্রোফাইল দেখানো, ফেভারিট সংরক্ষণ ও আপনার লেখা দেখানো। আমরা আপনার তথ্য বিক্রি করি না, বিজ্ঞাপনদাতাদের সাথে শেয়ার করি না এবং কোনো বিজ্ঞাপন দেখাই না।'],
+['Log in with Google or Facebook','Google বা Facebook দিয়ে লগইন','If you choose to log in with Google or Facebook, we receive only your name and email address from them. We never see your Google or Facebook password, and the app never posts anything for you.','Google বা Facebook দিয়ে লগইন করলে আমরা তাদের কাছ থেকে শুধু আপনার নাম ও ইমেইল পাই। আপনার Google বা Facebook এর পাসওয়ার্ড আমরা কখনো দেখি না, আর অ্যাপ আপনার হয়ে কিছু পোস্ট করে না।'],
+['Deleting your data','তথ্য মুছে ফেলা','To delete your account and the content you wrote, contact us using the email address below and we will remove it.','আপনার অ্যাকাউন্ট ও আপনার লেখা মুছতে নিচের ইমেইলে যোগাযোগ করুন, আমরা মুছে দেব।'],
 ['Permissions','অনুমতি','The app only opens your photo or audio files when you choose to pick one. It does not use your location, contacts or microphone.','আপনি নিজে বেছে নিলেই অ্যাপ আপনার ছবি বা অডিও ফাইল খোলে। এটি আপনার লোকেশন, কন্টাক্ট বা মাইক্রোফোন ব্যবহার করে না।'],
 ['Your choices','আপনার নিয়ন্ত্রণ','You can change your name, email, phone, photo and password in Profile → Edit profile, and delete your own posts and comments. To remove everything, clear the app data or uninstall the app.','Profile → Edit profile থেকে নাম, ইমেইল, ফোন, ছবি ও পাসওয়ার্ড বদলাতে এবং নিজের লেখা ও মন্তব্য মুছতে পারবেন। সবকিছু মুছতে অ্যাপের ডাটা ক্লিয়ার করুন বা আনইনস্টল করুন।'],
 ['Children','শিশু','If you are under 13, please ask a parent or guardian before creating an account.','আপনার বয়স ১৩ বছরের কম হলে অ্যাকাউন্ট খোলার আগে অভিভাবকের অনুমতি নিন।'],
@@ -149,7 +143,14 @@ emailOpt:['Email (optional if you give a phone)','ইমেইল (ফোন দ
 e_mail:['Enter a valid email.','সঠিক ইমেইল দিন।'],e_phone:['Enter a valid phone number.','সঠিক ফোন নম্বর দিন।'],e_need:['Keep at least one: email or phone.','ইমেইল বা ফোন - অন্তত একটি রাখতে হবে।'],e_name:['Please enter your name.','নাম দিন।'],
 changePw:['Change password','পাসওয়ার্ড পরিবর্তন'],curPw:['Current password','বর্তমান পাসওয়ার্ড'],newPw:['New password (min 8 characters)','নতুন পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)'],conPw:['Confirm new password','নতুন পাসওয়ার্ড আবার দিন'],
 e_cur:['Current password is wrong.','বর্তমান পাসওয়ার্ড ভুল।'],e_len:['New password must be 8+ characters.','নতুন পাসওয়ার্ড ৮+ অক্ষরের হতে হবে।'],
-idPh2:['Email or phone number','ইমেইল বা ফোন নম্বর'],e_id:['Enter a valid email or phone number.','সঠিক ইমেইল বা ফোন নম্বর দিন।'],
+idPh2:['Email or phone number','ইমেইল বা ফোন নম্বর'],
+e_net:['No internet. Please connect and try again.','ইন্টারনেট নেই। নেট চালু করে আবার চেষ্টা করুন।'],e_srv:['Something went wrong. Please try again.','কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।'],e_rate:['Too many tries. Please wait a little and try again.','অনেকবার চেষ্টা হয়েছে। একটু অপেক্ষা করে আবার চেষ্টা করুন।'],
+e_confirm:['Almost done: please confirm your email, then log in.','প্রায় শেষ: ইমেইল যাচাই করে তারপর লগ ইন করুন।'],e_same:['New password must be different from the old one.','নতুন পাসওয়ার্ড পুরনোটা থেকে আলাদা হতে হবে।'],
+e_fpphone:['Password reset by code works for email accounts. If you signed up with a phone number, please contact the admin.','কোড দিয়ে পাসওয়ার্ড রিসেট ইমেইল অ্যাকাউন্টের জন্য চলে। ফোন নম্বর দিয়ে খুলে থাকলে অ্যাডমিনের সাথে যোগাযোগ করুন।'],
+syncNow:['Sync now','এখনই সিঙ্ক করুন'],syncOk:['☁ Synced','☁ সিঙ্ক হয়েছে'],syncOff:['Offline - will sync when online','অফলাইন - নেট এলে সিঙ্ক হবে'],syncWork:['Syncing...','সিঙ্ক হচ্ছে...'],syncAuth:['Please log in again to sync','সিঙ্কের জন্য আবার লগ ইন করুন'],
+orWith:['or','অথবা'],contG:['Continue with Google','Google দিয়ে চালিয়ে যান'],contF:['Continue with Facebook','Facebook দিয়ে চালিয়ে যান'],
+e_oauth:['Login with that account failed. Please try again.','ওই অ্যাকাউন্ট দিয়ে লগইন হয়নি। আবার চেষ্টা করুন।'],e_oauthmail:['That account has no email we can use. Please use another login method.','ওই অ্যাকাউন্টে ব্যবহারযোগ্য ইমেইল নেই। অন্য পদ্ধতিতে লগইন করুন।'],e_oauthfile:['Google/Facebook login works in the browser and the phone app, not in this PC app yet. Use email or phone here.','Google/Facebook লগইন ব্রাউজার ও ফোন অ্যাপে চলে, এই PC অ্যাপে এখনো না। এখানে ইমেইল বা ফোন ব্যবহার করুন।'],
+loginNote:['Your login ID (the email or phone you signed up with) does not change here.','আপনার লগইন আইডি (যে ইমেইল বা ফোনে সাইন আপ করেছেন) এখানে বদলায় না।'],e_id:['Enter a valid email or phone number.','সঠিক ইমেইল বা ফোন নম্বর দিন।'],
 forgot:['Forgot password?','পাসওয়ার্ড ভুলে গেছেন?'],forgotT:['Reset password','পাসওয়ার্ড রিসেট'],sendCode:['Send code','কোড পাঠান'],resend:['Resend code','আবার কোড পাঠান'],
 fpHelp:['Enter the email or phone number of your account. We will send a 6-digit code.','আপনার অ্যাকাউন্টের ইমেইল বা ফোন নম্বর দিন। আমরা ৬ সংখ্যার একটি কোড পাঠাব।'],
 otpPh:['6-digit code','৬ সংখ্যার কোড'],resetBtn:['Change password','পাসওয়ার্ড বদলান'],
@@ -159,9 +160,12 @@ tblNote:['Audio can be added only in the first column (Marma).','অডিও �
 const t=k=>(TX[k]||[k,k])[CFG.lang==='bn'?1:0];
 // ---- Audio (IndexedDB) ----
 const idb=new Promise(r=>{try{const q=indexedDB.open('ml_audio',1);q.onupgradeneeded=()=>q.result.createObjectStore('a');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}});
-const aput=async(k,b)=>{const d=await idb;if(!d)return false;return new Promise(r=>{const x=d.transaction('a','readwrite');x.objectStore('a').put(b,k);x.oncomplete=()=>r(true);x.onerror=()=>r(false)})};
-const aget=async k=>{const d=await idb;if(!d)return null;return new Promise(r=>{const q=d.transaction('a').objectStore('a').get(k);q.onsuccess=()=>r(q.result||null);q.onerror=()=>r(null)})};
-const adel=async k=>{if(!k)return;const d=await idb;if(d)d.transaction('a','readwrite').objectStore('a').delete(k)};
+let audioFetch=null,audioHook=null,audioDel=null,cloudHook=null;
+const aputLocal=async(k,b)=>{const d=await idb;if(!d)return false;return new Promise(r=>{const x=d.transaction('a','readwrite');x.objectStore('a').put(b,k);x.oncomplete=()=>r(true);x.onerror=()=>r(false)})};
+const aput=async(k,b)=>{const ok=await aputLocal(k,b);if(ok&&audioHook)audioHook(k);return ok};
+const agetLocal=async k=>{const d=await idb;if(!d)return null;return new Promise(r=>{const q=d.transaction('a').objectStore('a').get(k);q.onsuccess=()=>r(q.result||null);q.onerror=()=>r(null)})};
+const aget=async k=>{let b=await agetLocal(k);if(b||!audioFetch)return b;b=await audioFetch(k);if(b)aputLocal(k,b);return b};
+const adel=async k=>{if(!k)return;const d=await idb;if(d)d.transaction('a','readwrite').objectStore('a').delete(k);if(audioDel)audioDel(k)};
 let cur;async function play(k){const b=await aget(k);if(!b){alert(t('noAudio'));return}if(cur)cur.pause();cur=new Audio(URL.createObjectURL(b));cur.play().catch(()=>{})}
 const au=k=>k?`<button class="play" data-act="play" data-k="${k}" aria-label="play">▶</button>`:'';
 // ---- Sample data: replace with your own via Admin Panel ----
@@ -183,9 +187,10 @@ lit:{cats:[{id:'c1',en:'Story',bn:'গল্প'},{id:'c2',en:'Poem',bn:'কব�
 let DB=store.get('ml_db',null)||clone(SEED);
 if(!DB.tables){DB.tables=clone(SEED.tables);if(DB.phrases&&DB.phrases.length)DB.tables.unshift({id:uid(),cap:'Sangbusa',cols:['Marma','উচ্চারণ','বাংলা','English'],rows:DB.phrases.map(p=>({id:uid(),c:[{t:p.marma},{t:p.pron},{t:p.bn},{t:p.en}]}))});delete DB.phrases}
 if(!DB.lit)DB.lit=clone(SEED.lit);if(!DB.ratings)DB.ratings=[];if(!DB.dict)DB.dict=[];
-const save=()=>store.set('ml_db',DB);
+const save=()=>{store.set('ml_db',DB);if(cloudHook)cloudHook()};
 let USERS=store.get('ml_users',[]),ME=store.get('ml_sess',null),CFG=store.get('ml_cfg',{theme:'auto',size:16,lang:'en'});
 if(!CFG.lang)CFG.lang='en';
+if(ME&&!store.get('ml_auth',null)){ME=null;store.set('ml_sess',null)} // old local-only accounts: log in again with the cloud account
 USERS.forEach(u=>{if(!u.role)u.role=u.admin?'main':'user';if(!u.id)u.id=u.email});
 const user=()=>USERS.find(u=>u.id===ME);
 const isAdmin=()=>{const u=user();return !!u&&u.role!=='user'},isMain=()=>user()?.role==='main';
@@ -229,10 +234,10 @@ function render(){
  if(S.view==='forgot'){const P=S.fp||{step:1},F=S.f||{},bn=CFG.lang==='bn';
   let inner;
   if(P.step===1)inner=`<p class="en">${t('fpHelp')}</p><input class="in" id="a_id" autocomplete="username" placeholder="${t('idPh2')}" value="${esc(F.id)}"><div class="err">${t(S.err||'x')==='x'?'':t(S.err)}</div><button class="btn" data-act="fpsend">${t('sendCode')}</button>`;
-  else inner=`<p class="en">${bn?'কোড পাঠানো হয়েছে:':'Code sent to:'} <b>${esc(P.to)}</b></p>${P.demo?`<div class="note">${bn?'ডেমো মোড: এখনো সার্ভার যুক্ত নেই, তাই কোডটি এখানে দেখানো হলো: ':'Demo mode: no server is connected yet, so the code is shown here: '}<b style="font-size:1.2rem;letter-spacing:.15em">${esc(P.code)}</b></div>`:''}<input class="in" id="a_otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="${t('otpPh')}" value="${esc(F.otp)}"><div class="pw"><input class="in" id="a_pass" type="password" autocomplete="new-password" placeholder="${t('newPw')}"><button type="button" class="eye" data-act="eye" aria-label="show password">👁</button></div><div class="pw"><input class="in" id="a_pass2" type="password" autocomplete="new-password" placeholder="${t('conPw')}"></div><div class="err">${t(S.err||'x')==='x'?'':t(S.err)}</div><button class="btn" data-act="fpreset">${t('resetBtn')}</button><button class="back" data-act="fpsend" data-resend="1">${t('resend')}</button>`;
+  else inner=`<p class="en">${bn?'কোড পাঠানো হয়েছে:':'Code sent to:'} <b>${esc(P.to)}</b></p>${P.demo?`<div class="note">${bn?'ডেমো মোড: এখনো সার্ভার যুক্ত নেই, তাই কোডটি এখানে দেখানো হলো: ':'Demo mode: no server is connected yet, so the code is shown here: '}<b style="font-size:1.2rem;letter-spacing:.15em">${esc(P.code)}</b></div>`:''}<input class="in" id="a_otp" inputmode="numeric" maxlength="8" autocomplete="one-time-code" placeholder="${t('otpPh')}" value="${esc(F.otp)}"><div class="pw"><input class="in" id="a_pass" type="password" autocomplete="new-password" placeholder="${t('newPw')}"><button type="button" class="eye" data-act="eye" aria-label="show password">👁</button></div><div class="pw"><input class="in" id="a_pass2" type="password" autocomplete="new-password" placeholder="${t('conPw')}"></div><div class="err">${t(S.err||'x')==='x'?'':t(S.err)}</div><button class="btn" data-act="fpreset">${t('resetBtn')}</button><button class="back" data-act="fpsend" data-resend="1">${t('resend')}</button>`;
   A.innerHTML=`<div class="auth">${logo(96)}<h1 style="margin:10px 0 0">Marma Language</h1><h2>${t('forgotT')}</h2>${inner}<button class="back" data-act="go" data-v="signin">← ${t('signin')}</button></div><footer>© 2026 Marma Language</footer>`;return}
  if(S.view==='signin'||S.view==='signup'){const up=S.view==='signup',F=S.f||{};
-  A.innerHTML=`<div class="auth">${logo(96)}<h1 style="margin:10px 0 0">Marma Language</h1><p class="en">${t('welcome')}</p><h2>${t(up?'signup':'signin')}</h2>${up?`<input class="in" id="a_name" autocomplete="name" placeholder="${t('name')}" value="${esc(F.name)}">`:''}<input class="in" id="a_id" autocomplete="username" placeholder="${t('idPh2')}" value="${esc(F.id)}"><div class="pw"><input class="in" id="a_pass" type="password" autocomplete="${up?'new-password':'current-password'}" placeholder="${t('pass')}"><button type="button" class="eye" data-act="eye" aria-label="show password">👁</button></div><div class="err">${t(S.err||'x')==='x'?'':t(S.err)}</div><button class="btn" data-act="${up?'signup':'signin'}">${t(up?'create':'signin')}</button>${up?'':`<button class="back" data-act="go" data-v="forgot">${t('forgot')}</button>`}<button class="back" data-act="go" data-v="${up?'signin':'signup'}">${t(up?'have':'newq')}</button><button class="back" data-act="go" data-v="privacy">${t('privacy')}</button></div><footer>© 2026 Marma Language</footer>`;return}
+  A.innerHTML=`<div class="auth">${logo(96)}<h1 style="margin:10px 0 0">Marma Language</h1><p class="en">${t('welcome')}</p><h2>${t(up?'signup':'signin')}</h2>${up?`<input class="in" id="a_name" autocomplete="name" placeholder="${t('name')}" value="${esc(F.name)}">`:''}<input class="in" id="a_id" autocomplete="username" placeholder="${t('idPh2')}" value="${esc(F.id)}"><div class="pw"><input class="in" id="a_pass" type="password" autocomplete="${up?'new-password':'current-password'}" placeholder="${t('pass')}"><button type="button" class="eye" data-act="eye" aria-label="show password">👁</button></div><div class="err">${t(S.err||'x')==='x'?'':t(S.err)}</div><button class="btn" data-act="${up?'signup':'signin'}">${t(up?'create':'signin')}</button><div class="en" style="margin:10px 0 2px">— ${t('orWith')} —</div><button class="btn ghost" data-act="oauth" data-p="google"><b>G</b> &nbsp;${t('contG')}</button><button class="btn ghost" data-act="oauth" data-p="facebook"><b>f</b> &nbsp;${t('contF')}</button>${up?'':`<button class="back" data-act="go" data-v="forgot">${t('forgot')}</button>`}<button class="back" data-act="go" data-v="${up?'signin':'signup'}">${t(up?'have':'newq')}</button><button class="back" data-act="go" data-v="privacy">${t('privacy')}</button></div><footer>© 2026 Marma Language</footer>`;return}
  A.innerHTML=`<header><div class="brand">${logo(34)}<b>Marma Language</b><span class="sp"></span>${av(34)}</div><input id="q" class="search" placeholder="${t('search')}" value="${esc(S.q)}"><nav class="tabs">${TABS.map(k=>`<button class="tab ${S.tab===k?'on':''}" data-act="tab" data-t="${k}">${t(k)}</button>`).join('')}<button class="mbtn ${S.tab==='menu'?'on':''}" data-act="tab" data-t="menu" aria-label="${t('menu')}" title="${t('menu')}">${burger(22)}</button></nav></header><main id="body"></main>`;
  body()}
 const dlist=rev=>{const L=[...DB.dict.map(i=>['dict',i]),...DB.words.map(i=>['words',i])];return L.length?L.map(p=>card(p[0],p[1],rev)).join(''):`<p class="note">${t('empty')}</p>`};
@@ -253,7 +258,7 @@ function body(){
  B.innerHTML=h}
 function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button>`;
  if(S.sub==='profile')return `${back}<h2>${t('profile')}</h2><div class="card" style="text-align:center">${av(96)}<div style="margin-top:8px"><b>${esc(u.name)}</b></div><div class="en">${t('role_'+u.role)}</div><div style="margin-top:6px">${u.email?`<div>✉️ ${esc(u.email)}</div>`:''}${u.phone?`<div>📞 ${esc(u.phone)}</div>`:''}</div></div><button class="btn" data-act="sub" data-s="editprofile">✏️ ${t('editProfile')}</button>`;
- if(S.sub==='editprofile')return `<button class="back" data-act="sub" data-s="profile">← ${t('profile')}</button><h2>${t('editProfile')}</h2><div class="card" style="text-align:center">${av(96)}<div><button class="btn sm" data-act="picpick">${t('changePic')}</button>${u.pic?`<button class="btn sm ghost" data-act="picrm">${t('rmPic')}</button>`:''}</div></div><div class="card"><b>${t('details')}</b><input class="in" id="p_name" autocomplete="name" placeholder="${t('name')}" value="${esc(u.name)}"><input class="in" id="p_email" type="email" autocomplete="email" placeholder="${t('emailOpt')}" value="${esc(u.email||'')}"><input class="in" id="p_phone" type="tel" autocomplete="tel" placeholder="${t('phoneOpt')}" value="${esc(u.phone||'')}"><button class="btn" data-act="saveprofile">${t('saveChanges')}</button></div><div class="card"><b>${t('changePw')}</b><input class="in" id="pw_cur" type="password" autocomplete="current-password" placeholder="${t('curPw')}"><input class="in" id="pw_new" type="password" autocomplete="new-password" placeholder="${t('newPw')}"><input class="in" id="pw_con" type="password" autocomplete="new-password" placeholder="${t('conPw')}"><button class="btn" data-act="savepw">${t('changePw')}</button></div>`;
+ if(S.sub==='editprofile')return `<button class="back" data-act="sub" data-s="profile">← ${t('profile')}</button><h2>${t('editProfile')}</h2><div class="card" style="text-align:center">${av(96)}<div><button class="btn sm" data-act="picpick">${t('changePic')}</button>${u.pic?`<button class="btn sm ghost" data-act="picrm">${t('rmPic')}</button>`:''}</div></div><div class="card"><b>${t('details')}</b><input class="in" id="p_name" autocomplete="name" placeholder="${t('name')}" value="${esc(u.name)}"><input class="in" id="p_email" type="email" autocomplete="email" placeholder="${t('emailOpt')}" value="${esc(u.email||'')}"><input class="in" id="p_phone" type="tel" autocomplete="tel" placeholder="${t('phoneOpt')}" value="${esc(u.phone||'')}"><button class="btn" data-act="saveprofile">${t('saveChanges')}</button><div class="en" style="margin-top:4px;font-size:.85rem">${t('loginNote')}</div></div>${AUTH&&AUTH.provider&&AUTH.provider!=='email'?'':`<div class="card"><b>${t('changePw')}</b><input class="in" id="pw_cur" type="password" autocomplete="current-password" placeholder="${t('curPw')}"><input class="in" id="pw_new" type="password" autocomplete="new-password" placeholder="${t('newPw')}"><input class="in" id="pw_con" type="password" autocomplete="new-password" placeholder="${t('conPw')}"><button class="btn" data-act="savepw">${t('changePw')}</button></div>`}`;
  if(S.sub==='privacy')return `${back}<h2>${t('privacy')}</h2>${privHtml()}`;
  if(S.sub==='fav'){const items=favs().map(k=>{const[c,id]=k.split(':');const it=(DB[c]||[]).find(x=>x.id===id);return it?card(c,it,false):''}).join('');return `${back}<h2>${t('fav')}</h2>${items||`<p class="note">${t('favEmpty')}</p>`}`}
  if(S.sub==='about')return `${back}<h2>${t('about')}</h2><div class="card">${logo(64)}<p><b>Marma Language</b></p><p>${t('aboutTxt')}</p><p class="en">Version 4.0</p></div>`;
@@ -263,7 +268,7 @@ function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s=
   return `${back}<h2>${t('rating')}</h2><div class="card" style="text-align:center"><div style="font-size:2.2rem;color:var(--ac)">★ ${avg}</div><div class="en">${t('avg')} · ${rs.length} ${t('votes')}</div></div><h3>${t('rateTitle')}</h3><div class="stars">${[1,2,3,4,5].map(i=>`<button data-act="star" data-n="${i}" aria-label="${i}">${i<=n?'★':'☆'}</button>`).join('')}</div><textarea class="in" id="r_txt" placeholder="${t('feedback')}">${esc(S.rtxt||mine?.x||'')}</textarea><button class="btn" data-act="rate">${t('submit')}</button>${isAdmin()?`<h3>${t('allRatings')}</h3>`+rs.map(r=>`<div class="card"><b>${esc(r.an)}</b> <span style="color:var(--ac)">${'★'.repeat(r.s)}</span><div class="en">${esc(r.x)}</div></div>`).join(''):''}`}
  if(S.sub==='admin'&&isAdmin())return admin();
  const R=(a,s,i,l)=>`<button class="row" data-act="${a}" data-s="${s}"><span>${i} ${l}</span><span>›</span></button>`;
- return `<div class="menu"><h2 aria-label="${t('menu')}">${burger(26)}</h2>${R('sub','profile','👤',t('profile'))}${R('sub','fav','★',t('fav'))}${R('sub','language','🌐',t('language')+' ('+(CFG.lang==='bn'?'বাংলা':'English')+')')}${R('sub','rate','⭐',t('rating'))}${R('share','','📤',t('share'))}${R('sub','privacy','🔒',t('privacy'))}${R('sub','about','ℹ️',t('about'))}${R('sub','settings','⚙️',t('settings'))}${isAdmin()?R('sub','admin','🛠',t('admin')):''}${R('logout','','⏻',t('logout'))}</div>`}
+ return `<div class="menu"><h2 aria-label="${t('menu')}">${burger(26)}</h2><div class="en" id="syncst" style="margin:0 2px 6px">${syncText()}</div>${R('sub','profile','👤',t('profile'))}${R('sub','fav','★',t('fav'))}${R('sub','language','🌐',t('language')+' ('+(CFG.lang==='bn'?'বাংলা':'English')+')')}${R('sub','rate','⭐',t('rating'))}${R('share','','📤',t('share'))}${R('sub','privacy','🔒',t('privacy'))}${R('sub','about','ℹ️',t('about'))}${R('sub','settings','⚙️',t('settings'))}${isAdmin()?R('sub','admin','🛠',t('admin')):''}${R('syncnow','','🔄',t('syncNow'))}${R('logout','','⏻',t('logout'))}</div>`}
 function dataTools(){return `<div class="note">${t('dataNote')}</div><textarea class="in" id="io" placeholder="${t('ioPh')}"></textarea><button class="btn sm" data-act="export">${t('exp')}</button><button class="btn sm" data-act="import">${t('imp')}</button><button class="btn sm dng" data-act="clear">${t('clearAll')}</button><button class="btn sm ghost" data-act="reset">${t('resetSeed')}</button>`}
 function admin(){const c=S.col,M=isMain();
  const tabs=[['dict','dict'],['words','aw'],['sentences','as'],['tables','at'],['cats','ac'],...(M?[['admins','aa'],['data','ad']]:[])];
@@ -276,8 +281,204 @@ function admin(){const c=S.col,M=isMain();
   return nav+`<button class="back" data-act="backtbl">${t('allTbl')}</button><input class="in" id="t_cap" placeholder="${t('caption')}" value="${esc(x.cap)}"><div class="note">${t('tblNote')}</div><div class="card tw"><table><thead><tr>${x.cols.map((c,i)=>`<th><input class="in" id="h${i}" value="${esc(c)}" placeholder="${t('colPh')}"><button class="x" data-act="delcol" data-i="${i}" aria-label="delete column">✕</button></th>`).join('')}<th></th></tr></thead><tbody>${x.rows.map((r,ri)=>`<tr>${r.c.map((y,ci)=>`<td><input class="in" id="c${ri}_${ci}" value="${esc(y.t)}">${ci===0?`<button class="play" data-act="cellau" data-r="${ri}" data-c="${ci}" title="audio">${y.k?'🔊':'🎙'}</button>${y.k?`<button class="x" data-act="cellrm" data-r="${ri}" data-c="${ci}">⊘</button>`:''}`:''}</td>`).join('')}<td><button class="x" data-act="delrow" data-r="${ri}" aria-label="delete row">✕</button></td></tr>`).join('')}</tbody></table></div><button class="btn sm" data-act="addcol">${t('addCol')}</button><button class="btn sm" data-act="addrow">${t('addRow')}</button><button class="btn sm" data-act="savetbl">💾 ${t('saved').replace(' ✔','')}</button>`}
  const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;
  return nav+`<div class="card"><b>${e?t('edit'):t('addNew')}</b>${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${c==='words'?f('cat','secPh'):''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`+DB[c].map(i=>`<div class="card"><div class="top"><div><div class="mm">${esc(i.marma)}</div><div class="pr">${esc(i.pron)}</div></div>${au(i.k)}</div><div class="bn">${esc(i.bn)} · ${esc(i.en)}</div><button class="btn sm" data-act="edititem" data-id="${i.id}">${t('edit')}</button><button class="btn sm dng" data-act="delitem" data-id="${i.id}">${t('del')}</button></div>`).join('')}
+// <CLOUD>
+// ================= CLOUD SYNC (Supabase, no library needed) =================
+const SB_URL='https://hphemglpqpbdidvnbqjl.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwaGVtZ2xwcXBiZGlkdm5icWpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE2MTcyMjIsImV4cCI6MjEwNzE5MzIyMn0.YAfkxolvK5RgpP323K0UrzFR0L5TX572gWyzANGn8_Y'; // public "anon" key - safe to keep in the app
+const PHONE_DOMAIN='thuinumong.github.io'; // phone-number accounts use <phone>@this-domain as a hidden login email
+let AUTH=store.get('ml_auth',null);
+let SYNC=store.get('ml_sync',null)||{init:false,last:null,snap:{},uid:null,pdirty:false,aq:[]};
+const saveSync=()=>store.set('ml_sync',SYNC),saveAuth=()=>store.set('ml_auth',AUTH);
+const emptyDB=()=>({dict:[],words:[],sentences:[],tables:[],lit:{cats:[],posts:[]},ratings:[]});
+const hsh=s=>{let x=5381;for(let i=0;i<s.length;i++)x=((x<<5)+x+s.charCodeAt(i))|0;return x+':'+s.length};
+const canon=v=>v===null||typeof v!=='object'?JSON.stringify(v):Array.isArray(v)?'['+v.map(x=>canon(x===undefined?null:x)).join(',')+']':'{'+Object.keys(v).filter(k=>v[k]!==undefined).sort().map(k=>JSON.stringify(k)+':'+canon(v[k])).join(',')+'}';
+const KCOL=k=>k.slice(0,k.indexOf('|')),KID=k=>k.slice(k.indexOf('|')+1);
+
+async function sb(path,o={}){
+ let r;
+ try{r=await fetch(SB_URL+path,{method:o.method||'GET',headers:{apikey:SB_KEY,Authorization:'Bearer '+(o.tok||SB_KEY),'Content-Type':'application/json',...(o.headers||{})},body:o.body===undefined?undefined:JSON.stringify(o.body)})}
+ catch(x){const e=new Error('net');e.net=true;throw e}
+ let j=null;try{const tx=await r.text();j=tx?JSON.parse(tx):null}catch(x){}
+ if(!r.ok){const e=new Error((j&&(j.msg||j.message||j.error_description||j.error))||('HTTP '+r.status));e.status=r.status;e.code=j&&(j.error_code||j.code);throw e}
+ return j}
+function setAuth(j,login){AUTH={access_token:j.access_token,refresh_token:j.refresh_token,expires_at:j.expires_at||Math.floor(Date.now()/1000)+(j.expires_in||3600),uid:(j.user&&j.user.id)||(AUTH&&AUTH.uid),login:login||(AUTH&&AUTH.login),provider:(j.user&&j.user.app_metadata&&j.user.app_metadata.provider)||(AUTH&&AUTH.provider)};saveAuth()}
+async function getTok(){
+ if(!AUTH||AUTH.dead)throw Object.assign(new Error('auth'),{status:401});
+ if(AUTH.expires_at-60>Date.now()/1000)return AUTH.access_token;
+ try{const j=await sb('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:AUTH.refresh_token}});setAuth(j);return AUTH.access_token}
+ catch(e){if(!e.net&&(e.status===400||e.status===401||e.status===403)){AUTH.dead=true;saveAuth()}throw e}}
+async function rest(path,o={}){const tk=await getTok();return sb('/rest/v1'+path,{...o,tok:tk,headers:{Prefer:'return=minimal',...(o.headers||{})}})}
+
+// ---- local DB <-> flat list of small items ----
+function flat(){const m={},add=(col,id,data)=>{m[col+'|'+id]={col,id:String(id),data}};
+ ['dict','words','sentences'].forEach(c=>(DB[c]||[]).forEach(x=>add(c,x.id,x)));
+ (DB.tables||[]).forEach(x=>add('tables',x.id,x));
+ DB.lit.cats.forEach(x=>add('cats',x.id,x));
+ DB.lit.posts.forEach(p=>{const {cm,rx,...rest}=p;add('posts',p.id,rest);
+  (cm||[]).forEach(c=>add('comments',c.id,{...c,post:p.id}));
+  Object.entries(rx||{}).forEach(([e,L])=>(L||[]).forEach(u=>add('reactions',p.id+'|'+e+'|'+u,{post:p.id,e,by:u})))});
+ (DB.ratings||[]).forEach(r=>add('ratings',r.by,r));
+ return m}
+const PRI={cats:0,dict:1,words:1,sentences:1,tables:2,posts:3,comments:4,reactions:5,ratings:6};
+function applyRemote(it){
+ const {col,id,deleted}=it,d=it.data||{},same=(a,b)=>String(a)===String(b);
+ const put=(arr,front)=>{const i=arr.findIndex(y=>same(y.id,id));if(deleted){if(i>=0)arr.splice(i,1);return}if(i>=0)arr[i]=d;else front?arr.unshift(d):arr.push(d)};
+ if(col==='dict'||col==='words'||col==='sentences'){DB[col]=DB[col]||[];put(DB[col],true)}
+ else if(col==='tables')put(DB.tables,false);
+ else if(col==='cats')put(DB.lit.cats,false);
+ else if(col==='ratings'){const i=DB.ratings.findIndex(r=>same(r.by,id));if(deleted){if(i>=0)DB.ratings.splice(i,1)}else if(i>=0)DB.ratings[i]=d;else DB.ratings.push(d)}
+ else if(col==='posts'){const P=DB.lit.posts,i=P.findIndex(p=>same(p.id,id));if(deleted){if(i>=0)P.splice(i,1)}else{const old=i>=0?P[i]:{},x={...d,cm:old.cm||[],rx:old.rx||{}};if(i>=0)P[i]=x;else P.push(x)}}
+ else if(col==='comments'){const p=d.post!==undefined?DB.lit.posts.find(q=>same(q.id,d.post)):DB.lit.posts.find(q=>(q.cm||[]).some(c=>same(c.id,id)));if(!p)return;p.cm=p.cm||[];const i=p.cm.findIndex(c=>same(c.id,id));if(deleted){if(i>=0)p.cm.splice(i,1)}else if(i>=0)p.cm[i]=d;else p.cm.push(d)}
+ else if(col==='reactions'){const p=DB.lit.posts.find(q=>same(q.id,d.post));if(!p)return;p.rx=p.rx||{};const L=p.rx[d.e]||[];if(deleted)p.rx[d.e]=L.filter(u=>!same(u,d.by));else if(!L.some(u=>same(u,d.by)))p.rx[d.e]=[...L,d.by]}}
+let CHANGED=false;
+function applyItems(items,force){
+ items.sort((a,b)=>(PRI[a.col]??9)-(PRI[b.col]??9));
+ const cur=force?{}:flat();
+ for(const it of items){
+  if(PRI[it.col]===undefined)continue;
+  const k=it.col+'|'+it.id,rh=it.deleted?null:hsh(canon(it.data||{}));
+  if(!force){const c=cur[k],s=SYNC.snap[k],pending=c?s!==hsh(canon(c.data)):!!s;
+   if(pending)continue;                       // you changed it on this phone, not synced yet - keep yours
+   if(it.deleted?(!c&&!s):(c&&s===rh))continue; // nothing new
+  }
+  applyRemote(it);
+  if(it.deleted)delete SYNC.snap[k];else SYNC.snap[k]=rh;
+  CHANGED=true}
+ DB.lit.posts.sort((a,b)=>(b.ts||0)-(a.ts||0));
+ store.set('ml_db',DB)}
+async function pullItems(){
+ let since=null;
+ if(SYNC.init&&SYNC.last){const ms=Date.parse(SYNC.last);if(!isNaN(ms))since=new Date(ms-120000).toISOString()}
+ let all=[],off=0;
+ for(;;){const a=await rest('/items?select=col,id,data,deleted,updated_at&order=updated_at.asc,col.asc,id.asc&limit=1000&offset='+off+(since?'&updated_at=gte.'+encodeURIComponent(since):''));
+  if(!a||!a.length)break;all=all.concat(a);if(a.length<1000)break;off+=1000}
+ return all}
+const mark=o=>{if(o.h===null)delete SYNC.snap[o.k];else SYNC.snap[o.k]=o.h};
+const upsertRows=rows=>rest('/items?on_conflict=col,id',{method:'POST',body:rows,headers:{Prefer:'resolution=merge-duplicates,return=minimal'}});
+const fatal=e=>e.net||e.status===401||e.status>=500;
+async function reconcile(o){ // server refused this change: take the server's version
+ const r=o.row,a=await rest('/items?select=col,id,data,deleted&col=eq.'+encodeURIComponent(r.col)+'&id=eq.'+encodeURIComponent(r.id));
+ applyRemote(a&&a[0]?a[0]:{col:r.col,id:r.id,data:{},deleted:true});
+ const c=flat()[o.k];if(c)SYNC.snap[o.k]=hsh(canon(c.data));else delete SYNC.snap[o.k];
+ CHANGED=true}
+async function pushItems(){
+ const cur=flat(),ops=[];
+ for(const k in cur){const h=hsh(canon(cur[k].data));if(SYNC.snap[k]!==h)ops.push({k,h,row:{col:cur[k].col,id:cur[k].id,data:cur[k].data,deleted:false}})}
+ for(const k in SYNC.snap)if(!cur[k])ops.push({k,h:null,row:{col:KCOL(k),id:KID(k),data:{},deleted:true}});
+ const ups=ops.filter(o=>o.h!==null),tombs=ops.filter(o=>o.h===null);
+ for(let i=0;i<ups.length;i+=40){const part=ups.slice(i,i+40);
+  try{await upsertRows(part.map(o=>o.row));part.forEach(mark)}
+  catch(e){if(fatal(e))throw e;
+   for(const o of part){try{await upsertRows([o.row]);mark(o)}catch(e2){if(fatal(e2))throw e2;await reconcile(o)}}}
+  saveSync()}
+ const byCol={};tombs.forEach(o=>(byCol[o.row.col]=byCol[o.row.col]||[]).push(o));
+ for(const col in byCol){const L=byCol[col];for(let i=0;i<L.length;i+=40){const part=L.slice(i,i+40),ids=part.map(o=>'"'+String(o.row.id).replace(/"/g,'\\"')+'"').join(',');
+  try{await rest('/items?col=eq.'+encodeURIComponent(col)+'&id=in.('+encodeURIComponent(ids)+')',{method:'PATCH',body:{deleted:true}})}catch(e){if(fatal(e))throw e}
+  part.forEach(mark);saveSync()}}}
+
+// ---- profiles ----
+async function loadProfiles(){
+ let list=await rest('/profiles?id=eq.'+encodeURIComponent(ME)+'&select=*')||[];
+ if(list[0]&&list[0].role!=='user')list=await rest('/profiles?select=*&order=created_at.asc')||list;
+ if(list.length){USERS=list.map(p=>({id:p.id,name:p.name||'',email:p.email||'',phone:p.phone||'',role:p.role,pic:p.pic||undefined}));store.set('ml_users',USERS)}}
+async function pushProfile(){
+ if(!AUTH||AUTH.dead||!SYNC.pdirty)return;const u=user();if(!u)return;
+ try{await rest('/profiles?id=eq.'+encodeURIComponent(ME),{method:'PATCH',body:{name:u.name,email:u.email||null,phone:u.phone||null,pic:u.pic||null}});SYNC.pdirty=false;saveSync()}catch(e){}}
+
+// ---- audio clips (Supabase Storage bucket "audio") ----
+const allAudioKeys=()=>{const s=new Set(),add=y=>{if(y&&y.k)s.add(y.k)};['dict','words','sentences'].forEach(c=>(DB[c]||[]).forEach(add));(DB.tables||[]).forEach(x=>x.rows.forEach(r=>r.c.forEach(add)));return [...s]};
+async function pushAudio(){
+ if(!isAdmin()||!SYNC.aq.length)return;
+ for(const k of SYNC.aq.slice()){const b=await agetLocal(k);
+  if(!b){SYNC.aq=SYNC.aq.filter(x=>x!==k);continue}
+  const tk=await getTok();let r;
+  try{r=await fetch(SB_URL+'/storage/v1/object/audio/'+encodeURIComponent(k),{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+tk,'Content-Type':b.type||'application/octet-stream','x-upsert':'true'},body:b})}
+  catch(x){throw Object.assign(new Error('net'),{net:true})}
+  if(r.ok||(r.status>=400&&r.status<500&&r.status!==401))SYNC.aq=SYNC.aq.filter(x=>x!==k);else throw Object.assign(new Error('audio'),{status:r.status});
+  saveSync()}}
+audioFetch=async k=>{try{const r=await fetch(SB_URL+'/storage/v1/object/public/audio/'+encodeURIComponent(k));return r.ok?await r.blob():null}catch(e){return null}};
+audioHook=k=>{if(!AUTH)return;if(!SYNC.aq.includes(k))SYNC.aq.push(k);saveSync();schedule()};
+audioDel=async k=>{SYNC.aq=SYNC.aq.filter(x=>x!==k);saveSync();if(!AUTH||AUTH.dead||!isAdmin())return;try{const tk=await getTok();await fetch(SB_URL+'/storage/v1/object/audio/'+encodeURIComponent(k),{method:'DELETE',headers:{apikey:SB_KEY,Authorization:'Bearer '+tk}})}catch(e){}};
+
+// ---- the sync loop ----
+let busy=false,again=false,timer=null;
+const syncText=()=>t(S.sync||'syncWork');
+function status(k){S.sync=k;const el=$('#syncst');if(el)el.textContent=syncText()}
+function safeRefresh(){if(S.view!=='app')return;const a=document.activeElement&&document.activeElement.tagName;if(a==='INPUT'||a==='TEXTAREA'||a==='SELECT'||S.pf||S.edit||S.tid)return;try{body()}catch(e){}}
+function schedule(){if(!AUTH||AUTH.dead)return;clearTimeout(timer);timer=setTimeout(()=>sync({pull:false}),900)}
+cloudHook=schedule;
+async function sync(opt={}){
+ if(!AUTH||!ME)return;
+ if(AUTH.dead){status('syncAuth');return}
+ if(busy){again=true;return}
+ busy=true;status('syncWork');let pulled=false;
+ try{
+  if(!SYNC.init){
+   await loadProfiles();
+   const items=await pullItems();pulled=true;
+   if(items.length){DB=emptyDB();SYNC.snap={};applyItems(items,true);SYNC.last=items.reduce((m,x)=>x.updated_at>m?x.updated_at:m,items[0].updated_at)}
+   else if(isAdmin())SYNC.aq=allAudioKeys();   // empty cloud + admin: everything on this phone gets uploaded
+   else{SYNC.snap={};const c=flat();for(const k in c)SYNC.snap[k]=hsh(canon(c[k].data))}
+   SYNC.init=true;SYNC.uid=ME;saveSync()}
+  await pushProfile();
+  await pushItems();
+  if(!pulled&&opt.pull!==false){
+   const items=await pullItems();if(items.length){applyItems(items);SYNC.last=items.reduce((m,x)=>x.updated_at>m?x.updated_at:m,SYNC.last||items[0].updated_at)}
+   await loadProfiles()}
+  saveSync();await pushAudio();
+  status('syncOk')}
+ catch(e){status(e.status===401?'syncAuth':'syncOff')}
+ finally{busy=false;if(again){again=false;setTimeout(()=>sync(),500)}}
+ if(CHANGED){CHANGED=false;safeRefresh()}}
+
+// ---- login / sign up ----
+async function cloudAuth(I,pass,name){
+ const email=I.email||I.phone+'@'+PHONE_DOMAIN,signup=name!==undefined;
+ const j=signup?await sb('/auth/v1/signup',{method:'POST',body:{email,password:pass,data:{name,email:I.email||'',phone:I.phone||''}}}):await sb('/auth/v1/token?grant_type=password',{method:'POST',body:{email,password:pass}});
+ if(!j||!j.access_token){const e=new Error('confirm');e.code='confirm';throw e}
+ await adoptSession(j,email,{id:j.user.id,name:signup?name:((j.user.user_metadata&&j.user.user_metadata.name)||''),email:I.email||'',phone:I.phone||'',role:'user'})}
+async function adoptSession(j,login,prof){
+ if(SYNC.uid&&SYNC.uid!==j.user.id){DB=emptyDB();store.set('ml_db',DB);SYNC={init:false,last:null,snap:{},uid:null,pdirty:false,aq:[]};saveSync()}
+ setAuth(j,login);ME=j.user.id;store.set('ml_sess',ME);
+ USERS=[prof];store.set('ml_users',USERS);
+ try{await loadProfiles()}catch(e){}}
+
+// ---- Google / Facebook login ----
+const IS_NATIVE=location.hostname==='localhost'&&location.protocol==='https:'; // the Android app serves itself from https://localhost
+const APP_SCHEME='com.marma.language://login';
+function oauthStart(p){
+ if(location.protocol==='file:'){S.err='e_oauthfile';render();return}
+ const redirect=IS_NATIVE?APP_SCHEME:location.origin+location.pathname;
+ const url=SB_URL+'/auth/v1/authorize?provider='+p+'&redirect_to='+encodeURIComponent(redirect)+(p==='google'?'&prompt=select_account':'');
+ if(IS_NATIVE){if(window.NativeAuth)window.NativeAuth.open(url);else window.open(url,'_blank')}else location.href=url}
+async function handleAuthRedirect(u){
+ const i=u.indexOf('#');if(i<0)return;const P=new URLSearchParams(u.slice(i+1));
+ try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}
+ if(P.get('error')||P.get('error_description')){S.view='signin';S.err=/email/i.test(P.get('error_description')||'')?'e_oauthmail':'e_oauth';render();return}
+ const at=P.get('access_token');if(!at)return;
+ try{
+  const us=await sb('/auth/v1/user',{tok:at}),m=us.user_metadata||{};
+  await adoptSession({access_token:at,refresh_token:P.get('refresh_token'),expires_in:+P.get('expires_in')||3600,expires_at:+P.get('expires_at')||0,user:us},null,{id:us.id,name:m.full_name||m.name||(us.email||'').split('@')[0]||'',email:us.email||'',phone:'',role:'user'});
+  S.view='app';S.f=null;S.err='';render();sync()}
+ catch(e){S.view='signin';S.err=authErr(e,false);render()}}
+if(IS_NATIVE){const sc=document.createElement('script');sc.src='native.js';sc.onload=()=>{if(window.NativeAuth)window.NativeAuth.onUrl(u=>{if(String(u).indexOf('com.marma.language:')===0)handleAuthRedirect(u)})};document.head.appendChild(sc)}
+function authErr(e,signup){
+ if(e.net)return 'e_net';
+ if(e.code==='confirm'||e.code==='email_not_confirmed')return 'e_confirm';
+ if(e.code==='user_already_exists'||/already (registered|been registered)/i.test(e.message))return 'e_exist';
+ if(e.code==='weak_password')return 'e_len';
+ if(e.code==='same_password')return 'e_same';
+ if(e.status===429||/rate.?limit/i.test(e.code||''))return 'e_rate';
+ if(e.code==='email_address_invalid'||e.code==='validation_failed')return 'e_id';
+ if(!signup&&(e.status===400||e.status===401||e.code==='invalid_credentials'))return 'e_wrong';
+ return 'e_srv'}
+addEventListener('online',()=>sync());
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')sync()});
+setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)sync()},60000);
+// </CLOUD>
+
 function syncT(){const x=S.tid&&curT();if(!x||!$('#t_cap'))return;x.cap=val('t_cap');x.cols=x.cols.map((_,i)=>val('h'+i));x.rows.forEach((r,ri)=>r.c.forEach((y,ci)=>y.t=val(`c${ri}_${ci}`)))}
-function pic(file){const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=160;const s=Math.min(im.width,im.height);c.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,160,160);user().pic=c.toDataURL('image/jpeg',.8);store.set('ml_users',USERS);render()};im.src=URL.createObjectURL(file)}
+function pic(file){const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=160;const s=Math.min(im.width,im.height);c.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,160,160);user().pic=c.toDataURL('image/jpeg',.8);store.set('ml_users',USERS);SYNC.pdirty=true;saveSync();pushProfile();render()};im.src=URL.createObjectURL(file)}
 document.addEventListener('input',e=>{if(e.target.id==='q'){S.q=e.target.value;body()}});
 $('#pfile').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)pic(f)});
 $('#afile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';const x=curT();if(!f||!S.tgt||!x||!isAdmin())return;const y=x.rows[S.tgt.r].c[S.tgt.c];adel(y.k);const k=uid();if(await aput(k,f))y.k=k;else alert(t('audioFail'));save();body()});
@@ -290,30 +491,36 @@ document.addEventListener('click',async e=>{
  else if(a==='signup'){const name=val('a_name'),idv=val('a_id'),pass=val('a_pass'),I=parseId(idv);S.f={name,id:idv};S.err='';
   if(!name||!idv||pass.length<8)S.err='e_fill';
   else if(!I)S.err='e_id';
-  else if(findUser(I))S.err='e_exist';
   if(S.err){render();return}
-  const id=uid();USERS.push({id,name,email:I.email,phone:I.phone,pass:hpw(pass),role:USERS.length===0?'main':'user'});store.set('ml_users',USERS);ME=id;store.set('ml_sess',ME);S.view='app';S.f=null;render()}
+  b.disabled=true;
+  try{await cloudAuth(I,pass,name)}catch(e){S.err=authErr(e,true);render();return}
+  S.view='app';S.f=null;render();sync()}
  else if(a==='signin'){const idv=val('a_id'),pass=val('a_pass'),I=parseId(idv);S.f={id:idv};S.err='';
-  const u=I?findUser(I):null;
-  if(!u||!pwOk(u,pass)){S.err='e_wrong';render();return}
-  if(!u.pass.startsWith('h2:')){u.pass=hpw(pass);store.set('ml_users',USERS)}
-  ME=u.id;store.set('ml_sess',ME);S.view='app';S.f=null;render()}
+  if(!I||!pass){S.err='e_wrong';render();return}
+  b.disabled=true;
+  try{await cloudAuth(I,pass)}catch(e){S.err=authErr(e,false);render();return}
+  S.view='app';S.f=null;render();sync()}
  else if(a==='fpsend'){const resend=!!d.resend,idv=resend?(S.fp?.to||''):val('a_id'),I=parseId(idv);S.err='';
   if(resend&&S.fp&&Date.now()-S.fp.at<30000){S.err='e_wait';S.f={id:idv};render();return}
   if(!I){S.err='e_id';S.f={id:idv};S.fp=null;render();return}
-  const u=findUser(I);if(!u){S.err='e_nouser';S.f={id:idv};S.fp=null;render();return}
-  const code=genOtp();b.disabled=true;
-  try{const r=await sendOtp(I.key,code);S.fp={step:2,to:I.key,uid:u.id,code,at:Date.now(),exp:Date.now()+600000,tries:0,demo:r==='demo'};S.f=null}
-  catch(x){S.err='e_send';S.f={id:idv}}
+  if(!I.email){S.err='e_fpphone';S.f={id:idv};S.fp=null;render();return}
+  b.disabled=true;
+  try{await sb('/auth/v1/recover',{method:'POST',body:{email:I.email}});S.fp={step:2,to:I.email,at:Date.now()};S.f=null}
+  catch(e){S.err=e.net?'e_net':(e.status===429?'e_rate':'e_send');S.f={id:idv}}
   render()}
- else if(a==='fpreset'){const P=S.fp,otp=val('a_otp'),n=val('a_pass'),k=val('a_pass2');S.err='';S.f={otp};
-  if(!P||Date.now()>P.exp||P.tries>=5){S.err='e_otpexp';S.fp=null;S.f=null;render();return}
-  if(otp!==P.code){P.tries++;S.err=P.tries>=5?'e_otpexp':'e_otp';if(P.tries>=5){S.fp=null;S.f=null}render();return}
+ else if(a==='fpreset'){const P=S.fp,otp=val('a_otp').replace(/\s/g,''),n=val('a_pass'),k=val('a_pass2');S.err='';S.f={otp};
+  if(!P){S.err='e_otpexp';S.f=null;render();return}
+  if(!/^\d{6,8}$/.test(otp)){S.err='e_otp';render();return}
   if(n.length<8){S.err='e_len';render();return}
   if(n!==k){S.err='e_mis';render();return}
-  const u=USERS.find(x=>x.id===P.uid);if(!u){S.err='e_nouser';render();return}
-  u.pass=hpw(n);store.set('ml_users',USERS);S.fp=null;S.f=null;S.view='signin';S.err='';render();alert(t('pwReset'))}
- else if(a==='logout'){ME=null;store.set('ml_sess',null);Object.assign(S,{view:'welcome',sub:'',tab:'dict',q:''});render()}
+  b.disabled=true;
+  try{const j=await sb('/auth/v1/verify',{method:'POST',body:{type:'recovery',email:P.to,token:otp}});
+   await sb('/auth/v1/user',{method:'PUT',tok:j.access_token,body:{password:n}});
+   S.fp=null;S.f=null;S.view='signin';S.err='';render();alert(t('pwReset'))}
+  catch(e){S.err=e.net?'e_net':(e.code==='same_password'?'e_same':(e.status===422&&e.code==='weak_password'?'e_len':((e.status>=400&&e.status<500)?'e_otp':'e_srv')));render()}}
+ else if(a==='syncnow'){sync()}
+ else if(a==='oauth'){oauthStart(d.p)}
+ else if(a==='logout'){if(AUTH&&!AUTH.dead&&navigator.onLine!==false){try{await Promise.race([sync({pull:false}),new Promise(r=>setTimeout(r,4000))])}catch(e){}try{sb('/auth/v1/logout?scope=local',{method:'POST',tok:AUTH.access_token}).catch(()=>{})}catch(e){}}AUTH=null;store.set('ml_auth',null);ME=null;store.set('ml_sess',null);Object.assign(S,{view:'welcome',sub:'',tab:'dict',q:''});render()}
  else if(a==='tab'){Object.assign(S,{tab:d.t,sub:'',q:'',pf:null});render()}
  else if(a==='myprof'){Object.assign(S,{tab:'menu',sub:'profile',q:''});render()}
  else if(a==='dir'){S.dir=d.d;body()}
@@ -330,17 +537,20 @@ document.addEventListener('click',async e=>{
   if(em&&!okMail(em)){alert(t('e_mail'));return}
   if(ph&&!okPhone(ph)){alert(t('e_phone'));return}
   if(!em&&!ph){alert(t('e_need'));return}
-  if(USERS.some(x=>x!==u&&((em&&x.email===em)||(ph&&x.phone===ph)))){alert(t('e_exist'));return}
   u.name=n;u.email=em;u.phone=ph;store.set('ml_users',USERS);
   DB.lit.posts.forEach(p=>{if(p.by===ME)p.an=n;(p.cm||[]).forEach(m=>{if(m.by===ME)m.an=n})});DB.ratings.forEach(r=>{if(r.by===ME)r.an=n});save();
+  SYNC.pdirty=true;saveSync();pushProfile();
   S.sub='profile';render();alert(t('saved'))}
- else if(a==='savepw'){const u=user(),c=val('pw_cur'),n=val('pw_new'),k=val('pw_con');
-  if(!pwOk(u,c)){alert(t('e_cur'));return}
+ else if(a==='savepw'){const c=val('pw_cur'),n=val('pw_new'),k=val('pw_con');
   if(n.length<8){alert(t('e_len'));return}
   if(n!==k){alert(t('e_mis'));return}
-  u.pass=hpw(n);store.set('ml_users',USERS);body();alert(t('pwDone'))}
+  if(!AUTH||!AUTH.login){alert(t('syncAuth'));return}
+  b.disabled=true;
+  try{const j=await sb('/auth/v1/token?grant_type=password',{method:'POST',body:{email:AUTH.login,password:c}});setAuth(j);
+   await sb('/auth/v1/user',{method:'PUT',tok:j.access_token,body:{password:n}});b.disabled=false;body();alert(t('pwDone'))}
+  catch(e){b.disabled=false;alert(t(e.net?'e_net':(e.code==='same_password'?'e_same':(e.code==='weak_password'?'e_len':(e.status===400||e.status===401||e.code==='invalid_credentials'?'e_cur':'e_srv')))))}}
  else if(a==='picpick')$('#pfile').click();
- else if(a==='picrm'){delete user().pic;store.set('ml_users',USERS);render()}
+ else if(a==='picrm'){delete user().pic;store.set('ml_users',USERS);SYNC.pdirty=true;saveSync();pushProfile();render()}
  // Literature
  else if(a==='lcat'){S.lcat=d.c;body()}
  else if(a==='newpost'){S.pf='new';body()}
@@ -357,7 +567,8 @@ document.addEventListener('click',async e=>{
  else if(a==='delcm'){const p=DB.lit.posts.find(q=>q.id===d.id),m=p.cm.find(x=>x.id===d.c);if(m&&(m.by===ME||isAdmin())){p.cm=p.cm.filter(x=>x!==m);save();body()}}
  // Admin
  else if(a==='col'){if((d.c==='admins'||d.c==='data')&&!isMain())return;syncT();save();S.col=d.c;S.edit=null;S.tid=null;body()}
- else if(a==='setrole'){if(!isMain())return;const u=USERS.find(x=>x.id===d.e);if(u&&u.role!=='main'){u.role=d.r;store.set('ml_users',USERS);body()}}
+ else if(a==='setrole'){if(!isMain())return;const u=USERS.find(x=>x.id===d.e);if(!u||u.role==='main')return;
+  try{const r=await rest('/profiles?id=eq.'+encodeURIComponent(u.id),{method:'PATCH',body:{role:d.r},headers:{Prefer:'return=representation'}});if(!r||!r.length)throw 0;u.role=d.r;store.set('ml_users',USERS);body()}catch(e){alert(t(e&&e.net?'e_net':'e_srv'))}}
  else if(a==='addcat'){const en=val('k_en'),bn=val('k_bn');if(!en&&!bn)return;DB.lit.cats.push({id:uid(),en,bn});save();body()}
  else if(a==='delcat'){if(isMain()&&confirm(t('sure'))){DB.lit.cats=DB.lit.cats.filter(x=>x.id!==d.id);save();body()}}
  else if(a==='edititem'){S.edit=d.id;body();scrollTo(0,0)}
@@ -387,6 +598,8 @@ document.addEventListener('click',async e=>{
  else if(a==='reset'&&isMain()){if(confirm(t('sureReset'))){DB=clone(SEED);save();S.tid=null;body()}}
 });
 render();
+if(/[#&](access_token|error_description)=/.test(location.hash))handleAuthRedirect(location.href);
+if(AUTH&&ME)setTimeout(sync,300);
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 </script>
