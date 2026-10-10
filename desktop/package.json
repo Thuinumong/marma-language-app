@@ -1,0 +1,29 @@
+{
+  "name": "marma-language-desktop",
+  "version": "1.0.0",
+  "description": "Marma Language",
+  "main": "main.js",
+  "author": "Marma Language",
+  "private": true,
+  "scripts": {
+    "dist": "electron-builder --win --publish never"
+  },
+  "build": {
+    "appId": "com.marma.language.desktop",
+    "productName": "Marma Language",
+    "directories": { "output": "dist" },
+    "files": ["main.js", "app/**/*"],
+    "win": {
+      "target": ["nsis", "portable"],
+      "icon": "app/icon-512.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}
