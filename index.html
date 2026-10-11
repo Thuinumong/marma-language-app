@@ -45,7 +45,7 @@ h2{margin:12px 0 4px}h3{margin:16px 0 0;color:var(--mu);font-size:.9rem;text-tra
 .menu .row{display:flex;justify-content:space-between;align-items:center;width:100%;padding:14px;margin:8px 0;border-radius:14px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit;cursor:pointer}
 .tw{overflow-x:auto}table{border-collapse:collapse;width:100%}caption{font-weight:600;text-align:left;padding:2px 0 8px;color:var(--pr);font-size:1.05rem}
 th,td{border:1px solid var(--bd);padding:7px 9px;text-align:left;vertical-align:middle}th{background:var(--bg);color:var(--mu);font-size:.85rem}
-td.bx{min-width:110px;vertical-align:top}td.ed{cursor:pointer}td.ed.sel{outline:2px solid var(--pr);outline-offset:-2px}td.bx .play{margin:4px 4px 0 0}
+td.bx{min-width:110px;vertical-align:top}td.ed{cursor:pointer}td.ed.sel{outline:2px solid var(--pr);outline-offset:-2px}td.bx .play{margin:4px 4px 0 0}a.btn{text-decoration:none;display:inline-block}
 td .in,th .in{min-width:120px;margin:0}.x{border:0;background:none;color:var(--rd);cursor:pointer;font-size:1rem}
 .av{border-radius:50%;object-fit:cover;background:var(--pr);color:var(--pt);display:inline-flex;align-items:center;justify-content:center;font-weight:600;cursor:pointer}
 .pw{position:relative}.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;font-size:1.2rem;cursor:pointer}
@@ -158,7 +158,7 @@ fpHelp:['Enter the email or phone number of your account. We will send a 6-digit
 otpPh:['6-digit code','৬ সংখ্যার কোড'],resetBtn:['Change password','পাসওয়ার্ড বদলান'],
 e_nouser:['No account found with this email or phone.','এই ইমেইল বা ফোনে কোনো অ্যাকাউন্ট নেই।'],e_otp:['Wrong code. Try again.','কোড ভুল। আবার চেষ্টা করুন।'],e_otpexp:['The code has expired or too many wrong tries. Please request a new one.','কোডের মেয়াদ শেষ বা অনেকবার ভুল হয়েছে। নতুন কোড নিন।'],e_send:['Could not send the code. Check your internet and try again.','কোড পাঠানো যায়নি। ইন্টারনেট দেখে আবার চেষ্টা করুন।'],e_wait:['Please wait a few seconds before asking for a new code.','নতুন কোড নেওয়ার আগে কয়েক সেকেন্ড অপেক্ষা করুন।'],
 pwReset:['Password changed. Please log in.','পাসওয়ার্ড বদলানো হয়েছে। এখন লগ ইন করুন।'],e_mis:['Passwords do not match.','পাসওয়ার্ড দুটি মেলেনি।'],pwDone:['Password changed ✔','পাসওয়ার্ড বদলানো হয়েছে ✔'],
-tblNote:['Tap a box to edit it: Marma, pronunciation, Bangla, English and audio. Leave any field empty.','বক্সে ট্যাপ করে সম্পাদনা করুন: মর্ম, উচ্চারণ, বাংলা, ইংরেজি ও অডিও। যেকোনো ফিল্ড খালি রাখা যাবে।']};
+upd:['Updates','আপডেট'],newVer:['New version available','নতুন ভার্সন এসেছে'],download:['Download','ডাউনলোড'],current:['Installed','চলমান'],curVer:['Installed version','আপনার ভার্সন'],noUpd:['No updates yet.','এখনো কোনো আপডেট নেই।'],verPh:['Version (e.g. 4.2)','ভার্সন (যেমন 4.2)'],linkPh:['APK download link (https://...)','APK ডাউনলোড লিংক (https://...)'],notePh:['What is new (optional)','নতুন কী আছে (ঐচ্ছিক)'],addVer:['Publish update','আপডেট প্রকাশ করুন'],verBad:['Version must look like 4.2','ভার্সন এভাবে লিখুন: 4.2'],linkBad:['Enter a valid https link','সঠিক https লিংক দিন'],updNote:['Only the main admin can publish updates. Users see a notice and the download link.','শুধু মূল অ্যাডমিন আপডেট প্রকাশ করতে পারবে। ইউজাররা নোটিশ ও ডাউনলোড লিংক দেখবে।'],tblNote:['Tap a box to edit it: Marma, pronunciation, Bangla, English and audio. Leave any field empty.','বক্সে ট্যাপ করে সম্পাদনা করুন: মর্ম, উচ্চারণ, বাংলা, ইংরেজি ও অডিও। যেকোনো ফিল্ড খালি রাখা যাবে।']};
 const t=k=>(TX[k]||[k,k])[CFG.lang==='bn'?1:0];
 // ---- Audio (IndexedDB) ----
 const idb=new Promise(r=>{try{const q=indexedDB.open('ml_audio',1);q.onupgradeneeded=()=>q.result.createObjectStore('a');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}});
@@ -189,9 +189,14 @@ lit:{cats:[{id:'c1',en:'Story',bn:'গল্প'},{id:'c2',en:'Poem',bn:'কব�
 const E=()=>({m:'',p:'',b:'',e:'',k:null});
 function HK(h){h=(h||'').toLowerCase();return /pron|উচ্চারণ/.test(h)?'p':/বাংলা|bangla|bengali/.test(h)?'b':/english|ইংরেজি/.test(h)?'e':'m'}
 function normT(x){if(!x||!Array.isArray(x.rows))return x;x.cols=x.cols||[];x.rows.forEach(r=>{r.c=(r.c||[]).map((y,ci)=>{if(y&&('t' in y)){const n=E();n[HK(x.cols[ci])]=y.t||'';n.k=y.k||null;return n}return y||E()})});return x}
+const APP_VER='4.1';
+const safeLink=l=>/^https?:\/\//i.test(l||'');
+const vcmp=(a,b)=>{const x=String(a).split('.').map(n=>parseInt(n)||0),y=String(b).split('.').map(n=>parseInt(n)||0);for(let i=0;i<Math.max(x.length,y.length);i++){const d=(x[i]||0)-(y[i]||0);if(d)return d}return 0};
 let DB=store.get('ml_db',null)||clone(SEED);
 if(!DB.tables){DB.tables=clone(SEED.tables);if(DB.phrases&&DB.phrases.length)DB.tables.unshift({id:uid(),cap:'Sangbusa',cols:['Marma','উচ্চারণ','বাংলা','English'],rows:DB.phrases.map(p=>({id:uid(),c:[{t:p.marma},{t:p.pron},{t:p.bn},{t:p.en}]}))});delete DB.phrases}DB.tables.forEach(normT);
-if(!DB.lit)DB.lit=clone(SEED.lit);if(!DB.ratings)DB.ratings=[];if(!DB.dict)DB.dict=[];
+if(!DB.lit)DB.lit=clone(SEED.lit);if(!DB.ratings)DB.ratings=[];if(!DB.dict)DB.dict=[];if(!DB.updates)DB.updates=[];
+const updSorted=()=>[...(DB.updates||[])].sort((a,b)=>vcmp(b.ver,a.ver));
+const hasNew=()=>{const u=updSorted()[0];return !!u&&vcmp(u.ver,APP_VER)>0};
 const save=()=>{store.set('ml_db',DB);if(cloudHook)cloudHook()};
 let USERS=store.get('ml_users',[]),ME=store.get('ml_sess',null),CFG=store.get('ml_cfg',{theme:'auto',size:16,lang:'en'});
 if(!CFG.lang)CFG.lang='en';
@@ -264,20 +269,22 @@ function body(){
  else if(S.tab==='sent')h=`<h2>${t('sent')}</h2>`+list('sentences');
  else if(S.tab==='lit')h=litPage();
  else h=menu();
+ if(hasNew()&&!S.updHide){const u=updSorted()[0];h=`<div class="card" style="border-color:var(--ac)"><div class="top"><div><b>🔔 ${t('newVer')}: ${esc(u.ver)}</b>${u.note?`<div class="en">${esc(u.note)}</div>`:''}</div><button class="x" data-act="updhide" aria-label="close">✕</button></div>${safeLink(u.link)?`<a class="btn sm" href="${esc(u.link)}" target="_blank" rel="noopener">⬇ ${t('download')}</a>`:''}</div>`+h}
  B.innerHTML=h}
 function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button>`;
  if(S.sub==='profile')return `${back}<h2>${t('profile')}</h2><div class="card" style="text-align:center">${av(96)}<div style="margin-top:8px"><b>${esc(u.name)}</b></div><div class="en">${t('role_'+u.role)}</div><div style="margin-top:6px">${u.email?`<div>✉️ ${esc(u.email)}</div>`:''}${u.phone?`<div>📞 ${esc(u.phone)}</div>`:''}</div></div><button class="btn" data-act="sub" data-s="editprofile">✏️ ${t('editProfile')}</button>`;
  if(S.sub==='editprofile')return `<button class="back" data-act="sub" data-s="profile">← ${t('profile')}</button><h2>${t('editProfile')}</h2><div class="card" style="text-align:center">${av(96)}<div><button class="btn sm" data-act="picpick">${t('changePic')}</button>${u.pic?`<button class="btn sm ghost" data-act="picrm">${t('rmPic')}</button>`:''}</div></div><div class="card"><b>${t('details')}</b><input class="in" id="p_name" autocomplete="name" placeholder="${t('name')}" value="${esc(u.name)}"><input class="in" id="p_email" type="email" autocomplete="email" placeholder="${t('emailOpt')}" value="${esc(u.email||'')}"><input class="in" id="p_phone" type="tel" autocomplete="tel" placeholder="${t('phoneOpt')}" value="${esc(u.phone||'')}"><button class="btn" data-act="saveprofile">${t('saveChanges')}</button><div class="en" style="margin-top:4px;font-size:.85rem">${t('loginNote')}</div></div>${AUTH&&AUTH.provider&&AUTH.provider!=='email'?'':`<div class="card"><b>${t('changePw')}</b><input class="in" id="pw_cur" type="password" autocomplete="current-password" placeholder="${t('curPw')}"><input class="in" id="pw_new" type="password" autocomplete="new-password" placeholder="${t('newPw')}"><input class="in" id="pw_con" type="password" autocomplete="new-password" placeholder="${t('conPw')}"><button class="btn" data-act="savepw">${t('changePw')}</button></div>`}`;
  if(S.sub==='privacy')return `${back}<h2>${t('privacy')}</h2>${privHtml()}`;
  if(S.sub==='fav'){const items=favs().map(k=>{const[c,id]=k.split(':');const it=(DB[c]||[]).find(x=>x.id===id);return it?card(c,it,false):''}).join('');return `${back}<h2>${t('fav')}</h2>${items||`<p class="note">${t('favEmpty')}</p>`}`}
- if(S.sub==='about')return `${back}<h2>${t('about')}</h2><div class="card">${logo(64)}<p><b>Marma Language</b></p><p>${t('aboutTxt')}</p><p class="en">Version 4.0</p></div>`;
+ if(S.sub==='about')return `${back}<h2>${t('about')}</h2><div class="card">${logo(64)}<p><b>Marma Language</b></p><p>${t('aboutTxt')}</p><p class="en">Version ${APP_VER}</p></div>`;
+ if(S.sub==='updates'){const ul=updSorted();return `${back}<h2>${t('upd')}</h2><div class="en">${t('curVer')}: ${APP_VER}</div>`+(ul.map(u=>`<div class="card"><b>${esc(u.ver)}</b> ${u.ver===APP_VER?`<span class="badge">${t('current')}</span>`:''}${u.note?`<div class="en">${esc(u.note)}</div>`:''}${safeLink(u.link)?`<a class="btn sm" href="${esc(u.link)}" target="_blank" rel="noopener">⬇ ${t('download')}</a>`:''}</div>`).join('')||`<p class="note">${t('noUpd')}</p>`)}
  if(S.sub==='language')return `${back}<h2>${t('language')}</h2><p class="en">${t('chooseLang')}</p><div class="seg"><button class="${CFG.lang==='en'?'on':''}" data-act="lang" data-l="en">English</button><button class="${CFG.lang==='bn'?'on':''}" data-act="lang" data-l="bn">বাংলা</button></div>`;
  if(S.sub==='settings')return `${back}<h2>${t('settings')}</h2><h3>${t('theme')}</h3><div class="seg">${['auto','light','dark'].map(x=>`<button class="${CFG.theme===x?'on':''}" data-act="theme" data-t="${x}">${x}</button>`).join('')}</div><h3>${t('fsize')}</h3><div class="seg">${[[14,'small'],[16,'medium'],[19,'large']].map(s=>`<button class="${CFG.size===s[0]?'on':''}" data-act="size" data-n="${s[0]}">${t(s[1])}</button>`).join('')}</div>`;
  if(S.sub==='rate'){const rs=DB.ratings,avg=rs.length?(rs.reduce((a,r)=>a+r.s,0)/rs.length).toFixed(1):'–',mine=rs.find(r=>r.by===ME),n=S.rs||(mine?mine.s:0);
   return `${back}<h2>${t('rating')}</h2><div class="card" style="text-align:center"><div style="font-size:2.2rem;color:var(--ac)">★ ${avg}</div><div class="en">${t('avg')} · ${rs.length} ${t('votes')}</div></div><h3>${t('rateTitle')}</h3><div class="stars">${[1,2,3,4,5].map(i=>`<button data-act="star" data-n="${i}" aria-label="${i}">${i<=n?'★':'☆'}</button>`).join('')}</div><textarea class="in" id="r_txt" placeholder="${t('feedback')}">${esc(S.rtxt||mine?.x||'')}</textarea><button class="btn" data-act="rate">${t('submit')}</button>${isAdmin()?`<h3>${t('allRatings')}</h3>`+rs.map(r=>`<div class="card"><b>${esc(r.an)}</b> <span style="color:var(--ac)">${'★'.repeat(r.s)}</span><div class="en">${esc(r.x)}</div></div>`).join(''):''}`}
  if(S.sub==='admin'&&isAdmin())return admin();
  const R=(a,s,i,l)=>`<button class="row" data-act="${a}" data-s="${s}"><span>${i} ${l}</span><span>›</span></button>`;
- return `<div class="menu"><h2 aria-label="${t('menu')}">${burger(26)}</h2><div class="en" id="syncst" style="margin:0 2px 6px">${syncText()}</div>${R('sub','profile','👤',t('profile'))}${R('sub','fav','★',t('fav'))}${R('sub','language','🌐',t('language')+' ('+(CFG.lang==='bn'?'বাংলা':'English')+')')}${R('sub','rate','⭐',t('rating'))}${R('share','','📤',t('share'))}${R('sub','privacy','🔒',t('privacy'))}${R('sub','about','ℹ️',t('about'))}${R('sub','settings','⚙️',t('settings'))}${isAdmin()?R('sub','admin','🛠',t('admin')):''}${R('syncnow','','🔄',t('syncNow'))}${R('logout','','⏻',t('logout'))}</div>`}
+ return `<div class="menu"><h2 aria-label="${t('menu')}">${burger(26)}</h2><div class="en" id="syncst" style="margin:0 2px 6px">${syncText()}</div>${R('sub','profile','👤',t('profile'))}${R('sub','fav','★',t('fav'))}${R('sub','language','🌐',t('language')+' ('+(CFG.lang==='bn'?'বাংলা':'English')+')')}${R('sub','rate','⭐',t('rating'))}${R('share','','📤',t('share'))}${R('sub','privacy','🔒',t('privacy'))}${R('sub','updates','⬇️',t('upd')+(hasNew()?' 🔴':''))}${R('sub','about','ℹ️',t('about'))}${R('sub','settings','⚙️',t('settings'))}${isAdmin()?R('sub','admin','🛠',t('admin')):''}${R('syncnow','','🔄',t('syncNow'))}${R('logout','','⏻',t('logout'))}</div>`}
 function dataTools(){return `<div class="note">${t('dataNote')}</div><textarea class="in" id="io" placeholder="${t('ioPh')}"></textarea><button class="btn sm" data-act="export">${t('exp')}</button><button class="btn sm" data-act="import">${t('imp')}</button><button class="btn sm dng" data-act="clear">${t('clearAll')}</button><button class="btn sm ghost" data-act="reset">${t('resetSeed')}</button>`}
 function tblEditor(x){
   const sc=S.cell&&x.rows[S.cell.r]&&x.rows[S.cell.r].c[S.cell.c],fv=k=>esc(sc?sc[k]||'':'');
@@ -285,9 +292,10 @@ function tblEditor(x){
   return `<button class="back" data-act="backtbl">${t('allTbl')}</button><input class="in" id="t_cap" placeholder="${t('caption')}" value="${esc(x.cap)}"><div class="note">${t('tblNote')}</div>${form}<div class="card tw"><table><thead><tr>${x.cols.map((c,i)=>`<th style="text-align:center;padding:2px;background:none;border:0"><button class="x" data-act="delcol" data-i="${i}" aria-label="delete column">✕</button></th>`).join('')}<th></th></tr></thead><tbody>${x.rows.map((r,ri)=>`<tr>${r.c.map((y,ci)=>`<td class="bx ed${S.cell&&S.cell.r===ri&&S.cell.c===ci?' sel':''}" data-act="cellopen" data-r="${ri}" data-c="${ci}">${cellH(y)||'<span class="en">＋</span>'}</td>`).join('')}<td><button class="x" data-act="delrow" data-r="${ri}" aria-label="delete row">✕</button></td></tr>`).join('')}</tbody></table></div><button class="btn sm" data-act="addcol">${t('addCol')}</button><button class="btn sm" data-act="addrow">${t('addRow')}</button><button class="btn sm" data-act="savetbl">💾 ${t('saved').replace(' ✔','')}</button>`}
 
 function admin(){const c=S.col,M=isMain();
- const tabs=[['dict','dict'],['words','aw'],['sentences','as'],['tables','at'],['cats','ac'],...(M?[['admins','aa'],['data','ad']]:[])];
+ const tabs=[['dict','dict'],['words','aw'],['sentences','as'],['tables','at'],['cats','ac'],...(M?[['admins','aa'],['updates','upd'],['data','ad']]:[])];
  const nav=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button><h2>${t('admin')}</h2><div class="seg">${tabs.map(x=>`<button class="${c===x[0]?'on':''}" data-act="col" data-c="${x[0]}">${t(x[1])}</button>`).join('')}</div>`;
  if(c==='data'&&M)return nav+dataTools();
+ if(c==='updates'&&M)return nav+`<div class="note">${t('updNote')}</div><div class="card"><input class="in" id="u_ver" placeholder="${t('verPh')}"><input class="in" id="u_link" placeholder="${t('linkPh')}"><input class="in" id="u_note" placeholder="${t('notePh')}"><button class="btn" data-act="addupd">${t('addVer')}</button></div>`+updSorted().map(u=>`<div class="card top"><div><b>${esc(u.ver)}</b><div class="en">${esc(u.note||'')}</div><div class="en">${esc(u.link||'')}</div></div><button class="btn sm dng" data-act="delupd" data-id="${u.id}">${t('del')}</button></div>`).join('');
  if(c==='admins'&&M)return nav+`<div class="note">${t('adminNote')}</div>`+USERS.map(u=>`<div class="card"><b>${esc(u.name)}</b> <span class="badge">${t('role_'+u.role)}</span><div class="en">${esc(contact(u))}</div>${u.role==='main'?'':`<button class="btn sm ${u.role==='sub'?'dng':''}" data-act="setrole" data-e="${esc(u.id)}" data-r="${u.role==='sub'?'user':'sub'}">${t(u.role==='sub'?'rmSub':'makeSub')}</button>`}</div>`).join('');
  if(c==='cats')return nav+`<div class="card"><input class="in" id="k_en" placeholder="${t('catEn')}"><input class="in" id="k_bn" placeholder="${t('catBn')}"><button class="btn" data-act="addcat">${t('addBtn')}</button></div>`+DB.lit.cats.map(k=>`<div class="card top"><div><b>${esc(k.en||'')}</b> · ${esc(k.bn||'')}</div>${M?`<button class="btn sm dng" data-act="delcat" data-id="${k.id}">${t('del')}</button>`:''}</div>`).join('');
  if(c==='tables'){const x=S.tid&&curT();
@@ -327,18 +335,20 @@ async function rest(path,o={}){const tk=await getTok();return sb('/rest/v1'+path
 function flat(){const m={},add=(col,id,data)=>{m[col+'|'+id]={col,id:String(id),data}};
  ['dict','words','sentences'].forEach(c=>(DB[c]||[]).forEach(x=>add(c,x.id,x)));
  (DB.tables||[]).forEach(x=>add('tables',x.id,x));
+ (DB.updates||[]).forEach(x=>add('updates',x.id,x));
  DB.lit.cats.forEach(x=>add('cats',x.id,x));
  DB.lit.posts.forEach(p=>{const {cm,rx,...rest}=p;add('posts',p.id,rest);
   (cm||[]).forEach(c=>add('comments',c.id,{...c,post:p.id}));
   Object.entries(rx||{}).forEach(([e,L])=>(L||[]).forEach(u=>add('reactions',p.id+'|'+e+'|'+u,{post:p.id,e,by:u})))});
  (DB.ratings||[]).forEach(r=>add('ratings',r.by,r));
  return m}
-const PRI={cats:0,dict:1,words:1,sentences:1,tables:2,posts:3,comments:4,reactions:5,ratings:6};
+const PRI={cats:0,dict:1,words:1,sentences:1,tables:2,updates:1,posts:3,comments:4,reactions:5,ratings:6};
 function applyRemote(it){
  const {col,id,deleted}=it,d=it.data||{},same=(a,b)=>String(a)===String(b);
  const put=(arr,front)=>{const i=arr.findIndex(y=>same(y.id,id));if(deleted){if(i>=0)arr.splice(i,1);return}if(i>=0)arr[i]=d;else front?arr.unshift(d):arr.push(d)};
  if(col==='dict'||col==='words'||col==='sentences'){DB[col]=DB[col]||[];put(DB[col],true)}
  else if(col==='tables'){if(!deleted)normT(d);put(DB.tables,false)}
+  else if(col==='updates'){DB.updates=DB.updates||[];put(DB.updates,true)}
  else if(col==='cats')put(DB.lit.cats,false);
  else if(col==='ratings'){const i=DB.ratings.findIndex(r=>same(r.by,id));if(deleted){if(i>=0)DB.ratings.splice(i,1)}else if(i>=0)DB.ratings[i]=d;else DB.ratings.push(d)}
  else if(col==='posts'){const P=DB.lit.posts,i=P.findIndex(p=>same(p.id,id));if(deleted){if(i>=0)P.splice(i,1)}else{const old=i>=0?P[i]:{},x={...d,cm:old.cm||[],rx:old.rx||{}};if(i>=0)P[i]=x;else P.push(x)}}
@@ -583,11 +593,14 @@ document.addEventListener('click',async e=>{
  else if(a==='addcm'){const x=val('cm_'+d.id);if(!x)return;const p=DB.lit.posts.find(q=>q.id===d.id);(p.cm=p.cm||[]).push({id:uid(),by:ME,an:user().name,text:x,ts:Date.now()});save();body()}
  else if(a==='delcm'){const p=DB.lit.posts.find(q=>q.id===d.id),m=p.cm.find(x=>x.id===d.c);if(m&&(m.by===ME||isAdmin())){p.cm=p.cm.filter(x=>x!==m);save();body()}}
  // Admin
- else if(a==='col'){if((d.c==='admins'||d.c==='data')&&!isMain())return;syncT();save();S.col=d.c;S.edit=null;S.tid=null;S.cell=null;body()}
+ else if(a==='col'){if((d.c==='admins'||d.c==='data'||d.c==='updates')&&!isMain())return;syncT();save();S.col=d.c;S.edit=null;S.tid=null;S.cell=null;body()}
  else if(a==='setrole'){if(!isMain())return;const u=USERS.find(x=>x.id===d.e);if(!u||u.role==='main')return;
   try{const r=await rest('/profiles?id=eq.'+encodeURIComponent(u.id),{method:'PATCH',body:{role:d.r},headers:{Prefer:'return=representation'}});if(!r||!r.length)throw 0;u.role=d.r;store.set('ml_users',USERS);body()}catch(e){alert(t(e&&e.net?'e_net':'e_srv'))}}
  else if(a==='addcat'){const en=val('k_en'),bn=val('k_bn');if(!en&&!bn)return;DB.lit.cats.push({id:uid(),en,bn});save();body()}
  else if(a==='delcat'){if(isMain()&&confirm(t('sure'))){DB.lit.cats=DB.lit.cats.filter(x=>x.id!==d.id);save();body()}}
+ else if(a==='addupd'){if(!isMain())return;const ver=val('u_ver'),link=val('u_link'),note=val('u_note');if(!/^\d+(\.\d+)*$/.test(ver)){alert(t('verBad'));return}if(!safeLink(link)){alert(t('linkBad'));return}DB.updates=(DB.updates||[]).filter(x=>x.ver!==ver);DB.updates.push({id:uid(),ver,link,note,ts:Date.now()});save();body()}
+ else if(a==='delupd'){if(isMain()&&confirm(t('sure'))){DB.updates=(DB.updates||[]).filter(x=>x.id!==d.id);save();body()}}
+ else if(a==='updhide'){S.updHide=true;body()}
  else if(a==='edititem'){S.edit=d.id;body();scrollTo(0,0)}
  else if(a==='canceledit'){S.edit=null;body()}
  else if(a==='rmau'){const x=DB[S.col].find(x=>x.id===S.edit);if(x){adel(x.k);x.k=null;save();body()}}
@@ -613,9 +626,9 @@ document.addEventListener('click',async e=>{
  else if(a==='cellsave'){syncT();S.cell=null;save();body()}
  else if(a==='cellclose'){S.cell=null;body()}
  else if(a==='export'&&isMain()){$('#io').value=JSON.stringify(DB,null,1)}
- else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];DB=o;DB.tables.forEach(normT);save();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
- else if(a==='clear'&&isMain()){if(confirm(t('sureAll'))){DB={dict:[],words:[],sentences:[],tables:[],lit:{cats:DB.lit.cats,posts:[]},ratings:[]};save();S.tid=null;body()}}
- else if(a==='reset'&&isMain()){if(confirm(t('sureReset'))){DB=clone(SEED);save();S.tid=null;body()}}
+ else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];{const up=DB.updates||[];DB=o;DB.updates=up}DB.tables.forEach(normT);save();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
+ else if(a==='clear'&&isMain()){if(confirm(t('sureAll'))){DB={dict:[],words:[],sentences:[],tables:[],lit:{cats:DB.lit.cats,posts:[]},ratings:[],updates:DB.updates||[]};save();S.tid=null;body()}}
+ else if(a==='reset'&&isMain()){if(confirm(t('sureReset'))){{const up=DB.updates||[];DB=clone(SEED);DB.updates=up}save();S.tid=null;body()}}
 });
 render();
 if(/[#&](access_token|error_description)=/.test(location.hash))handleAuthRedirect(location.href);
