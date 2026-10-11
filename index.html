@@ -134,7 +134,7 @@ audioHas:['Audio ✔ (new file replaces it)','অডিও আছে ✔ (নত
 needOne:['Enter Marma text or pronunciation.','Marma বা উচ্চারণ অন্তত একটা দিন।'],audioFail:['Could not save audio','অডিও সেভ হয়নি'],
 newTbl:['+ New table','+ নতুন টেবিল'],caption:['Table caption','টেবিলের ক্যাপশন'],colPh:['Column','কলাম'],allTbl:['← All tables (saved)','← সব টেবিল (সেভ হবে)'],addCol:['+ Column','+ কলাম'],addRow:['+ Row','+ সারি'],saved:['Saved ✔','সেভ হয়েছে ✔'],oneCol:['At least one column is required','কমপক্ষে ১টি কলাম থাকতে হবে'],
 catEn:['Category name (English)','বিভাগের নাম (English)'],catBn:['Category name (Bangla)','বিভাগের নাম (বাংলা)'],
-makeSub:['Make sub-admin','সাব অ্যাডমিন করুন'],rmSub:['Remove sub-admin','সাব অ্যাডমিন সরান'],adminNote:['Only the main admin can manage admins, delete categories and use Data tools. Sub-admins can add/edit content and moderate Literature.','শুধু মূল অ্যাডমিন অ্যাডমিন ম্যানেজ, বিভাগ মুছা ও ডাটা টুল ব্যবহার করতে পারবেন। সাব অ্যাডমিন কনটেন্ট যোগ/এডিট ও সাহিত্য মডারেশন করতে পারবেন।'],
+makeSub:['Make sub-admin','সাব অ্যাডমিন করুন'],rmSub:['Remove sub-admin','সাব অ্যাডমিন সরান'],adminNote:['Only the main admin can manage admins, publish updates and delete categories. Admins add/edit words, sentences, sangbusa tables and categories directly in their own tabs.','শুধু মূল অ্যাডমিন অ্যাডমিন ম্যানেজ, আপডেট প্রকাশ ও বিভাগ মুছতে পারবেন। অ্যাডমিনরা শব্দ, বাক্য, সংবুসা টেবিল ও বিভাগ নিজ নিজ ট্যাবেই যোগ/এডিট করতে পারবেন।'],
 dataNote:['Data is saved in this browser. Export/Import covers text only (no audio, photos or accounts).','ডাটা এই ব্রাউজারে সেভ হয়। Export/Import শুধু লেখা নেয় (অডিও, ছবি, অ্যাকাউন্ট নয়)।'],
 exp:['Export','Export'],imp:['Import','Import'],clearAll:['Delete all data','সব ডাটা মুছুন'],resetSeed:['Restore sample data','নমুনা ডাটা ফেরত'],ioPh:['Exported JSON appears here; paste JSON to import','Export করলে JSON আসবে; Import করতে JSON পেস্ট করুন'],
 okImp:['Import successful!','Import সফল!'],badJson:['Invalid JSON.','JSON ঠিক নেই।'],sureAll:['All data will be deleted. Sure?','সব ডাটা মুছে যাবে। নিশ্চিত?'],sureReset:['Sample data will replace current data.','নমুনা ডাটা বর্তমান ডাটার জায়গায় আসবে।'],
@@ -205,7 +205,7 @@ USERS.forEach(u=>{if(!u.role)u.role=u.admin?'main':'user';if(!u.id)u.id=u.email}
 const user=()=>USERS.find(u=>u.id===ME);
 const isAdmin=()=>{const u=user();return !!u&&u.role!=='user'},isMain=()=>user()?.role==='main';
 const canEdit=p=>isAdmin()||p.by===ME;
-const S={view:user()?'app':'welcome',tab:'dict',q:'',dir:'m2b',sub:'',col:'dict',edit:null,tid:null,cell:null,tgt:null,err:'',lcat:'all',pf:null,open:null,rs:0,rtxt:'',f:null};
+const S={view:user()?'app':'welcome',tab:'dict',q:'',dir:'m2b',sub:'',col:'dict',ac:'admins',edit:null,tid:null,cell:null,inl:false,tgt:null,err:'',lcat:'all',pf:null,open:null,rs:0,rtxt:'',f:null};
 const TABS=['dict','word','sang','sent','lit'];
 const favKey=()=>'ml_fav_'+ME,favs=()=>store.get(favKey(),[]);
 const curT=()=>DB.tables.find(x=>x.id===S.tid);
@@ -214,10 +214,10 @@ function applyCfg(){const r=document.documentElement;CFG.theme==='auto'?r.remove
 const logo=n=>`<svg width="${n}" height="${n}" viewBox="0 0 200 200" style="flex:0 0 auto"><rect width="200" height="200" rx="46" fill="#0F5C5A"/><circle cx="100" cy="92" r="58" fill="#F6EEDC"/><path d="M62 130 L44 170 L94 148 Z" fill="#F6EEDC"/><circle cx="150" cy="46" r="13" fill="#F2B53B"/><text x="100" y="124" text-anchor="middle" font-family="Noto Sans Myanmar,Padauk,sans-serif" font-weight="600" font-size="84" fill="#B3261E">က</text></svg>`;
 const av=(n,u=user())=>u.pic?`<img class="av" src="${u.pic}" style="width:${n}px;height:${n}px" data-act="myprof" alt="">`:`<div class="av" style="width:${n}px;height:${n}px" data-act="myprof">${esc((u.name||'?')[0])}</div>`;
 function card(col,it,rev){
- const k=col+':'+it.id,f=favs().includes(k);
+ const k=col+':'+it.id,f=favs().includes(k),adm=isAdmin()&&['dict','words','sentences'].includes(col)?`<div><button class="btn sm" data-act="iedit" data-c="${col}" data-id="${it.id}">${t('edit')}</button><button class="btn sm dng" data-act="delitem" data-c="${col}" data-id="${it.id}">${t('del')}</button></div>`:'';
  const head=rev?`<div class="mm">${esc(it.bn)}</div><div class="en">${esc(it.en)}</div>`:`<div class="mm">${esc(it.marma)}</div><div class="pr">${esc(it.pron)}</div>`;
  const body=rev?`<div class="bn" style="color:var(--pr);font-weight:600">${esc(it.marma)}</div><div class="pr">${esc(it.pron)}</div>`:`<div class="bn">${esc(it.bn)}</div>${it.en?`<div class="en">${esc(it.en)}</div>`:''}`;
- return `<div class="card"><div class="top"><div>${head}</div><div class="acts">${au(it.k)}<button class="star" data-act="fav" data-k="${esc(k)}" aria-label="favourite">${f?'★':'☆'}</button></div></div>${body}</div>`}
+ return `<div class="card"><div class="top"><div>${head}</div><div class="acts">${au(it.k)}<button class="star" data-act="fav" data-k="${esc(k)}" aria-label="favourite">${f?'★':'☆'}</button></div></div>${body}${adm}</div>`}
 const cellH=c=>[c.m&&`<div class="mm">${esc(c.m)}</div>`,c.p&&`<div class="pr">${esc(c.p)}</div>`,c.b&&`<div class="bn">${esc(c.b)}</div>`,c.e&&`<div class="en">${esc(c.e)}</div>`].filter(Boolean).join('')+au(c.k);
 const ctext=c=>[c.m,c.p,c.b,c.e,c.t].join(' ').toLowerCase();
 const tbl=(x,rows)=>`<div class="card tw"><table>${x.cap?`<caption>${esc(x.cap)}</caption>`:''}<tbody>${rows.map(r=>`<tr>${r.c.map(c=>`<td class="bx">${cellH(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
@@ -235,7 +235,7 @@ function litPage(){
  if(S.pf){const e=S.pf!=='new'?DB.lit.posts.find(x=>x.id===S.pf):null,v=k=>esc(e?e[k]:'');
   return `<button class="back" data-act="cancelpost">← ${t('back')}</button><h2>${e?t('editPost'):t('newPost')}</h2><div class="card"><select class="in" id="l_cat">${DB.lit.cats.map(c=>`<option value="${c.id}" ${e&&e.cat===c.id?'selected':''}>${esc(catName(c))}</option>`).join('')}</select><select class="in" id="l_lang">${['marma','bn','en'].map(l=>`<option value="${l}" ${e&&e.lang===l?'selected':''}>${t('plang')}: ${t('L_'+l)}</option>`).join('')}</select><input class="in" id="l_title" placeholder="${t('ptitle')}" value="${v('title')}"><textarea class="in" id="l_body" rows="10" placeholder="${t('pbody')}">${v('body')}</textarea><button class="btn" data-act="savepost">${e?t('update'):t('publish')}</button><button class="btn ghost" data-act="cancelpost">${t('cancel')}</button></div>`}
  const ps=DB.lit.posts.filter(p=>S.lcat==='all'||p.cat===S.lcat);
- return `<h2>${t('lit')}</h2><div><button class="chip ${S.lcat==='all'?'on':''}" data-act="lcat" data-c="all">${t('all')}</button>${DB.lit.cats.map(c=>`<button class="chip ${S.lcat===c.id?'on':''}" data-act="lcat" data-c="${c.id}">${esc(catName(c))}</button>`).join('')}</div><button class="btn" data-act="newpost">${t('write')}</button>${ps.map(post).join('')||`<p class="note">${t('noPosts')}</p>`}`}
+ return `<h2>${t('lit')}</h2><div><button class="chip ${S.lcat==='all'?'on':''}" data-act="lcat" data-c="all">${t('all')}</button>${DB.lit.cats.map(c=>`<button class="chip ${S.lcat===c.id?'on':''}" data-act="lcat" data-c="${c.id}">${esc(catName(c))}</button>`).join('')}</div>${isAdmin()?`<details><summary>⚙ ${t('ac')}</summary><div class="card"><input class="in" id="k_en" placeholder="${t('catEn')}"><input class="in" id="k_bn" placeholder="${t('catBn')}"><button class="btn" data-act="addcat">${t('addBtn')}</button>${DB.lit.cats.map(k=>`<div class="top" style="margin-top:8px"><div><b>${esc(k.en||'')}</b> · ${esc(k.bn||'')}</div>${isMain()?`<button class="btn sm dng" data-act="delcat" data-id="${k.id}">${t('del')}</button>`:''}</div>`).join('')}</div></details>`:''}<button class="btn" data-act="newpost">${t('write')}</button>${ps.map(post).join('')||`<p class="note">${t('noPosts')}</p>`}`}
 function render(){
  applyCfg();const A=$('#app');if(S.view==='welcome')S.view='signin';A.className=['signin','signup','forgot'].includes(S.view)?'auth-pg':'';
  if(S.view==='welcome'){A.innerHTML=`<div class="snav">${logo(36)}<b>Marma Language</b></div>
@@ -269,6 +269,8 @@ function body(){
  else if(S.tab==='sent')h=`<h2>${t('sent')}</h2>`+list('sentences');
  else if(S.tab==='lit')h=litPage();
  else h=menu();
+const IC={dict:'dict',word:'words',sent:'sentences'}[S.tab];
+ if(!q&&IC&&isAdmin()){const m=S.tab==='dict'?['dict','words']:[IC];h=(S.inl&&S.edit&&m.includes(S.col)?itemForm(S.col):`<button class="btn" data-act="iadd" data-c="${IC}">＋ ${t('addNew')}</button>`)+h}
  if(hasNew()&&!S.updHide){const u=updSorted()[0];h=`<div class="card" style="border-color:var(--ac)"><div class="top"><div><b>🔔 ${t('newVer')}: ${esc(u.ver)}</b>${u.note?`<div class="en">${esc(u.note)}</div>`:''}</div><button class="x" data-act="updhide" aria-label="close">✕</button></div>${safeLink(u.link)?`<a class="btn sm" href="${esc(u.link)}" target="_blank" rel="noopener">⬇ ${t('download')}</a>`:''}</div>`+h}
  B.innerHTML=h}
 function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button>`;
@@ -282,27 +284,22 @@ function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s=
  if(S.sub==='settings')return `${back}<h2>${t('settings')}</h2><h3>${t('theme')}</h3><div class="seg">${['auto','light','dark'].map(x=>`<button class="${CFG.theme===x?'on':''}" data-act="theme" data-t="${x}">${x}</button>`).join('')}</div><h3>${t('fsize')}</h3><div class="seg">${[[14,'small'],[16,'medium'],[19,'large']].map(s=>`<button class="${CFG.size===s[0]?'on':''}" data-act="size" data-n="${s[0]}">${t(s[1])}</button>`).join('')}</div>`;
  if(S.sub==='rate'){const rs=DB.ratings,avg=rs.length?(rs.reduce((a,r)=>a+r.s,0)/rs.length).toFixed(1):'–',mine=rs.find(r=>r.by===ME),n=S.rs||(mine?mine.s:0);
   return `${back}<h2>${t('rating')}</h2><div class="card" style="text-align:center"><div style="font-size:2.2rem;color:var(--ac)">★ ${avg}</div><div class="en">${t('avg')} · ${rs.length} ${t('votes')}</div></div><h3>${t('rateTitle')}</h3><div class="stars">${[1,2,3,4,5].map(i=>`<button data-act="star" data-n="${i}" aria-label="${i}">${i<=n?'★':'☆'}</button>`).join('')}</div><textarea class="in" id="r_txt" placeholder="${t('feedback')}">${esc(S.rtxt||mine?.x||'')}</textarea><button class="btn" data-act="rate">${t('submit')}</button>${isAdmin()?`<h3>${t('allRatings')}</h3>`+rs.map(r=>`<div class="card"><b>${esc(r.an)}</b> <span style="color:var(--ac)">${'★'.repeat(r.s)}</span><div class="en">${esc(r.x)}</div></div>`).join(''):''}`}
- if(S.sub==='admin'&&isAdmin())return admin();
+ if(S.sub==='admin'&&isMain())return admin();
  const R=(a,s,i,l)=>`<button class="row" data-act="${a}" data-s="${s}"><span>${i} ${l}</span><span>›</span></button>`;
- return `<div class="menu"><h2 aria-label="${t('menu')}">${burger(26)}</h2><div class="en" id="syncst" style="margin:0 2px 6px">${syncText()}</div>${R('sub','profile','👤',t('profile'))}${R('sub','fav','★',t('fav'))}${R('sub','language','🌐',t('language')+' ('+(CFG.lang==='bn'?'বাংলা':'English')+')')}${R('sub','rate','⭐',t('rating'))}${R('share','','📤',t('share'))}${R('sub','privacy','🔒',t('privacy'))}${R('sub','updates','⬇️',t('upd')+(hasNew()?' 🔴':''))}${R('sub','about','ℹ️',t('about'))}${R('sub','settings','⚙️',t('settings'))}${isAdmin()?R('sub','admin','🛠',t('admin')):''}${R('syncnow','','🔄',t('syncNow'))}${R('logout','','⏻',t('logout'))}</div>`}
+ return `<div class="menu"><h2 aria-label="${t('menu')}">${burger(26)}</h2><div class="en" id="syncst" style="margin:0 2px 6px">${syncText()}</div>${R('sub','profile','👤',t('profile'))}${R('sub','fav','★',t('fav'))}${R('sub','language','🌐',t('language')+' ('+(CFG.lang==='bn'?'বাংলা':'English')+')')}${R('sub','rate','⭐',t('rating'))}${R('share','','📤',t('share'))}${R('sub','privacy','🔒',t('privacy'))}${R('sub','updates','⬇️',t('upd')+(hasNew()?' 🔴':''))}${R('sub','about','ℹ️',t('about'))}${R('sub','settings','⚙️',t('settings'))}${isMain()?R('sub','admin','🛠',t('admin')):''}${R('syncnow','','🔄',t('syncNow'))}${R('logout','','⏻',t('logout'))}</div>`}
 function dataTools(){return `<div class="note">${t('dataNote')}</div><textarea class="in" id="io" placeholder="${t('ioPh')}"></textarea><button class="btn sm" data-act="export">${t('exp')}</button><button class="btn sm" data-act="import">${t('imp')}</button><button class="btn sm dng" data-act="clear">${t('clearAll')}</button><button class="btn sm ghost" data-act="reset">${t('resetSeed')}</button>`}
 function tblEditor(x){
   const sc=S.cell&&x.rows[S.cell.r]&&x.rows[S.cell.r].c[S.cell.c],fv=k=>esc(sc?sc[k]||'':'');
   const form=sc?`<div class="card"><b>${t('edit')}</b> <span class="en">(${S.cell.r+1}, ${S.cell.c+1})</span><input class="in" id="cf_m" placeholder="${t('marmaPh')}" value="${fv('m')}"><input class="in" id="cf_p" placeholder="${t('pronPh')}" value="${fv('p')}"><input class="in" id="cf_b" placeholder="${t('bnPh')}" value="${fv('b')}"><input class="in" id="cf_e" placeholder="${t('enPh')}" value="${fv('e')}"><div class="en">🎙 ${sc.k?t('audioHas'):t('audioLbl')}</div><button class="play" data-act="cellau" data-r="${S.cell.r}" data-c="${S.cell.c}" title="audio">${sc.k?'🔊':'🎙'}</button>${sc.k?au(sc.k)+`<button class="x" data-act="cellrm" data-r="${S.cell.r}" data-c="${S.cell.c}">⊘</button>`:''}<div><button class="btn sm" data-act="cellsave">💾 ${t('saved').replace(' ✔','')}</button><button class="btn sm" data-act="cellclose">✕</button></div></div>`:'';
   return `<button class="back" data-act="backtbl">${t('allTbl')}</button><input class="in" id="t_cap" placeholder="${t('caption')}" value="${esc(x.cap)}"><div class="note">${t('tblNote')}</div>${form}<div class="card tw"><table><thead><tr>${x.cols.map((c,i)=>`<th style="text-align:center;padding:2px;background:none;border:0"><button class="x" data-act="delcol" data-i="${i}" aria-label="delete column">✕</button></th>`).join('')}<th></th></tr></thead><tbody>${x.rows.map((r,ri)=>`<tr>${r.c.map((y,ci)=>`<td class="bx ed${S.cell&&S.cell.r===ri&&S.cell.c===ci?' sel':''}" data-act="cellopen" data-r="${ri}" data-c="${ci}">${cellH(y)||'<span class="en">＋</span>'}</td>`).join('')}<td><button class="x" data-act="delrow" data-r="${ri}" aria-label="delete row">✕</button></td></tr>`).join('')}</tbody></table></div><button class="btn sm" data-act="addcol">${t('addCol')}</button><button class="btn sm" data-act="addrow">${t('addRow')}</button><button class="btn sm" data-act="savetbl">💾 ${t('saved').replace(' ✔','')}</button>`}
 
-function admin(){const c=S.col,M=isMain();
- const tabs=[['dict','dict'],['words','aw'],['sentences','as'],['tables','at'],['cats','ac'],...(M?[['admins','aa'],['updates','upd'],['data','ad']]:[])];
+function itemForm(c){const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;return `<div class="card"><b>${e?t('edit'):t('addNew')}</b>${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${c==='words'?f('cat','secPh'):''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`}
+function admin(){const c=S.ac==='updates'?'updates':'admins',M=isMain();
+ const tabs=[['admins','aa'],['updates','upd']];
  const nav=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button><h2>${t('admin')}</h2><div class="seg">${tabs.map(x=>`<button class="${c===x[0]?'on':''}" data-act="col" data-c="${x[0]}">${t(x[1])}</button>`).join('')}</div>`;
- if(c==='data'&&M)return nav+dataTools();
- if(c==='updates'&&M)return nav+`<div class="note">${t('updNote')}</div><div class="card"><input class="in" id="u_ver" placeholder="${t('verPh')}"><input class="in" id="u_link" placeholder="${t('linkPh')}"><input class="in" id="u_note" placeholder="${t('notePh')}"><button class="btn" data-act="addupd">${t('addVer')}</button></div>`+updSorted().map(u=>`<div class="card top"><div><b>${esc(u.ver)}</b><div class="en">${esc(u.note||'')}</div><div class="en">${esc(u.link||'')}</div></div><button class="btn sm dng" data-act="delupd" data-id="${u.id}">${t('del')}</button></div>`).join('');
- if(c==='admins'&&M)return nav+`<div class="note">${t('adminNote')}</div>`+USERS.map(u=>`<div class="card"><b>${esc(u.name)}</b> <span class="badge">${t('role_'+u.role)}</span><div class="en">${esc(contact(u))}</div>${u.role==='main'?'':`<button class="btn sm ${u.role==='sub'?'dng':''}" data-act="setrole" data-e="${esc(u.id)}" data-r="${u.role==='sub'?'user':'sub'}">${t(u.role==='sub'?'rmSub':'makeSub')}</button>`}</div>`).join('');
- if(c==='cats')return nav+`<div class="card"><input class="in" id="k_en" placeholder="${t('catEn')}"><input class="in" id="k_bn" placeholder="${t('catBn')}"><button class="btn" data-act="addcat">${t('addBtn')}</button></div>`+DB.lit.cats.map(k=>`<div class="card top"><div><b>${esc(k.en||'')}</b> · ${esc(k.bn||'')}</div>${M?`<button class="btn sm dng" data-act="delcat" data-id="${k.id}">${t('del')}</button>`:''}</div>`).join('');
- if(c==='tables'){const x=S.tid&&curT();
-  if(!x)return nav+`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`+DB.tables.map(x=>`<div class="card"><b>${esc(x.cap)}</b><div class="en">${x.cols.length} ${t('cols')} · ${x.rows.length} ${t('rows')}</div><button class="btn sm" data-act="edittbl" data-id="${x.id}">${t('edit')}</button><button class="btn sm dng" data-act="deltbl" data-id="${x.id}">${t('del')}</button></div>`).join('');
-  return nav+tblEditor(x)}
- const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;
- return nav+`<div class="card"><b>${e?t('edit'):t('addNew')}</b>${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${c==='words'?f('cat','secPh'):''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`+DB[c].map(i=>`<div class="card"><div class="top"><div><div class="mm">${esc(i.marma)}</div><div class="pr">${esc(i.pron)}</div></div>${au(i.k)}</div><div class="bn">${esc(i.bn)} · ${esc(i.en)}</div><button class="btn sm" data-act="edititem" data-id="${i.id}">${t('edit')}</button><button class="btn sm dng" data-act="delitem" data-id="${i.id}">${t('del')}</button></div>`).join('')}
+ if(!M)return nav;
+ if(c==='updates')return nav+`<div class="note">${t('updNote')}</div><div class="card"><input class="in" id="u_ver" placeholder="${t('verPh')}"><input class="in" id="u_link" placeholder="${t('linkPh')}"><input class="in" id="u_note" placeholder="${t('notePh')}"><button class="btn" data-act="addupd">${t('addVer')}</button></div>`+updSorted().map(u=>`<div class="card top"><div><b>${esc(u.ver)}</b><div class="en">${esc(u.note||'')}</div><div class="en">${esc(u.link||'')}</div></div><button class="btn sm dng" data-act="delupd" data-id="${u.id}">${t('del')}</button></div>`).join('');
+ return nav+`<div class="note">${t('adminNote')}</div>`+USERS.map(u=>`<div class="card"><b>${esc(u.name)}</b> <span class="badge">${t('role_'+u.role)}</span><div class="en">${esc(contact(u))}</div>${u.role==='main'?'':`<button class="btn sm ${u.role==='sub'?'dng':''}" data-act="setrole" data-e="${esc(u.id)}" data-r="${u.role==='sub'?'user':'sub'}">${t(u.role==='sub'?'rmSub':'makeSub')}</button>`}</div>`).join('')}
 // <CLOUD>
 // ================= CLOUD SYNC (Supabase, no library needed) =================
 const SB_URL='https://hphemglpqpbdidvnbqjl.supabase.co';
@@ -510,7 +507,7 @@ document.addEventListener('input',e=>{if(e.target.id==='q'){S.q=e.target.value;b
 $('#pfile').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)pic(f)});
 $('#afile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';const x=curT();if(!f||!S.tgt||!x||!isAdmin())return;const y=x.rows[S.tgt.r].c[S.tgt.c];adel(y.k);const k=uid();if(await aput(k,f))y.k=k;else alert(t('audioFail'));save();body()});
 document.addEventListener('click',async e=>{
- const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,d=b.dataset,ADM=['saveitem','delitem','rmau','newtbl','edittbl','backtbl','deltbl','addcol','addrow','delcol','delrow','savetbl','cellau','cellrm','cellopen','cellsave','cellclose','addcat'];
+ const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,d=b.dataset,ADM=['saveitem','delitem','rmau','newtbl','edittbl','backtbl','deltbl','addcol','addrow','delcol','delrow','savetbl','cellau','cellrm','cellopen','cellsave','cellclose','addcat','iadd','iedit'];
  if(ADM.includes(a)&&!isAdmin())return;
  if(a==='go'){S.view=d.v;S.err='';S.f=null;S.fp=null;render()}
  else if(a==='lang'){CFG.lang=d.l;store.set('ml_cfg',CFG);render()}
@@ -548,7 +545,7 @@ document.addEventListener('click',async e=>{
  else if(a==='syncnow'){sync()}
  else if(a==='oauth'){oauthStart(d.p)}
  else if(a==='logout'){if(AUTH&&!AUTH.dead&&navigator.onLine!==false){try{await Promise.race([sync({pull:false}),new Promise(r=>setTimeout(r,4000))])}catch(e){}try{sb('/auth/v1/logout?scope=local',{method:'POST',tok:AUTH.access_token}).catch(()=>{})}catch(e){}}AUTH=null;store.set('ml_auth',null);ME=null;store.set('ml_sess',null);Object.assign(S,{view:'welcome',sub:'',tab:'dict',q:''});render()}
- else if(a==='tab'){syncT();save();Object.assign(S,{tab:d.t,sub:'',q:'',pf:null,tid:null,cell:null});render()}
+ else if(a==='tab'){syncT();save();Object.assign(S,{tab:d.t,sub:'',q:'',pf:null,tid:null,cell:null,edit:null,inl:false});render()}
  else if(a==='myprof'){Object.assign(S,{tab:'menu',sub:'profile',q:''});render()}
  else if(a==='dir'){S.dir=d.d;body()}
  else if(a==='fav'){let f=favs();f=f.includes(d.k)?f.filter(x=>x!==d.k):[...f,d.k];store.set(favKey(),f);body()}
@@ -593,7 +590,7 @@ document.addEventListener('click',async e=>{
  else if(a==='addcm'){const x=val('cm_'+d.id);if(!x)return;const p=DB.lit.posts.find(q=>q.id===d.id);(p.cm=p.cm||[]).push({id:uid(),by:ME,an:user().name,text:x,ts:Date.now()});save();body()}
  else if(a==='delcm'){const p=DB.lit.posts.find(q=>q.id===d.id),m=p.cm.find(x=>x.id===d.c);if(m&&(m.by===ME||isAdmin())){p.cm=p.cm.filter(x=>x!==m);save();body()}}
  // Admin
- else if(a==='col'){if((d.c==='admins'||d.c==='data'||d.c==='updates')&&!isMain())return;syncT();save();S.col=d.c;S.edit=null;S.tid=null;S.cell=null;body()}
+ else if(a==='col'){if(!isMain())return;S.ac=d.c;body()}
  else if(a==='setrole'){if(!isMain())return;const u=USERS.find(x=>x.id===d.e);if(!u||u.role==='main')return;
   try{const r=await rest('/profiles?id=eq.'+encodeURIComponent(u.id),{method:'PATCH',body:{role:d.r},headers:{Prefer:'return=representation'}});if(!r||!r.length)throw 0;u.role=d.r;store.set('ml_users',USERS);body()}catch(e){alert(t(e&&e.net?'e_net':'e_srv'))}}
  else if(a==='addcat'){const en=val('k_en'),bn=val('k_bn');if(!en&&!bn)return;DB.lit.cats.push({id:uid(),en,bn});save();body()}
@@ -602,7 +599,9 @@ document.addEventListener('click',async e=>{
  else if(a==='delupd'){if(isMain()&&confirm(t('sure'))){DB.updates=(DB.updates||[]).filter(x=>x.id!==d.id);save();body()}}
  else if(a==='updhide'){S.updHide=true;body()}
  else if(a==='edititem'){S.edit=d.id;body();scrollTo(0,0)}
- else if(a==='canceledit'){S.edit=null;body()}
+else if(a==='canceledit'){S.edit=null;S.inl=false;body()}
+ else if(a==='iadd'){S.col=d.c;S.edit='new';S.inl=true;body();scrollTo(0,0)}
+ else if(a==='iedit'){S.col=d.c;S.edit=d.id;S.inl=true;body();scrollTo(0,0)}
  else if(a==='rmau'){const x=DB[S.col].find(x=>x.id===S.edit);if(x){adel(x.k);x.k=null;save();body()}}
  else if(a==='saveitem'){const it={marma:val('f_marma'),pron:val('f_pron'),bn:val('f_bn'),en:val('f_en')};if(S.col==='words')it.cat=val('f_cat')||'Others';
   if(!it.marma&&!it.pron){alert(t('needOne'));return}
@@ -610,7 +609,7 @@ document.addEventListener('click',async e=>{
   if(ex)Object.assign(ex,it);else{x={id:uid(),...it};DB[S.col].unshift(x)}
   if(f){adel(x.k);const k=uid();if(await aput(k,f))x.k=k;else alert(t('audioFail'))}
   S.edit=null;save();body()}
- else if(a==='delitem'){if(confirm(t('sure'))){const x=DB[S.col].find(x=>x.id===d.id);adel(x&&x.k);DB[S.col]=DB[S.col].filter(x=>x.id!==d.id);save();body()}}
+else if(a==='delitem'){if(confirm(t('sure'))){const cc=d.c||S.col,x=DB[cc].find(x=>x.id===d.id);adel(x&&x.k);DB[cc]=DB[cc].filter(x=>x.id!==d.id);save();body()}}
  else if(a==='newtbl'){const x={id:uid(),cap:'New table',cols:['',''],rows:[{id:uid(),c:[E(),E()]}]};DB.tables.push(x);S.tid=x.id;S.cell=null;save();body()}
  else if(a==='edittbl'){S.tid=d.id;S.cell=null;body()}
  else if(a==='backtbl'){syncT();save();S.tid=null;S.cell=null;body()}
