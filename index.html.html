@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Marma Language</title>
+<meta name="theme-color" content="#0F5C5A">
+<meta name="description" content="Learn and preserve the Marma language - works online and offline.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600&family=Noto+Sans+Myanmar:wght@400;600&display=swap">
+<style>
+:root{--bg:#F6EEDC;--sf:#FFFBF2;--tx:#1d2b2a;--mu:#6b7774;--pr:#0F5C5A;--pt:#fff;--ac:#F2B53B;--rd:#B3261E;--bd:#e4d9bf;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1a19;--sf:#152826;--tx:#eef3f1;--mu:#9fb1ad;--pr:#2aa39d;--pt:#06201f;--bd:#27403d;--rd:#ff8a80}}
+:root[data-theme="dark"]{--bg:#0d1a19;--sf:#152826;--tx:#eef3f1;--mu:#9fb1ad;--pr:#2aa39d;--pt:#06201f;--bd:#27403d;--rd:#ff8a80}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:'Hind Siliguri','Noto Sans Myanmar','Noto Sans Bengali',system-ui,sans-serif;line-height:1.5}
+#app{max-width:560px;margin:0 auto;min-height:100vh}#app.wide{max-width:1000px;display:flex;flex-direction:column}.hero{flex:1;display:flex;flex-direction:column;align-items:center}.hero .cta{margin-top:auto;width:100%;padding-top:40px}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;padding:10px 14px 0}
+.brand{display:flex;align-items:center;gap:10px;font-size:1.15rem;margin-bottom:8px}.sp{flex:1}
+.search,.in{width:100%;padding:12px 14px;border-radius:14px;border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit}
+.in{margin:6px 0;border-radius:12px}.search:focus,.in:focus{outline:2px solid var(--pr)}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 0;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tab,.chip{flex:0 0 auto;padding:8px 16px;border-radius:999px;border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit;cursor:pointer}
+.tab.on,.seg .on,.chip.on{background:var(--pr);color:var(--pt);border-color:var(--pr)}
+.chip{padding:4px 12px;margin:4px 6px 0 0}
+main{padding:4px 14px 40px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:12px 14px;margin:10px 0}
+.top{display:flex;justify-content:space-between;gap:8px}.acts{display:flex;align-items:flex-start}
+.mm{font-size:1.25rem;font-weight:600;color:var(--pr)}.pr{color:var(--rd);font-size:.95rem}
+.bn{margin-top:4px;font-size:1.05rem}.en{color:var(--mu);font-size:.95rem}
+.star{background:none;border:0;font-size:1.5rem;color:var(--ac);cursor:pointer;padding:0 4px}
+.play{border:0;background:var(--pr);color:var(--pt);border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.75rem;margin-left:4px;flex:0 0 auto}
+.seg{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}.seg button{flex:1;min-width:90px;padding:9px;border-radius:12px;border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit;cursor:pointer}
+details{margin:10px 0}summary{cursor:pointer;font-weight:600;padding:10px 14px;background:var(--sf);border:1px solid var(--bd);border-radius:12px}
+h2{margin:12px 0 4px}h3{margin:16px 0 0;color:var(--mu);font-size:.9rem;text-transform:uppercase;letter-spacing:.05em}
+.btn{display:block;width:100%;padding:13px;border-radius:14px;border:0;background:var(--pr);color:var(--pt);font:inherit;font-weight:600;cursor:pointer;margin:8px 0}
+.btn.ghost{background:transparent;color:var(--pr);border:2px solid var(--pr)}
+.btn.sm{display:inline-block;width:auto;padding:6px 12px;margin:4px 4px 0 0;font-size:.85rem}.btn.dng{background:var(--rd);color:#fff;border:0}
+.back{background:none;border:0;color:var(--pr);font:inherit;cursor:pointer;padding:8px 0}
+.err{color:var(--rd);font-size:.9rem}.note{background:var(--sf);border-left:4px solid var(--ac);padding:8px 12px;border-radius:8px;font-size:.9rem;margin:8px 0}
+.menu .row{display:flex;justify-content:space-between;align-items:center;width:100%;padding:14px;margin:8px 0;border-radius:14px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit;cursor:pointer}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%}caption{font-weight:600;text-align:left;padding:2px 0 8px;color:var(--pr);font-size:1.05rem}
+th,td{border:1px solid var(--bd);padding:7px 9px;text-align:left;vertical-align:middle}th{background:var(--bg);color:var(--mu);font-size:.85rem}
+td.bx{min-width:110px;vertical-align:top}td.ed{cursor:pointer}td.ed.sel{outline:2px solid var(--pr);outline-offset:-2px}td.bx .play{margin:4px 4px 0 0}
+td .in,th .in{min-width:120px;margin:0}.x{border:0;background:none;color:var(--rd);cursor:pointer;font-size:1rem}
+.av{border-radius:50%;object-fit:cover;background:var(--pr);color:var(--pt);display:inline-flex;align-items:center;justify-content:center;font-weight:600;cursor:pointer}
+.pw{position:relative}.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;font-size:1.2rem;cursor:pointer}
+.auth{max-width:420px;width:100%;margin:0 auto;padding:40px 24px;text-align:center}#app.auth-pg{display:flex;flex-direction:column;min-height:100vh}.auth-pg .auth{flex:1;display:flex;flex-direction:column;justify-content:center}.auth svg{align-self:center}.auth h1{color:var(--pr)}
+.snav{display:flex;align-items:center;gap:10px;padding:14px 18px}
+.hero{text-align:center;padding:50px 20px 30px}.hero h1{font-size:2.4rem;margin:16px 0 4px;color:var(--pr)}.hero p{color:var(--mu);font-size:1.1rem}
+.cta{display:flex;gap:12px;justify-content:center;max-width:380px;margin:24px auto 0}
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;padding:20px}.feat .card{text-align:center;margin:0}
+.feat b{display:block;font-size:2rem}.about{max-width:640px;margin:10px auto;padding:10px 20px;text-align:center;color:var(--mu)}
+footer{text-align:center;color:var(--mu);padding:30px;font-size:.9rem}
+textarea.in{min-height:90px}.pbody{white-space:pre-wrap;margin:8px 0}.badge{font-size:.75rem;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:1px 8px;color:var(--mu);height:fit-content}
+.cmt{border-top:1px dashed var(--bd);padding:6px 0;font-size:.95rem}.stars button{background:none;border:0;font-size:2rem;color:var(--ac);cursor:pointer}
+.sbtn{flex:0 0 auto;align-self:center;width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;border:0;background:transparent;color:var(--pr);cursor:pointer;padding:0;margin-right:2px}.sbtn[data-st=syncOff]{color:#8a8f8e}.sbtn[data-st=syncAuth]{color:#c77700}.sbtn[data-st=syncWork] svg{animation:sspin 1.1s linear infinite}@keyframes sspin{to{transform:rotate(360deg)}}
+.mbtn{flex:0 0 auto;align-self:center;width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);cursor:pointer;padding:0}.mbtn.on{background:var(--pr);color:var(--pt);border-color:var(--pr)}
+.back svg{vertical-align:-3px}.menu h2 svg{display:block}
+.legal h3{text-transform:none;letter-spacing:0;color:var(--pr);font-size:1rem;margin:14px 0 2px}.legal h3:first-child{margin-top:0}.legal p{margin:2px 0}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<input type="file" id="afile" accept="audio/*" hidden><input type="file" id="pfile" accept="image/*" hidden>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const clone=o=>JSON.parse(JSON.stringify(o));
+// ---- Password hashing (salted SHA-256), phone/email helpers ----
+const sha256=(()=>{const K=[],H0=[];for(let n=2,c=0;c<64;n++){let p=1;for(let i=2;i*i<=n;i++)if(n%i==0){p=0;break}if(p){if(c<8)H0[c]=Math.floor(Math.pow(n,.5)%1*4294967296);K[c]=Math.floor(Math.pow(n,1/3)%1*4294967296);c++}}
+const R=(x,n)=>(x>>>n)|(x<<(32-n));
+return s=>{const b=unescape(encodeURIComponent(s)),l=b.length,w=[];for(let i=0;i<l;i++)w[i>>2]|=b.charCodeAt(i)<<(24-(i%4)*8);w[l>>2]|=128<<(24-(l%4)*8);const N=(((l+8)>>6)+1)*16;for(let i=0;i<N;i++)w[i]|=0;w[N-1]=l*8;
+const H=H0.slice();for(let j=0;j<N;j+=16){const x=w.slice(j,j+16);for(let i=16;i<64;i++){const a=x[i-15],c=x[i-2];x[i]=(x[i-16]+(R(a,7)^R(a,18)^(a>>>3))+x[i-7]+(R(c,17)^R(c,19)^(c>>>10)))|0}
+let[a,b2,c,d,e,f,g,h]=H;for(let i=0;i<64;i++){const t1=h+(R(e,6)^R(e,11)^R(e,25))+((e&f)^(~e&g))+K[i]+x[i],t2=(R(a,2)^R(a,13)^R(a,22))+((a&b2)^(a&c)^(b2&c));h=g;g=f;f=e;e=(d+t1)|0;d=c;c=b2;b2=a;a=(t1+t2)|0}
+[a,b2,c,d,e,f,g,h].forEach((v,i)=>H[i]=(H[i]+v)|0)}
+return H.map(v=>(v>>>0).toString(16).padStart(8,'0')).join('')}})();
+const hpw=(p,sl=Math.random().toString(36).slice(2,10)+Date.now().toString(36))=>'h2:'+sl+':'+sha256(sl+p);
+const pwOk=(u,p)=>{if(!u.pass)return false;if(u.pass.startsWith('h2:')){const a=u.pass.split(':');return sha256(a[1]+p)===a[2]}return u.pass===btoa(unescape(encodeURIComponent(p)))};
+const normPhone=x=>{x=String(x||'').replace(/[০-৯]/g,d=>'০১২৩৪৫৬৭৮৯'.indexOf(d)).replace(/[\s\-().]/g,'');const m=x.match(/^\+?880(1\d{9})$/);return m?'0'+m[1]:x};
+const okPhone=x=>/^\+?\d{7,15}$/.test(x),okMail=x=>/\S+@\S+\.\S+/.test(x);
+const parseId=x=>{x=String(x||'').trim();if(!x)return null;if(x.includes('@')){x=x.toLowerCase();return okMail(x)?{email:x,phone:'',key:x}:null}const p=normPhone(x);return okPhone(p)?{email:'',phone:p,key:p}:null};
+const findUser=i=>USERS.find(u=>i.email?u.email===i.email:u.phone===i.phone);
+const contact=u=>[u.email,u.phone].filter(Boolean).join(' · ');
+const burger=n=>`<svg width="${n}" height="${n}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>`;
+// ---- Privacy policy text: [title EN, title BN, text EN, text BN] ----
+const CONTACT_EMAIL=''; // put your support email here, e.g. 'you@example.com' - it appears at the end of the policy
+const PRIV=[
+['Overview','সারসংক্ষেপ','Marma Language is a free app to learn and preserve the Marma language. This policy explains what information the app uses and how it is handled. Last updated: 10 October 2026.','Marma Language মারমা ভাষা শেখা ও সংরক্ষণের একটি বিনামূল্যের অ্যাপ। এই নীতিতে বলা হয়েছে অ্যাপ কোন তথ্য ব্যবহার করে এবং কীভাবে সামলায়। সর্বশেষ আপডেট: ১০ অক্টোবর ২০২৬।'],
+['Information you give us','আপনি যে তথ্য দেন','Your name, email address and/or phone number, a password, an optional profile photo, your favourites and ratings, and any stories, poems or comments you write. Admins may also add words, tables and audio clips.','আপনার নাম, ইমেইল ও/বা ফোন নম্বর, পাসওয়ার্ড, ঐচ্ছিক প্রোফাইল ছবি, ফেভারিট ও রেটিং, এবং আপনার লেখা গল্প, কবিতা ও মন্তব্য। অ্যাডমিনরা শব্দ, টেবিল ও অডিও ক্লিপও যোগ করতে পারেন।'],
+['Where your data is stored','তথ্য কোথায় থাকে','Your account and the shared content (words, tables, stories, comments, ratings) are stored in our online database (Supabase) so they can sync between your devices and with other users. A copy is also kept on your device so the app works without internet. Passwords are handled by the login service and are never stored as plain text. Clearing the app data removes only the copy on your device. The app also loads its fonts from Google Fonts.','আপনার অ্যাকাউন্ট ও শেয়ার করা কনটেন্ট (শব্দ, টেবিল, গল্প, মন্তব্য, রেটিং) আমাদের অনলাইন ডাটাবেসে (Supabase) থাকে, যাতে আপনার সব ডিভাইসে ও অন্য ইউজারদের সাথে সিঙ্ক হয়। ইন্টারনেট ছাড়া চালানোর জন্য একটি কপি আপনার ডিভাইসেও থাকে। পাসওয়ার্ড লগইন সার্ভিস সামলায়, সরাসরি লেখা অবস্থায় রাখা হয় না। অ্যাপের ডাটা মুছলে শুধু ডিভাইসের কপি মোছে। অ্যাপ ফন্ট Google Fonts থেকে লোড করে।'],
+['How it is used','কীভাবে ব্যবহার হয়','Only to run the app: logging you in, showing your profile, saving your favourites and showing your posts. We do not sell your information, share it with advertisers or show ads.','শুধু অ্যাপ চালাতে: লগ ইন, প্রোফাইল দেখানো, ফেভারিট সংরক্ষণ ও আপনার লেখা দেখানো। আমরা আপনার তথ্য বিক্রি করি না, বিজ্ঞাপনদাতাদের সাথে শেয়ার করি না এবং কোনো বিজ্ঞাপন দেখাই না।'],
+['Log in with Google or Facebook','Google বা Facebook দিয়ে লগইন','If you choose to log in with Google or Facebook, we receive only your name and email address from them. We never see your Google or Facebook password, and the app never posts anything for you.','Google বা Facebook দিয়ে লগইন করলে আমরা তাদের কাছ থেকে শুধু আপনার নাম ও ইমেইল পাই। আপনার Google বা Facebook এর পাসওয়ার্ড আমরা কখনো দেখি না, আর অ্যাপ আপনার হয়ে কিছু পোস্ট করে না।'],
+['Deleting your data','তথ্য মুছে ফেলা','To delete your account and the content you wrote, contact us using the email address below and we will remove it.','আপনার অ্যাকাউন্ট ও আপনার লেখা মুছতে নিচের ইমেইলে যোগাযোগ করুন, আমরা মুছে দেব।'],
+['Permissions','অনুমতি','The app only opens your photo or audio files when you choose to pick one. It does not use your location, contacts or microphone.','আপনি নিজে বেছে নিলেই অ্যাপ আপনার ছবি বা অডিও ফাইল খোলে। এটি আপনার লোকেশন, কন্টাক্ট বা মাইক্রোফোন ব্যবহার করে না।'],
+['Your choices','আপনার নিয়ন্ত্রণ','You can change your name, email, phone, photo and password in Profile → Edit profile, and delete your own posts and comments. To remove everything, clear the app data or uninstall the app.','Profile → Edit profile থেকে নাম, ইমেইল, ফোন, ছবি ও পাসওয়ার্ড বদলাতে এবং নিজের লেখা ও মন্তব্য মুছতে পারবেন। সবকিছু মুছতে অ্যাপের ডাটা ক্লিয়ার করুন বা আনইনস্টল করুন।'],
+['Children','শিশু','If you are under 13, please ask a parent or guardian before creating an account.','আপনার বয়স ১৩ বছরের কম হলে অ্যাকাউন্ট খোলার আগে অভিভাবকের অনুমতি নিন।'],
+['Changes','পরিবর্তন','If we later add online sync or cloud accounts, we will update this policy before any data leaves your device.','ভবিষ্যতে অনলাইন সিঙ্ক বা ক্লাউড অ্যাকাউন্ট যোগ করলে ডিভাইসের বাইরে কোনো তথ্য যাওয়ার আগেই এই নীতি আপডেট করা হবে।']];
+const privHtml=()=>{const bn=CFG.lang==='bn',P=CONTACT_EMAIL?[...PRIV,['Contact','যোগাযোগ',CONTACT_EMAIL,CONTACT_EMAIL]]:PRIV;return `<div class="card legal">${P.map(x=>`<h3>${esc(x[bn?1:0])}</h3><p>${esc(x[bn?3:2])}</p>`).join('')}</div>`};
+const val=id=>($('#'+id)?.value||'').trim();
+// ---- Translations: key:[English, বাংলা] ----
+const TX={
+welcome:['Welcome to Marma Language','মারমা ভাষায় স্বাগতম'],signin:['Log in','লগ ইন'],signup:['Sign up','সাইন আপ'],back:['Back','পেছনে'],
+name:['Your name','আপনার নাম'],email:['Email','ইমেইল'],pass:['Password (min 8 characters)','পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)'],create:['Create account','অ্যাকাউন্ট খুলুন'],
+newq:['New? Sign up','নতুন? Sign up'],have:['Already have an account? Log in','অ্যাকাউন্ট আছে? Log in'],
+e_fill:['Enter your name, an email or phone number, and a password of 8+ characters.','নাম, ইমেইল বা ফোন নম্বর ও ৮+ অক্ষরের পাসওয়ার্ড দিন।'],e_exist:['An account with this email or phone already exists.','এই ইমেইল বা ফোন নম্বরে অ্যাকাউন্ট আছে।'],e_wrong:['Wrong email/phone or password.','ইমেইল/ফোন বা পাসওয়ার্ড ভুল।'],
+search:['Search Marma, Bangla, English…','খুঁজুন: Marma, বাংলা, English…'],
+dict:['Dictionary','অভিধান'],word:['Word','শব্দ'],sang:['Sangbusa','সংবুসা'],sent:['Sentence','বাক্য'],lit:['Literature','সাহিত্য'],menu:['Menu','মেনু'],
+m2b:['Marma → Bangla/English','Marma → বাংলা/English'],b2m:['Bangla/English → Marma','বাংলা/English → Marma'],
+empty:['Nothing here yet.','এখনো কিছু নেই।'],results:['Search results','সার্চ ফলাফল'],none:['Nothing found.','কিছু পাওয়া যায়নি।'],
+fd1:['Marma ⇄ Bangla/English','Marma ⇄ বাংলা/English'],fd2:['Words by topic','বিষয়ভিত্তিক শব্দ'],fd3:['Alphabet & phrase tables','বর্ণমালা ও বাক্যাংশ টেবিল'],fd4:['Sentences with pronunciation','উচ্চারণসহ বাক্য'],fd5:['Stories & poems by everyone','সবার গল্প ও কবিতা'],fd6:['Learn by listening','শুনে শেখা'],audio:['Audio','অডিও'],
+aboutSite:['An app and website to learn and preserve Marma words, alphabet, sangbusa, sentences and literature. Use it on phone or computer.','মারমা ভাষার শব্দ, বর্ণমালা, সংবুসা, বাক্য ও সাহিত্য শেখা এবং সংরক্ষণের জন্য একটি অ্যাপ ও ওয়েবসাইট। ফোনে ও কম্পিউটারে ব্যবহার করুন।'],
+profile:['Profile','প্রোফাইল'],fav:['Favourite','ফেভারিট'],language:['Language','ভাষা'],rating:['Ratings','রেটিং'],share:['Share','শেয়ার'],about:['About','সম্পর্কে'],settings:['Settings','সেটিংস'],admin:['Admin Panel','অ্যাডমিন প্যানেল'],logout:['Log out','লগ আউট'],
+changePic:['📷 Change photo','📷 ছবি বদলান'],rmPic:['Remove photo','ছবি সরান'],saveName:['Save name','নাম সেভ করুন'],
+role_main:['Main admin','মূল অ্যাডমিন'],role_sub:['Sub admin','সাব অ্যাডমিন'],role_user:['User','ইউজার'],
+favEmpty:['Tap ★ on a word or sentence to save it here.','শব্দ/বাক্যে ★ চেপে এখানে সংরক্ষণ করুন।'],
+aboutTxt:['Marma Language helps you learn and preserve Marma words, alphabet, sangbusa, sentences and literature.','Marma Language অ্যাপে মারমা ভাষার শব্দ, বর্ণমালা, সংবুসা, বাক্য ও সাহিত্য শেখা এবং সংরক্ষণ করা যায়।'],
+theme:['Theme','থিম'],fsize:['Font size','অক্ষরের আকার'],small:['Small','ছোট'],medium:['Medium','মাঝারি'],large:['Large','বড়'],chooseLang:['Choose app language','অ্যাপের ভাষা বাছুন'],
+rateTitle:['Rate this app','অ্যাপটিকে রেটিং দিন'],avg:['Average','গড়'],votes:['ratings','টি রেটিং'],feedback:['Write your feedback (optional)','মতামত লিখুন (ঐচ্ছিক)'],submit:['Submit','জমা দিন'],thanks:['Thank you for rating!','রেটিং দেওয়ার জন্য ধন্যবাদ!'],allRatings:['All ratings','সব রেটিং'],
+shareTxt:['Learn the Marma language with the Marma Language app!','Marma Language অ্যাপে মারমা ভাষা শিখুন!'],copied:['Link copied ✔','লিংক কপি হয়েছে ✔'],
+all:['All','সব'],write:['+ Write','+ লিখুন'],editPost:['Edit post','পোস্ট এডিট'],newPost:['New post','নতুন পোস্ট'],category:['Category','বিভাগ'],ptitle:['Title','শিরোনাম'],plang:['Written in','যে ভাষায় লেখা'],pbody:['Write here…','এখানে লিখুন…'],publish:['Publish','প্রকাশ করুন'],update:['Update','আপডেট'],cancel:['Cancel','বাতিল'],
+edit:['Edit','এডিট'],del:['Delete','মুছুন'],sure:['Delete this?','মুছে ফেলবেন?'],noPosts:['No posts yet. Be the first to write!','এখনো কোনো লেখা নেই। প্রথম লেখাটি আপনার হোক!'],fillTB:['Please enter a title and some text.','শিরোনাম ও লেখা দিন।'],
+cmts:['Comments','মন্তব্য'],addCm:['Write a comment…','মন্তব্য লিখুন…'],send:['Send','পাঠান'],by:['by','লেখক'],
+L_marma:['Marma','মারমা'],L_bn:['Bangla','বাংলা'],L_en:['English','ইংরেজি'],
+aw:['Words','শব্দ'],as:['Sentences','বাক্য'],at:['Sangbusa Tables','সংবুসা টেবিল'],ac:['Categories','বিভাগ'],aa:['Admins','অ্যাডমিন'],ad:['Data','ডাটা'],
+addNew:['Add new','নতুন যোগ'],marmaPh:['Marma text','Marma লেখা'],pronPh:['Pronunciation in Bangla','বাংলায় উচ্চারণ'],bnPh:['Bangla meaning','বাংলা অর্থ'],enPh:['English meaning','English অর্থ'],secPh:['Section (e.g. Relative, Verb)','সেকশন (যেমন: আত্মীয়, ক্রিয়া)'],
+audioHas:['Audio ✔ (new file replaces it)','অডিও আছে ✔ (নতুন দিলে বদলাবে)'],audioLbl:['Audio','অডিও'],rmAudio:['Remove audio','অডিও মুছুন'],addBtn:['Add','যোগ করুন'],
+needOne:['Enter Marma text or pronunciation.','Marma বা উচ্চারণ অন্তত একটা দিন।'],audioFail:['Could not save audio','অডিও সেভ হয়নি'],
+newTbl:['+ New table','+ নতুন টেবিল'],caption:['Table caption','টেবিলের ক্যাপশন'],colPh:['Column','কলাম'],allTbl:['← All tables (saved)','← সব টেবিল (সেভ হবে)'],addCol:['+ Column','+ কলাম'],addRow:['+ Row','+ সারি'],saved:['Saved ✔','সেভ হয়েছে ✔'],oneCol:['At least one column is required','কমপক্ষে ১টি কলাম থাকতে হবে'],
+catEn:['Category name (English)','বিভাগের নাম (English)'],catBn:['Category name (Bangla)','বিভাগের নাম (বাংলা)'],
+makeSub:['Make sub-admin','সাব অ্যাডমিন করুন'],rmSub:['Remove sub-admin','সাব অ্যাডমিন সরান'],adminNote:['Only the main admin can manage admins, delete categories and use Data tools. Sub-admins can add/edit content and moderate Literature.','শুধু মূল অ্যাডমিন অ্যাডমিন ম্যানেজ, বিভাগ মুছা ও ডাটা টুল ব্যবহার করতে পারবেন। সাব অ্যাডমিন কনটেন্ট যোগ/এডিট ও সাহিত্য মডারেশন করতে পারবেন।'],
+dataNote:['Data is saved in this browser. Export/Import covers text only (no audio, photos or accounts).','ডাটা এই ব্রাউজারে সেভ হয়। Export/Import শুধু লেখা নেয় (অডিও, ছবি, অ্যাকাউন্ট নয়)।'],
+exp:['Export','Export'],imp:['Import','Import'],clearAll:['Delete all data','সব ডাটা মুছুন'],resetSeed:['Restore sample data','নমুনা ডাটা ফেরত'],ioPh:['Exported JSON appears here; paste JSON to import','Export করলে JSON আসবে; Import করতে JSON পেস্ট করুন'],
+okImp:['Import successful!','Import সফল!'],badJson:['Invalid JSON.','JSON ঠিক নেই।'],sureAll:['All data will be deleted. Sure?','সব ডাটা মুছে যাবে। নিশ্চিত?'],sureReset:['Sample data will replace current data.','নমুনা ডাটা বর্তমান ডাটার জায়গায় আসবে।'],
+noAudio:['Audio not found (audio stays on the device where it was added)','অডিও পাওয়া যায়নি (অডিও যে ডিভাইসে যোগ হয়েছে সেখানেই থাকে)'],
+cols:['columns','কলাম'],rows:['rows','সারি'],
+privacy:['Privacy Policy','গোপনীয়তা নীতি'],editProfile:['Edit profile','প্রোফাইল এডিট'],details:['Details','তথ্য'],saveChanges:['Save changes','পরিবর্তন সেভ করুন'],
+emailOpt:['Email (optional if you give a phone)','ইমেইল (ফোন দিলে ঐচ্ছিক)'],phoneOpt:['Phone number (optional if you give an email)','ফোন নম্বর (ইমেইল দিলে ঐচ্ছিক)'],idPh:['Email or phone number','ইমেইল বা ফোন নম্বর'],
+e_mail:['Enter a valid email.','সঠিক ইমেইল দিন।'],e_phone:['Enter a valid phone number.','সঠিক ফোন নম্বর দিন।'],e_need:['Keep at least one: email or phone.','ইমেইল বা ফোন - অন্তত একটি রাখতে হবে।'],e_name:['Please enter your name.','নাম দিন।'],
+changePw:['Change password','পাসওয়ার্ড পরিবর্তন'],curPw:['Current password','বর্তমান পাসওয়ার্ড'],newPw:['New password (min 8 characters)','নতুন পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)'],conPw:['Confirm new password','নতুন পাসওয়ার্ড আবার দিন'],
+e_cur:['Current password is wrong.','বর্তমান পাসওয়ার্ড ভুল।'],e_len:['New password must be 8+ characters.','নতুন পাসওয়ার্ড ৮+ অক্ষরের হতে হবে।'],
+idPh2:['Email or phone number','ইমেইল বা ফোন নম্বর'],
+e_net:['No internet. Please connect and try again.','ইন্টারনেট নেই। নেট চালু করে আবার চেষ্টা করুন।'],e_srv:['Something went wrong. Please try again.','কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।'],e_rate:['Too many tries. Please wait a little and try again.','অনেকবার চেষ্টা হয়েছে। একটু অপেক্ষা করে আবার চেষ্টা করুন।'],
+e_confirm:['Almost done: please confirm your email, then log in.','প্রায় শেষ: ইমেইল যাচাই করে তারপর লগ ইন করুন।'],e_same:['New password must be different from the old one.','নতুন পাসওয়ার্ড পুরনোটা থেকে আলাদা হতে হবে।'],
+e_fpphone:['Password reset by code works for email accounts. If you signed up with a phone number, please contact the admin.','কোড দিয়ে পাসওয়ার্ড রিসেট ইমেইল অ্যাকাউন্টের জন্য চলে। ফোন নম্বর দিয়ে খুলে থাকলে অ্যাডমিনের সাথে যোগাযোগ করুন।'],
+syncNow:['Sync now','এখনই সিঙ্ক করুন'],syncOk:['☁ Synced','☁ সিঙ্ক হয়েছে'],syncOff:['Offline - will sync when online','অফলাইন - নেট এলে সিঙ্ক হবে'],syncWork:['Syncing...','সিঙ্ক হচ্ছে...'],syncAuth:['Please log in again to sync','সিঙ্কের জন্য আবার লগ ইন করুন'],
+orWith:['or','অথবা'],contG:['Continue with Google','Google দিয়ে চালিয়ে যান'],contF:['Continue with Facebook','Facebook দিয়ে চালিয়ে যান'],
+e_oauth:['Login with that account failed. Please try again.','ওই অ্যাকাউন্ট দিয়ে লগইন হয়নি। আবার চেষ্টা করুন।'],e_oauthmail:['That account has no email we can use. Please use another login method.','ওই অ্যাকাউন্টে ব্যবহারযোগ্য ইমেইল নেই। অন্য পদ্ধতিতে লগইন করুন।'],e_oauthfile:['Google/Facebook login works in the browser and the phone app, not in this PC app yet. Use email or phone here.','Google/Facebook লগইন ব্রাউজার ও ফোন অ্যাপে চলে, এই PC অ্যাপে এখনো না। এখানে ইমেইল বা ফোন ব্যবহার করুন।'],
+loginNote:['Your login ID (the email or phone you signed up with) does not change here.','আপনার লগইন আইডি (যে ইমেইল বা ফোনে সাইন আপ করেছেন) এখানে বদলায় না।'],e_id:['Enter a valid email or phone number.','সঠিক ইমেইল বা ফোন নম্বর দিন।'],
+forgot:['Forgot password?','পাসওয়ার্ড ভুলে গেছেন?'],forgotT:['Reset password','পাসওয়ার্ড রিসেট'],sendCode:['Send code','কোড পাঠান'],resend:['Resend code','আবার কোড পাঠান'],
+fpHelp:['Enter the email or phone number of your account. We will send a 6-digit code.','আপনার অ্যাকাউন্টের ইমেইল বা ফোন নম্বর দিন। আমরা ৬ সংখ্যার একটি কোড পাঠাব।'],
+otpPh:['6-digit code','৬ সংখ্যার কোড'],resetBtn:['Change password','পাসওয়ার্ড বদলান'],
+e_nouser:['No account found with this email or phone.','এই ইমেইল বা ফোনে কোনো অ্যাকাউন্ট নেই।'],e_otp:['Wrong code. Try again.','কোড ভুল। আবার চেষ্টা করুন।'],e_otpexp:['The code has expired or too many wrong tries. Please request a new one.','কোডের মেয়াদ শেষ বা অনেকবার ভুল হয়েছে। নতুন কোড নিন।'],e_send:['Could not send the code. Check your internet and try again.','কোড পাঠানো যায়নি। ইন্টারনেট দেখে আবার চেষ্টা করুন।'],e_wait:['Please wait a few seconds before asking for a new code.','নতুন কোড নেওয়ার আগে কয়েক সেকেন্ড অপেক্ষা করুন।'],
+pwReset:['Password changed. Please log in.','পাসওয়ার্ড বদলানো হয়েছে। এখন লগ ইন করুন।'],e_mis:['Passwords do not match.','পাসওয়ার্ড দুটি মেলেনি।'],pwDone:['Password changed ✔','পাসওয়ার্ড বদলানো হয়েছে ✔'],
+tblNote:['Tap a box to edit it: Marma, pronunciation, Bangla, English and audio. Leave any field empty.','বক্সে ট্যাপ করে সম্পাদনা করুন: মর্ম, উচ্চারণ, বাংলা, ইংরেজি ও অডিও। যেকোনো ফিল্ড খালি রাখা যাবে।']};
+const t=k=>(TX[k]||[k,k])[CFG.lang==='bn'?1:0];
+// ---- Audio (IndexedDB) ----
+const idb=new Promise(r=>{try{const q=indexedDB.open('ml_audio',1);q.onupgradeneeded=()=>q.result.createObjectStore('a');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}});
+let audioFetch=null,audioHook=null,audioDel=null,cloudHook=null;
+const aputLocal=async(k,b)=>{const d=await idb;if(!d)return false;return new Promise(r=>{const x=d.transaction('a','readwrite');x.objectStore('a').put(b,k);x.oncomplete=()=>r(true);x.onerror=()=>r(false)})};
+const aput=async(k,b)=>{const ok=await aputLocal(k,b);if(ok&&audioHook)audioHook(k);return ok};
+const agetLocal=async k=>{const d=await idb;if(!d)return null;return new Promise(r=>{const q=d.transaction('a').objectStore('a').get(k);q.onsuccess=()=>r(q.result||null);q.onerror=()=>r(null)})};
+const aget=async k=>{let b=await agetLocal(k);if(b||!audioFetch)return b;b=await audioFetch(k);if(b)aputLocal(k,b);return b};
+const adel=async k=>{if(!k)return;const d=await idb;if(d)d.transaction('a','readwrite').objectStore('a').delete(k);if(audioDel)audioDel(k)};
+let cur;async function play(k){const b=await aget(k);if(!b){alert(t('noAudio'));return}if(cur)cur.pause();cur=new Audio(URL.createObjectURL(b));cur.play().catch(()=>{})}
+const au=k=>k?`<button class="play" data-act="play" data-k="${k}" aria-label="play">▶</button>`:'';
+// ---- Sample data: replace with your own via Admin Panel ----
+const SEED={dict:[],
+words:[
+{id:'w1',marma:'အဖေ',pron:'আপে',bn:'বাবা',en:'Father',cat:'আত্মীয় (Relative)'},
+{id:'w2',marma:'အမေ',pron:'আমে',bn:'মা',en:'Mother',cat:'আত্মীয় (Relative)'},
+{id:'w3',marma:'သွား',pron:'থোয়া',bn:'যাওয়া',en:'Go',cat:'ক্রিয়া (Verb)'},
+{id:'w4',marma:'စား',pron:'সা',bn:'খাওয়া',en:'Eat',cat:'ক্রিয়া (Verb)'},
+{id:'w5',marma:'ထမင်း',pron:'থামিং',bn:'ভাত',en:'Rice',cat:'খাবার (Food)'}],
+sentences:[{id:'s1',marma:'ထမင်းစားပြီးပြီလား',pron:'থামিং সা পি বি লা',bn:'আপনি কি ভাত খেয়েছেন?',en:'Have you eaten?'}],
+tables:[
+{id:'t1',cap:'শুভেচ্ছা (Greetings)',cols:['Marma','উচ্চারণ','বাংলা','English'],rows:[
+{id:'r1',c:[{t:'မင်္ဂလာပါ'},{t:'মিংগালাবা'},{t:'শুভেচ্ছা'},{t:'Hello'}]},
+{id:'r2',c:[{t:'ကျေးဇူးတင်ပါတယ်'},{t:'চেজু তিনবাদে'},{t:'ধন্যবাদ'},{t:'Thank you'}]}]},
+{id:'t2',cap:'বর্ণমালা (Alphabet)',cols:['Alphabet','উচ্চারণ','বাংলা'],rows:[
+{id:'r3',c:[{t:'က'},{t:'কা'},{t:'ক'}]},{id:'r4',c:[{t:'ခ'},{t:'খা'},{t:'খ'}]},{id:'r5',c:[{t:'ဂ'},{t:'গা'},{t:'গ'}]}]}],
+lit:{cats:[{id:'c1',en:'Story',bn:'গল্প'},{id:'c2',en:'Poem',bn:'কবিতা'}],posts:[]},ratings:[]};
+const E=()=>({m:'',p:'',b:'',e:'',k:null});
+function HK(h){h=(h||'').toLowerCase();return /pron|উচ্চারণ/.test(h)?'p':/বাংলা|bangla|bengali/.test(h)?'b':/english|ইংরেজি/.test(h)?'e':'m'}
+function normT(x){if(!x||!Array.isArray(x.rows))return x;x.cols=x.cols||[];x.rows.forEach(r=>{r.c=(r.c||[]).map((y,ci)=>{if(y&&('t' in y)){const n=E();n[HK(x.cols[ci])]=y.t||'';n.k=y.k||null;return n}return y||E()})});return x}
+let DB=store.get('ml_db',null)||clone(SEED);
+if(!DB.tables){DB.tables=clone(SEED.tables);if(DB.phrases&&DB.phrases.length)DB.tables.unshift({id:uid(),cap:'Sangbusa',cols:['Marma','উচ্চারণ','বাংলা','English'],rows:DB.phrases.map(p=>({id:uid(),c:[{t:p.marma},{t:p.pron},{t:p.bn},{t:p.en}]}))});delete DB.phrases}DB.tables.forEach(normT);
+if(!DB.lit)DB.lit=clone(SEED.lit);if(!DB.ratings)DB.ratings=[];if(!DB.dict)DB.dict=[];
+const save=()=>{store.set('ml_db',DB);if(cloudHook)cloudHook()};
+let USERS=store.get('ml_users',[]),ME=store.get('ml_sess',null),CFG=store.get('ml_cfg',{theme:'auto',size:16,lang:'en'});
+if(!CFG.lang)CFG.lang='en';
+if(ME&&!store.get('ml_auth',null)){ME=null;store.set('ml_sess',null)} // old local-only accounts: log in again with the cloud account
+USERS.forEach(u=>{if(!u.role)u.role=u.admin?'main':'user';if(!u.id)u.id=u.email});
+const user=()=>USERS.find(u=>u.id===ME);
+const isAdmin=()=>{const u=user();return !!u&&u.role!=='user'},isMain=()=>user()?.role==='main';
+const canEdit=p=>isAdmin()||p.by===ME;
+const S={view:user()?'app':'welcome',tab:'dict',q:'',dir:'m2b',sub:'',col:'dict',edit:null,tid:null,cell:null,tgt:null,err:'',lcat:'all',pf:null,open:null,rs:0,rtxt:'',f:null};
+const TABS=['dict','word','sang','sent','lit'];
+const favKey=()=>'ml_fav_'+ME,favs=()=>store.get(favKey(),[]);
+const curT=()=>DB.tables.find(x=>x.id===S.tid);
+const catName=c=>CFG.lang==='bn'?(c.bn||c.en):(c.en||c.bn);
+function applyCfg(){const r=document.documentElement;CFG.theme==='auto'?r.removeAttribute('data-theme'):r.setAttribute('data-theme',CFG.theme);r.style.fontSize=CFG.size+'px';r.lang=CFG.lang}
+const logo=n=>`<svg width="${n}" height="${n}" viewBox="0 0 200 200" style="flex:0 0 auto"><rect width="200" height="200" rx="46" fill="#0F5C5A"/><circle cx="100" cy="92" r="58" fill="#F6EEDC"/><path d="M62 130 L44 170 L94 148 Z" fill="#F6EEDC"/><circle cx="150" cy="46" r="13" fill="#F2B53B"/><text x="100" y="124" text-anchor="middle" font-family="Noto Sans Myanmar,Padauk,sans-serif" font-weight="600" font-size="84" fill="#B3261E">က</text></svg>`;
+const av=(n,u=user())=>u.pic?`<img class="av" src="${u.pic}" style="width:${n}px;height:${n}px" data-act="myprof" alt="">`:`<div class="av" style="width:${n}px;height:${n}px" data-act="myprof">${esc((u.name||'?')[0])}</div>`;
+function card(col,it,rev){
+ const k=col+':'+it.id,f=favs().includes(k);
+ const head=rev?`<div class="mm">${esc(it.bn)}</div><div class="en">${esc(it.en)}</div>`:`<div class="mm">${esc(it.marma)}</div><div class="pr">${esc(it.pron)}</div>`;
+ const body=rev?`<div class="bn" style="color:var(--pr);font-weight:600">${esc(it.marma)}</div><div class="pr">${esc(it.pron)}</div>`:`<div class="bn">${esc(it.bn)}</div>${it.en?`<div class="en">${esc(it.en)}</div>`:''}`;
+ return `<div class="card"><div class="top"><div>${head}</div><div class="acts">${au(it.k)}<button class="star" data-act="fav" data-k="${esc(k)}" aria-label="favourite">${f?'★':'☆'}</button></div></div>${body}</div>`}
+const cellH=c=>[c.m&&`<div class="mm">${esc(c.m)}</div>`,c.p&&`<div class="pr">${esc(c.p)}</div>`,c.b&&`<div class="bn">${esc(c.b)}</div>`,c.e&&`<div class="en">${esc(c.e)}</div>`].filter(Boolean).join('')+au(c.k);
+const ctext=c=>[c.m,c.p,c.b,c.e,c.t].join(' ').toLowerCase();
+const tbl=(x,rows)=>`<div class="card tw"><table>${x.cap?`<caption>${esc(x.cap)}</caption>`:''}<tbody>${rows.map(r=>`<tr>${r.c.map(c=>`<td class="bx">${cellH(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const match=(it,q)=>[it.marma,it.pron,it.bn,it.en,it.cat].join(' ').toLowerCase().includes(q);
+const fmt=ts=>new Date(ts).toLocaleDateString(CFG.lang==='bn'?'bn-BD':'en-GB');
+const RX=['👍','❤️','👏','😊'];
+function post(p){
+ const c=DB.lit.cats.find(x=>x.id===p.cat),ed=canEdit(p),open=S.open===p.id,cm=p.cm||[];
+ return `<div class="card"><div class="top"><b class="mm">${esc(p.title)}</b><span class="badge">${t('L_'+p.lang)}</span></div>
+ <div class="en">${t('by')} ${esc(p.an)} · ${fmt(p.ts)}${c?' · '+esc(catName(c)):''}</div><div class="pbody">${esc(p.body)}</div>
+ <div>${RX.map(e=>{const n=(p.rx?.[e]||[]).length,on=(p.rx?.[e]||[]).includes(ME);return `<button class="chip ${on?'on':''}" data-act="react" data-id="${p.id}" data-e="${e}">${e} ${n||''}</button>`}).join('')}<button class="chip ${open?'on':''}" data-act="cm" data-id="${p.id}">💬 ${cm.length}</button></div>
+ ${ed?`<button class="btn sm" data-act="editpost" data-id="${p.id}">${t('edit')}</button><button class="btn sm dng" data-act="delpost" data-id="${p.id}">${t('del')}</button>`:''}
+ ${open?`<div style="margin-top:8px">${cm.map(m=>`<div class="cmt"><b>${esc(m.an)}</b> <span class="en">${fmt(m.ts)}</span>${m.by===ME||isAdmin()?` <button class="x" data-act="delcm" data-id="${p.id}" data-c="${m.id}" aria-label="delete">✕</button>`:''}<div>${esc(m.text)}</div></div>`).join('')}<input class="in" id="cm_${p.id}" placeholder="${t('addCm')}"><button class="btn sm" data-act="addcm" data-id="${p.id}">${t('send')}</button></div>`:''}</div>`}
+function litPage(){
+ if(S.pf){const e=S.pf!=='new'?DB.lit.posts.find(x=>x.id===S.pf):null,v=k=>esc(e?e[k]:'');
+  return `<button class="back" data-act="cancelpost">← ${t('back')}</button><h2>${e?t('editPost'):t('newPost')}</h2><div class="card"><select class="in" id="l_cat">${DB.lit.cats.map(c=>`<option value="${c.id}" ${e&&e.cat===c.id?'selected':''}>${esc(catName(c))}</option>`).join('')}</select><select class="in" id="l_lang">${['marma','bn','en'].map(l=>`<option value="${l}" ${e&&e.lang===l?'selected':''}>${t('plang')}: ${t('L_'+l)}</option>`).join('')}</select><input class="in" id="l_title" placeholder="${t('ptitle')}" value="${v('title')}"><textarea class="in" id="l_body" rows="10" placeholder="${t('pbody')}">${v('body')}</textarea><button class="btn" data-act="savepost">${e?t('update'):t('publish')}</button><button class="btn ghost" data-act="cancelpost">${t('cancel')}</button></div>`}
+ const ps=DB.lit.posts.filter(p=>S.lcat==='all'||p.cat===S.lcat);
+ return `<h2>${t('lit')}</h2><div><button class="chip ${S.lcat==='all'?'on':''}" data-act="lcat" data-c="all">${t('all')}</button>${DB.lit.cats.map(c=>`<button class="chip ${S.lcat===c.id?'on':''}" data-act="lcat" data-c="${c.id}">${esc(catName(c))}</button>`).join('')}</div><button class="btn" data-act="newpost">${t('write')}</button>${ps.map(post).join('')||`<p class="note">${t('noPosts')}</p>`}`}
+function render(){
+ applyCfg();const A=$('#app');if(S.view==='welcome')S.view='signin';A.className=['signin','signup','forgot'].includes(S.view)?'auth-pg':'';
+ if(S.view==='welcome'){A.innerHTML=`<div class="snav">${logo(36)}<b>Marma Language</b></div>
+ <section class="hero">${logo(110)}<h1>Marma Language</h1><p>${t('welcome')}</p><div class="cta"><button class="btn" data-act="go" data-v="signin">${t('signin')}</button><button class="btn ghost" data-act="go" data-v="signup">${t('signup')}</button></div><div class="seg" style="max-width:220px;margin:16px auto 0"><button class="${CFG.lang==='en'?'on':''}" data-act="lang" data-l="en">English</button><button class="${CFG.lang==='bn'?'on':''}" data-act="lang" data-l="bn">বাংলা</button></div></section>
+ 
+ <footer>© 2026 Marma Language</footer>`;return}
+ if(S.view==='privacy'){A.innerHTML=`<main><button class="back" data-act="go" data-v="signin">← ${t('back')}</button><h2>${t('privacy')}</h2>${privHtml()}</main><footer>© 2026 Marma Language</footer>`;return}
+ if(S.view==='forgot'){const P=S.fp||{step:1},F=S.f||{},bn=CFG.lang==='bn';
+  let inner;
+  if(P.step===1)inner=`<p class="en">${t('fpHelp')}</p><input class="in" id="a_id" autocomplete="username" placeholder="${t('idPh2')}" value="${esc(F.id)}"><div class="err">${t(S.err||'x')==='x'?'':t(S.err)}</div><button class="btn" data-act="fpsend">${t('sendCode')}</button>`;
+  else inner=`<p class="en">${bn?'কোড পাঠানো হয়েছে:':'Code sent to:'} <b>${esc(P.to)}</b></p>${P.demo?`<div class="note">${bn?'ডেমো মোড: এখনো সার্ভার যুক্ত নেই, তাই কোডটি এখানে দেখানো হলো: ':'Demo mode: no server is connected yet, so the code is shown here: '}<b style="font-size:1.2rem;letter-spacing:.15em">${esc(P.code)}</b></div>`:''}<input class="in" id="a_otp" inputmode="numeric" maxlength="8" autocomplete="one-time-code" placeholder="${t('otpPh')}" value="${esc(F.otp)}"><div class="pw"><input class="in" id="a_pass" type="password" autocomplete="new-password" placeholder="${t('newPw')}"><button type="button" class="eye" data-act="eye" aria-label="show password">👁</button></div><div class="pw"><input class="in" id="a_pass2" type="password" autocomplete="new-password" placeholder="${t('conPw')}"></div><div class="err">${t(S.err||'x')==='x'?'':t(S.err)}</div><button class="btn" data-act="fpreset">${t('resetBtn')}</button><button class="back" data-act="fpsend" data-resend="1">${t('resend')}</button>`;
+  A.innerHTML=`<div class="auth">${logo(96)}<h1 style="margin:10px 0 0">Marma Language</h1><h2>${t('forgotT')}</h2>${inner}<button class="back" data-act="go" data-v="signin">← ${t('signin')}</button></div><footer>© 2026 Marma Language</footer>`;return}
+ if(S.view==='signin'||S.view==='signup'){const up=S.view==='signup',F=S.f||{};
+  A.innerHTML=`<div class="auth">${logo(96)}<h1 style="margin:10px 0 0">Marma Language</h1><p class="en">${t('welcome')}</p><h2>${t(up?'signup':'signin')}</h2>${up?`<input class="in" id="a_name" autocomplete="name" placeholder="${t('name')}" value="${esc(F.name)}">`:''}<input class="in" id="a_id" autocomplete="username" placeholder="${t('idPh2')}" value="${esc(F.id)}"><div class="pw"><input class="in" id="a_pass" type="password" autocomplete="${up?'new-password':'current-password'}" placeholder="${t('pass')}"><button type="button" class="eye" data-act="eye" aria-label="show password">👁</button></div><div class="err">${t(S.err||'x')==='x'?'':t(S.err)}</div><button class="btn" data-act="${up?'signup':'signin'}">${t(up?'create':'signin')}</button><div class="en" style="margin:10px 0 2px">— ${t('orWith')} —</div><button class="btn ghost" data-act="oauth" data-p="google"><b>G</b> &nbsp;${t('contG')}</button><button class="btn ghost" data-act="oauth" data-p="facebook"><b>f</b> &nbsp;${t('contF')}</button>${up?'':`<button class="back" data-act="go" data-v="forgot">${t('forgot')}</button>`}<button class="back" data-act="go" data-v="${up?'signin':'signup'}">${t(up?'have':'newq')}</button><button class="back" data-act="go" data-v="privacy">${t('privacy')}</button></div><footer>© 2026 Marma Language</footer>`;return}
+ A.innerHTML=`<header><div class="brand">${logo(34)}<b>Marma Language</b><span class="sp"></span>${syncBtn()}${av(34)}</div><input id="q" class="search" placeholder="${t('search')}" value="${esc(S.q)}"><nav class="tabs">${TABS.map(k=>`<button class="tab ${S.tab===k?'on':''}" data-act="tab" data-t="${k}">${t(k)}</button>`).join('')}<button class="mbtn ${S.tab==='menu'?'on':''}" data-act="tab" data-t="menu" aria-label="${t('menu')}" title="${t('menu')}">${burger(22)}</button></nav></header><main id="body"></main>`;
+ body()}
+const dlist=rev=>{const L=[...DB.dict.map(i=>['dict',i]),...DB.words.map(i=>['words',i])];return L.length?L.map(p=>card(p[0],p[1],rev)).join(''):`<p class="note">${t('empty')}</p>`};
+const list=(c,rev)=>DB[c].length?DB[c].map(i=>card(c,i,rev)).join(''):`<p class="note">${t('empty')}</p>`;
+function body(){
+ const B=$('#body'),q=S.q.trim().toLowerCase();let h='';
+ if(q){const parts=['dict','words','sentences'].map(c=>[c,DB[c].filter(i=>match(i,q))]).filter(p=>p[1].length);
+  const ts=DB.tables.map(x=>[x,x.cap.toLowerCase().includes(q)?x.rows:x.rows.filter(r=>r.c.some(c=>ctext(c).includes(q)))]).filter(p=>p[1].length);
+  const ls=DB.lit.posts.filter(p=>(p.title+' '+p.body).toLowerCase().includes(q));
+  h=`<h3>${t('results')}</h3>`+parts.map(p=>`<h3>${t(p[0]==='sentences'?'sent':p[0]==='dict'?'dict':'word')}</h3>`+p[1].map(i=>card(p[0],i,false)).join('')).join('')+(ts.length?`<h3>${t('sang')}</h3>`+ts.map(p=>tbl(p[0],p[1])).join(''):'')+(ls.length?`<h3>${t('lit')}</h3>`+ls.map(post).join(''):'')+(parts.length||ts.length||ls.length?'':`<p class="note">${t('none')}</p>`)}
+ else if(S.tab==='dict')h=`<div class="seg"><button class="${S.dir==='m2b'?'on':''}" data-act="dir" data-d="m2b">${t('m2b')}</button><button class="${S.dir==='b2m'?'on':''}" data-act="dir" data-d="b2m">${t('b2m')}</button></div>`+dlist(S.dir==='b2m');
+ else if(S.tab==='word'){const g={};DB.words.forEach(w=>(g[w.cat||'Others']=g[w.cat||'Others']||[]).push(w));
+  h=Object.keys(g).length?Object.keys(g).map(c=>`<details open><summary>${esc(c)} (${g[c].length})</summary>${g[c].map(i=>card('words',i,false)).join('')}</details>`).join(''):list('words')}
+ else if(S.tab==='sang')h=`<h2>${t('sang')}</h2>`+(DB.tables.map(x=>tbl(x,x.rows)).join('')||`<p class="note">${t('empty')}</p>`);
+ else if(S.tab==='sent')h=`<h2>${t('sent')}</h2>`+list('sentences');
+ else if(S.tab==='lit')h=litPage();
+ else h=menu();
+ B.innerHTML=h}
+function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button>`;
+ if(S.sub==='profile')return `${back}<h2>${t('profile')}</h2><div class="card" style="text-align:center">${av(96)}<div style="margin-top:8px"><b>${esc(u.name)}</b></div><div class="en">${t('role_'+u.role)}</div><div style="margin-top:6px">${u.email?`<div>✉️ ${esc(u.email)}</div>`:''}${u.phone?`<div>📞 ${esc(u.phone)}</div>`:''}</div></div><button class="btn" data-act="sub" data-s="editprofile">✏️ ${t('editProfile')}</button>`;
+ if(S.sub==='editprofile')return `<button class="back" data-act="sub" data-s="profile">← ${t('profile')}</button><h2>${t('editProfile')}</h2><div class="card" style="text-align:center">${av(96)}<div><button class="btn sm" data-act="picpick">${t('changePic')}</button>${u.pic?`<button class="btn sm ghost" data-act="picrm">${t('rmPic')}</button>`:''}</div></div><div class="card"><b>${t('details')}</b><input class="in" id="p_name" autocomplete="name" placeholder="${t('name')}" value="${esc(u.name)}"><input class="in" id="p_email" type="email" autocomplete="email" placeholder="${t('emailOpt')}" value="${esc(u.email||'')}"><input class="in" id="p_phone" type="tel" autocomplete="tel" placeholder="${t('phoneOpt')}" value="${esc(u.phone||'')}"><button class="btn" data-act="saveprofile">${t('saveChanges')}</button><div class="en" style="margin-top:4px;font-size:.85rem">${t('loginNote')}</div></div>${AUTH&&AUTH.provider&&AUTH.provider!=='email'?'':`<div class="card"><b>${t('changePw')}</b><input class="in" id="pw_cur" type="password" autocomplete="current-password" placeholder="${t('curPw')}"><input class="in" id="pw_new" type="password" autocomplete="new-password" placeholder="${t('newPw')}"><input class="in" id="pw_con" type="password" autocomplete="new-password" placeholder="${t('conPw')}"><button class="btn" data-act="savepw">${t('changePw')}</button></div>`}`;
+ if(S.sub==='privacy')return `${back}<h2>${t('privacy')}</h2>${privHtml()}`;
+ if(S.sub==='fav'){const items=favs().map(k=>{const[c,id]=k.split(':');const it=(DB[c]||[]).find(x=>x.id===id);return it?card(c,it,false):''}).join('');return `${back}<h2>${t('fav')}</h2>${items||`<p class="note">${t('favEmpty')}</p>`}`}
+ if(S.sub==='about')return `${back}<h2>${t('about')}</h2><div class="card">${logo(64)}<p><b>Marma Language</b></p><p>${t('aboutTxt')}</p><p class="en">Version 4.0</p></div>`;
+ if(S.sub==='language')return `${back}<h2>${t('language')}</h2><p class="en">${t('chooseLang')}</p><div class="seg"><button class="${CFG.lang==='en'?'on':''}" data-act="lang" data-l="en">English</button><button class="${CFG.lang==='bn'?'on':''}" data-act="lang" data-l="bn">বাংলা</button></div>`;
+ if(S.sub==='settings')return `${back}<h2>${t('settings')}</h2><h3>${t('theme')}</h3><div class="seg">${['auto','light','dark'].map(x=>`<button class="${CFG.theme===x?'on':''}" data-act="theme" data-t="${x}">${x}</button>`).join('')}</div><h3>${t('fsize')}</h3><div class="seg">${[[14,'small'],[16,'medium'],[19,'large']].map(s=>`<button class="${CFG.size===s[0]?'on':''}" data-act="size" data-n="${s[0]}">${t(s[1])}</button>`).join('')}</div>`;
+ if(S.sub==='rate'){const rs=DB.ratings,avg=rs.length?(rs.reduce((a,r)=>a+r.s,0)/rs.length).toFixed(1):'–',mine=rs.find(r=>r.by===ME),n=S.rs||(mine?mine.s:0);
+  return `${back}<h2>${t('rating')}</h2><div class="card" style="text-align:center"><div style="font-size:2.2rem;color:var(--ac)">★ ${avg}</div><div class="en">${t('avg')} · ${rs.length} ${t('votes')}</div></div><h3>${t('rateTitle')}</h3><div class="stars">${[1,2,3,4,5].map(i=>`<button data-act="star" data-n="${i}" aria-label="${i}">${i<=n?'★':'☆'}</button>`).join('')}</div><textarea class="in" id="r_txt" placeholder="${t('feedback')}">${esc(S.rtxt||mine?.x||'')}</textarea><button class="btn" data-act="rate">${t('submit')}</button>${isAdmin()?`<h3>${t('allRatings')}</h3>`+rs.map(r=>`<div class="card"><b>${esc(r.an)}</b> <span style="color:var(--ac)">${'★'.repeat(r.s)}</span><div class="en">${esc(r.x)}</div></div>`).join(''):''}`}
+ if(S.sub==='admin'&&isAdmin())return admin();
+ const R=(a,s,i,l)=>`<button class="row" data-act="${a}" data-s="${s}"><span>${i} ${l}</span><span>›</span></button>`;
+ return `<div class="menu"><h2 aria-label="${t('menu')}">${burger(26)}</h2><div class="en" id="syncst" style="margin:0 2px 6px">${syncText()}</div>${R('sub','profile','👤',t('profile'))}${R('sub','fav','★',t('fav'))}${R('sub','language','🌐',t('language')+' ('+(CFG.lang==='bn'?'বাংলা':'English')+')')}${R('sub','rate','⭐',t('rating'))}${R('share','','📤',t('share'))}${R('sub','privacy','🔒',t('privacy'))}${R('sub','about','ℹ️',t('about'))}${R('sub','settings','⚙️',t('settings'))}${isAdmin()?R('sub','admin','🛠',t('admin')):''}${R('syncnow','','🔄',t('syncNow'))}${R('logout','','⏻',t('logout'))}</div>`}
+function dataTools(){return `<div class="note">${t('dataNote')}</div><textarea class="in" id="io" placeholder="${t('ioPh')}"></textarea><button class="btn sm" data-act="export">${t('exp')}</button><button class="btn sm" data-act="import">${t('imp')}</button><button class="btn sm dng" data-act="clear">${t('clearAll')}</button><button class="btn sm ghost" data-act="reset">${t('resetSeed')}</button>`}
+function admin(){const c=S.col,M=isMain();
+ const tabs=[['dict','dict'],['words','aw'],['sentences','as'],['tables','at'],['cats','ac'],...(M?[['admins','aa'],['data','ad']]:[])];
+ const nav=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button><h2>${t('admin')}</h2><div class="seg">${tabs.map(x=>`<button class="${c===x[0]?'on':''}" data-act="col" data-c="${x[0]}">${t(x[1])}</button>`).join('')}</div>`;
+ if(c==='data'&&M)return nav+dataTools();
+ if(c==='admins'&&M)return nav+`<div class="note">${t('adminNote')}</div>`+USERS.map(u=>`<div class="card"><b>${esc(u.name)}</b> <span class="badge">${t('role_'+u.role)}</span><div class="en">${esc(contact(u))}</div>${u.role==='main'?'':`<button class="btn sm ${u.role==='sub'?'dng':''}" data-act="setrole" data-e="${esc(u.id)}" data-r="${u.role==='sub'?'user':'sub'}">${t(u.role==='sub'?'rmSub':'makeSub')}</button>`}</div>`).join('');
+ if(c==='cats')return nav+`<div class="card"><input class="in" id="k_en" placeholder="${t('catEn')}"><input class="in" id="k_bn" placeholder="${t('catBn')}"><button class="btn" data-act="addcat">${t('addBtn')}</button></div>`+DB.lit.cats.map(k=>`<div class="card top"><div><b>${esc(k.en||'')}</b> · ${esc(k.bn||'')}</div>${M?`<button class="btn sm dng" data-act="delcat" data-id="${k.id}">${t('del')}</button>`:''}</div>`).join('');
+ if(c==='tables'){const x=S.tid&&curT();
+  if(!x)return nav+`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`+DB.tables.map(x=>`<div class="card"><b>${esc(x.cap)}</b><div class="en">${x.cols.length} ${t('cols')} · ${x.rows.length} ${t('rows')}</div><button class="btn sm" data-act="edittbl" data-id="${x.id}">${t('edit')}</button><button class="btn sm dng" data-act="deltbl" data-id="${x.id}">${t('del')}</button></div>`).join('');
+  const sc=S.cell&&x.rows[S.cell.r]&&x.rows[S.cell.r].c[S.cell.c],fv=k=>esc(sc?sc[k]||'':'');
+  const form=sc?`<div class="card"><b>${t('edit')}</b> <span class="en">(${S.cell.r+1}, ${S.cell.c+1})</span><input class="in" id="cf_m" placeholder="${t('marmaPh')}" value="${fv('m')}"><input class="in" id="cf_p" placeholder="${t('pronPh')}" value="${fv('p')}"><input class="in" id="cf_b" placeholder="${t('bnPh')}" value="${fv('b')}"><input class="in" id="cf_e" placeholder="${t('enPh')}" value="${fv('e')}"><div class="en">🎙 ${sc.k?t('audioHas'):t('audioLbl')}</div><button class="play" data-act="cellau" data-r="${S.cell.r}" data-c="${S.cell.c}" title="audio">${sc.k?'🔊':'🎙'}</button>${sc.k?au(sc.k)+`<button class="x" data-act="cellrm" data-r="${S.cell.r}" data-c="${S.cell.c}">⊘</button>`:''}<div><button class="btn sm" data-act="cellsave">💾 ${t('saved').replace(' ✔','')}</button><button class="btn sm" data-act="cellclose">✕</button></div></div>`:'';
+  return nav+`<button class="back" data-act="backtbl">${t('allTbl')}</button><input class="in" id="t_cap" placeholder="${t('caption')}" value="${esc(x.cap)}"><div class="note">${t('tblNote')}</div>${form}<div class="card tw"><table><thead><tr>${x.cols.map((c,i)=>`<th>${i+1}<button class="x" data-act="delcol" data-i="${i}" aria-label="delete column">✕</button></th>`).join('')}<th></th></tr></thead><tbody>${x.rows.map((r,ri)=>`<tr>${r.c.map((y,ci)=>`<td class="bx ed${S.cell&&S.cell.r===ri&&S.cell.c===ci?' sel':''}" data-act="cellopen" data-r="${ri}" data-c="${ci}">${cellH(y)||'<span class="en">＋</span>'}</td>`).join('')}<td><button class="x" data-act="delrow" data-r="${ri}" aria-label="delete row">✕</button></td></tr>`).join('')}</tbody></table></div><button class="btn sm" data-act="addcol">${t('addCol')}</button><button class="btn sm" data-act="addrow">${t('addRow')}</button><button class="btn sm" data-act="savetbl">💾 ${t('saved').replace(' ✔','')}</button>`}
+ const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;
+ return nav+`<div class="card"><b>${e?t('edit'):t('addNew')}</b>${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${c==='words'?f('cat','secPh'):''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`+DB[c].map(i=>`<div class="card"><div class="top"><div><div class="mm">${esc(i.marma)}</div><div class="pr">${esc(i.pron)}</div></div>${au(i.k)}</div><div class="bn">${esc(i.bn)} · ${esc(i.en)}</div><button class="btn sm" data-act="edititem" data-id="${i.id}">${t('edit')}</button><button class="btn sm dng" data-act="delitem" data-id="${i.id}">${t('del')}</button></div>`).join('')}
+// <CLOUD>
+// ================= CLOUD SYNC (Supabase, no library needed) =================
+const SB_URL='https://hphemglpqpbdidvnbqjl.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwaGVtZ2xwcXBiZGlkdm5icWpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE2MTcyMjIsImV4cCI6MjEwNzE5MzIyMn0.YAfkxolvK5RgpP323K0UrzFR0L5TX572gWyzANGn8_Y'; // public "anon" key - safe to keep in the app
+const PHONE_DOMAIN='thuinumong.github.io'; // phone-number accounts use <phone>@this-domain as a hidden login email
+let AUTH=store.get('ml_auth',null);
+let SYNC=store.get('ml_sync',null)||{init:false,last:null,snap:{},uid:null,pdirty:false,aq:[]};
+const saveSync=()=>store.set('ml_sync',SYNC),saveAuth=()=>store.set('ml_auth',AUTH);
+const emptyDB=()=>({dict:[],words:[],sentences:[],tables:[],lit:{cats:[],posts:[]},ratings:[]});
+const hsh=s=>{let x=5381;for(let i=0;i<s.length;i++)x=((x<<5)+x+s.charCodeAt(i))|0;return x+':'+s.length};
+const canon=v=>v===null||typeof v!=='object'?JSON.stringify(v):Array.isArray(v)?'['+v.map(x=>canon(x===undefined?null:x)).join(',')+']':'{'+Object.keys(v).filter(k=>v[k]!==undefined).sort().map(k=>JSON.stringify(k)+':'+canon(v[k])).join(',')+'}';
+const KCOL=k=>k.slice(0,k.indexOf('|')),KID=k=>k.slice(k.indexOf('|')+1);
+
+async function sb(path,o={}){
+ let r;
+ try{r=await fetch(SB_URL+path,{method:o.method||'GET',headers:{apikey:SB_KEY,Authorization:'Bearer '+(o.tok||SB_KEY),'Content-Type':'application/json',...(o.headers||{})},body:o.body===undefined?undefined:JSON.stringify(o.body)})}
+ catch(x){const e=new Error('net');e.net=true;throw e}
+ let j=null;try{const tx=await r.text();j=tx?JSON.parse(tx):null}catch(x){}
+ if(!r.ok){const e=new Error((j&&(j.msg||j.message||j.error_description||j.error))||('HTTP '+r.status));e.status=r.status;e.code=j&&(j.error_code||j.code);throw e}
+ return j}
+function setAuth(j,login){AUTH={access_token:j.access_token,refresh_token:j.refresh_token,expires_at:j.expires_at||Math.floor(Date.now()/1000)+(j.expires_in||3600),uid:(j.user&&j.user.id)||(AUTH&&AUTH.uid),login:login||(AUTH&&AUTH.login),provider:(j.user&&j.user.app_metadata&&j.user.app_metadata.provider)||(AUTH&&AUTH.provider)};saveAuth()}
+async function getTok(){
+ if(!AUTH||AUTH.dead)throw Object.assign(new Error('auth'),{status:401});
+ if(AUTH.expires_at-60>Date.now()/1000)return AUTH.access_token;
+ try{const j=await sb('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:AUTH.refresh_token}});setAuth(j);return AUTH.access_token}
+ catch(e){if(!e.net&&(e.status===400||e.status===401||e.status===403)){AUTH.dead=true;saveAuth()}throw e}}
+async function rest(path,o={}){const tk=await getTok();return sb('/rest/v1'+path,{...o,tok:tk,headers:{Prefer:'return=minimal',...(o.headers||{})}})}
+
+// ---- local DB <-> flat list of small items ----
+function flat(){const m={},add=(col,id,data)=>{m[col+'|'+id]={col,id:String(id),data}};
+ ['dict','words','sentences'].forEach(c=>(DB[c]||[]).forEach(x=>add(c,x.id,x)));
+ (DB.tables||[]).forEach(x=>add('tables',x.id,x));
+ DB.lit.cats.forEach(x=>add('cats',x.id,x));
+ DB.lit.posts.forEach(p=>{const {cm,rx,...rest}=p;add('posts',p.id,rest);
+  (cm||[]).forEach(c=>add('comments',c.id,{...c,post:p.id}));
+  Object.entries(rx||{}).forEach(([e,L])=>(L||[]).forEach(u=>add('reactions',p.id+'|'+e+'|'+u,{post:p.id,e,by:u})))});
+ (DB.ratings||[]).forEach(r=>add('ratings',r.by,r));
+ return m}
+const PRI={cats:0,dict:1,words:1,sentences:1,tables:2,posts:3,comments:4,reactions:5,ratings:6};
+function applyRemote(it){
+ const {col,id,deleted}=it,d=it.data||{},same=(a,b)=>String(a)===String(b);
+ const put=(arr,front)=>{const i=arr.findIndex(y=>same(y.id,id));if(deleted){if(i>=0)arr.splice(i,1);return}if(i>=0)arr[i]=d;else front?arr.unshift(d):arr.push(d)};
+ if(col==='dict'||col==='words'||col==='sentences'){DB[col]=DB[col]||[];put(DB[col],true)}
+ else if(col==='tables'){if(!deleted)normT(d);put(DB.tables,false)}
+ else if(col==='cats')put(DB.lit.cats,false);
+ else if(col==='ratings'){const i=DB.ratings.findIndex(r=>same(r.by,id));if(deleted){if(i>=0)DB.ratings.splice(i,1)}else if(i>=0)DB.ratings[i]=d;else DB.ratings.push(d)}
+ else if(col==='posts'){const P=DB.lit.posts,i=P.findIndex(p=>same(p.id,id));if(deleted){if(i>=0)P.splice(i,1)}else{const old=i>=0?P[i]:{},x={...d,cm:old.cm||[],rx:old.rx||{}};if(i>=0)P[i]=x;else P.push(x)}}
+ else if(col==='comments'){const p=d.post!==undefined?DB.lit.posts.find(q=>same(q.id,d.post)):DB.lit.posts.find(q=>(q.cm||[]).some(c=>same(c.id,id)));if(!p)return;p.cm=p.cm||[];const i=p.cm.findIndex(c=>same(c.id,id));if(deleted){if(i>=0)p.cm.splice(i,1)}else if(i>=0)p.cm[i]=d;else p.cm.push(d)}
+ else if(col==='reactions'){const p=DB.lit.posts.find(q=>same(q.id,d.post));if(!p)return;p.rx=p.rx||{};const L=p.rx[d.e]||[];if(deleted)p.rx[d.e]=L.filter(u=>!same(u,d.by));else if(!L.some(u=>same(u,d.by)))p.rx[d.e]=[...L,d.by]}}
+let CHANGED=false;
+function applyItems(items,force){
+ items.sort((a,b)=>(PRI[a.col]??9)-(PRI[b.col]??9));
+ const cur=force?{}:flat();
+ for(const it of items){
+  if(PRI[it.col]===undefined)continue;
+  const k=it.col+'|'+it.id,rh=it.deleted?null:hsh(canon(it.data||{}));
+  if(!force){const c=cur[k],s=SYNC.snap[k],pending=c?s!==hsh(canon(c.data)):!!s;
+   if(pending)continue;                       // you changed it on this phone, not synced yet - keep yours
+   if(it.deleted?(!c&&!s):(c&&s===rh))continue; // nothing new
+  }
+  applyRemote(it);
+  if(it.deleted)delete SYNC.snap[k];else SYNC.snap[k]=rh;
+  CHANGED=true}
+ DB.lit.posts.sort((a,b)=>(b.ts||0)-(a.ts||0));
+ store.set('ml_db',DB)}
+async function pullItems(){
+ let since=null;
+ if(SYNC.init&&SYNC.last){const ms=Date.parse(SYNC.last);if(!isNaN(ms))since=new Date(ms-120000).toISOString()}
+ let all=[],off=0;
+ for(;;){const a=await rest('/items?select=col,id,data,deleted,updated_at&order=updated_at.asc,col.asc,id.asc&limit=1000&offset='+off+(since?'&updated_at=gte.'+encodeURIComponent(since):''));
+  if(!a||!a.length)break;all=all.concat(a);if(a.length<1000)break;off+=1000}
+ return all}
+const mark=o=>{if(o.h===null)delete SYNC.snap[o.k];else SYNC.snap[o.k]=o.h};
+const upsertRows=rows=>rest('/items?on_conflict=col,id',{method:'POST',body:rows,headers:{Prefer:'resolution=merge-duplicates,return=minimal'}});
+const fatal=e=>e.net||e.status===401||e.status>=500;
+async function reconcile(o){ // server refused this change: take the server's version
+ const r=o.row,a=await rest('/items?select=col,id,data,deleted&col=eq.'+encodeURIComponent(r.col)+'&id=eq.'+encodeURIComponent(r.id));
+ applyRemote(a&&a[0]?a[0]:{col:r.col,id:r.id,data:{},deleted:true});
+ const c=flat()[o.k];if(c)SYNC.snap[o.k]=hsh(canon(c.data));else delete SYNC.snap[o.k];
+ CHANGED=true}
+async function pushItems(){
+ const cur=flat(),ops=[];
+ for(const k in cur){const h=hsh(canon(cur[k].data));if(SYNC.snap[k]!==h)ops.push({k,h,row:{col:cur[k].col,id:cur[k].id,data:cur[k].data,deleted:false}})}
+ for(const k in SYNC.snap)if(!cur[k])ops.push({k,h:null,row:{col:KCOL(k),id:KID(k),data:{},deleted:true}});
+ const ups=ops.filter(o=>o.h!==null),tombs=ops.filter(o=>o.h===null);
+ for(let i=0;i<ups.length;i+=40){const part=ups.slice(i,i+40);
+  try{await upsertRows(part.map(o=>o.row));part.forEach(mark)}
+  catch(e){if(fatal(e))throw e;
+   for(const o of part){try{await upsertRows([o.row]);mark(o)}catch(e2){if(fatal(e2))throw e2;await reconcile(o)}}}
+  saveSync()}
+ const byCol={};tombs.forEach(o=>(byCol[o.row.col]=byCol[o.row.col]||[]).push(o));
+ for(const col in byCol){const L=byCol[col];for(let i=0;i<L.length;i+=40){const part=L.slice(i,i+40),ids=part.map(o=>'"'+String(o.row.id).replace(/"/g,'\\"')+'"').join(',');
+  try{await rest('/items?col=eq.'+encodeURIComponent(col)+'&id=in.('+encodeURIComponent(ids)+')',{method:'PATCH',body:{deleted:true}})}catch(e){if(fatal(e))throw e}
+  part.forEach(mark);saveSync()}}}
+
+// ---- profiles ----
+async function loadProfiles(){
+ let list=await rest('/profiles?id=eq.'+encodeURIComponent(ME)+'&select=*')||[];
+ if(list[0]&&list[0].role!=='user')list=await rest('/profiles?select=*&order=created_at.asc')||list;
+ if(list.length){USERS=list.map(p=>({id:p.id,name:p.name||'',email:p.email||'',phone:p.phone||'',role:p.role,pic:p.pic||undefined}));store.set('ml_users',USERS)}}
+async function pushProfile(){
+ if(!AUTH||AUTH.dead||!SYNC.pdirty)return;const u=user();if(!u)return;
+ try{await rest('/profiles?id=eq.'+encodeURIComponent(ME),{method:'PATCH',body:{name:u.name,email:u.email||null,phone:u.phone||null,pic:u.pic||null}});SYNC.pdirty=false;saveSync()}catch(e){}}
+
+// ---- audio clips (Supabase Storage bucket "audio") ----
+const allAudioKeys=()=>{const s=new Set(),add=y=>{if(y&&y.k)s.add(y.k)};['dict','words','sentences'].forEach(c=>(DB[c]||[]).forEach(add));(DB.tables||[]).forEach(x=>x.rows.forEach(r=>r.c.forEach(add)));return [...s]};
+async function pushAudio(){
+ if(!isAdmin()||!SYNC.aq.length)return;
+ for(const k of SYNC.aq.slice()){const b=await agetLocal(k);
+  if(!b){SYNC.aq=SYNC.aq.filter(x=>x!==k);continue}
+  const tk=await getTok();let r;
+  try{r=await fetch(SB_URL+'/storage/v1/object/audio/'+encodeURIComponent(k),{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+tk,'Content-Type':b.type||'application/octet-stream','x-upsert':'true'},body:b})}
+  catch(x){throw Object.assign(new Error('net'),{net:true})}
+  if(r.ok||(r.status>=400&&r.status<500&&r.status!==401))SYNC.aq=SYNC.aq.filter(x=>x!==k);else throw Object.assign(new Error('audio'),{status:r.status});
+  saveSync()}}
+audioFetch=async k=>{try{const r=await fetch(SB_URL+'/storage/v1/object/public/audio/'+encodeURIComponent(k));return r.ok?await r.blob():null}catch(e){return null}};
+audioHook=k=>{if(!AUTH)return;if(!SYNC.aq.includes(k))SYNC.aq.push(k);saveSync();schedule()};
+audioDel=async k=>{SYNC.aq=SYNC.aq.filter(x=>x!==k);saveSync();if(!AUTH||AUTH.dead||!isAdmin())return;try{const tk=await getTok();await fetch(SB_URL+'/storage/v1/object/audio/'+encodeURIComponent(k),{method:'DELETE',headers:{apikey:SB_KEY,Authorization:'Bearer '+tk}})}catch(e){}};
+
+// ---- the sync loop ----
+let busy=false,again=false,timer=null;
+const syncText=()=>t(S.sync||'syncWork');
+const SYNC_PATH={syncOk:'<path d="M9.3 13.2l2.1 2.1 3.7-4" />',syncWork:'<path d="M14.6 12.6a2.7 2.7 0 1 1-1-2.1M14.9 9.5v2.4h-2.4" />',syncOff:'<path d="M4.5 4.5l15 15" />',syncAuth:'<path d="M12 10.5v3.2M12 16v.2" />'};
+const syncSvg=k=>'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18.5a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17 8.9a4.8 4.8 0 0 1 .5 9.6H7z"/>'+(SYNC_PATH[k]||SYNC_PATH.syncWork)+'</svg>';
+function syncBtn(){const k=S.sync||'syncWork';return '<button class="sbtn" id="syncic" data-act="syncnow" data-st="'+k+'" title="'+t(k)+'" aria-label="'+t('syncNow')+'">'+syncSvg(k)+'</button>'}
+function status(k){S.sync=k;const el=$('#syncst');if(el)el.textContent=syncText();const b=$('#syncic');if(b){b.dataset.st=k;b.title=t(k);b.innerHTML=syncSvg(k)}}
+function safeRefresh(){if(S.view!=='app')return;const a=document.activeElement&&document.activeElement.tagName;if(a==='INPUT'||a==='TEXTAREA'||a==='SELECT'||S.pf||S.edit||S.tid)return;try{body()}catch(e){}}
+function schedule(){if(!AUTH||AUTH.dead)return;clearTimeout(timer);timer=setTimeout(()=>sync({pull:false}),900)}
+cloudHook=schedule;
+async function sync(opt={}){
+ if(!AUTH||!ME)return;
+ if(AUTH.dead){status('syncAuth');return}
+ if(busy){again=true;return}
+ busy=true;status('syncWork');let pulled=false;
+ try{
+  if(!SYNC.init){
+   await loadProfiles();
+   const items=await pullItems();pulled=true;
+   if(items.length){DB=emptyDB();SYNC.snap={};applyItems(items,true);SYNC.last=items.reduce((m,x)=>x.updated_at>m?x.updated_at:m,items[0].updated_at)}
+   else if(isAdmin())SYNC.aq=allAudioKeys();   // empty cloud + admin: everything on this phone gets uploaded
+   else{SYNC.snap={};const c=flat();for(const k in c)SYNC.snap[k]=hsh(canon(c[k].data))}
+   SYNC.init=true;SYNC.uid=ME;saveSync()}
+  await pushProfile();
+  await pushItems();
+  if(!pulled&&opt.pull!==false){
+   const items=await pullItems();if(items.length){applyItems(items);SYNC.last=items.reduce((m,x)=>x.updated_at>m?x.updated_at:m,SYNC.last||items[0].updated_at)}
+   await loadProfiles()}
+  saveSync();await pushAudio();
+  status('syncOk')}
+ catch(e){status(e.status===401?'syncAuth':'syncOff')}
+ finally{busy=false;if(again){again=false;setTimeout(()=>sync(),500)}}
+ if(CHANGED){CHANGED=false;safeRefresh()}}
+
+// ---- login / sign up ----
+async function cloudAuth(I,pass,name){
+ const email=I.email||I.phone+'@'+PHONE_DOMAIN,signup=name!==undefined;
+ const j=signup?await sb('/auth/v1/signup',{method:'POST',body:{email,password:pass,data:{name,email:I.email||'',phone:I.phone||''}}}):await sb('/auth/v1/token?grant_type=password',{method:'POST',body:{email,password:pass}});
+ if(!j||!j.access_token){const e=new Error('confirm');e.code='confirm';throw e}
+ await adoptSession(j,email,{id:j.user.id,name:signup?name:((j.user.user_metadata&&j.user.user_metadata.name)||''),email:I.email||'',phone:I.phone||'',role:'user'})}
+async function adoptSession(j,login,prof){
+ if(SYNC.uid&&SYNC.uid!==j.user.id){DB=emptyDB();store.set('ml_db',DB);SYNC={init:false,last:null,snap:{},uid:null,pdirty:false,aq:[]};saveSync()}
+ setAuth(j,login);ME=j.user.id;store.set('ml_sess',ME);
+ USERS=[prof];store.set('ml_users',USERS);
+ try{await loadProfiles()}catch(e){}}
+
+// ---- Google / Facebook login ----
+const IS_NATIVE=location.hostname==='localhost'&&location.protocol==='https:'; // the Android app serves itself from https://localhost
+const APP_SCHEME='com.marma.language://login';
+function oauthStart(p){
+ if(location.protocol==='file:'){S.err='e_oauthfile';render();return}
+ const redirect=IS_NATIVE?APP_SCHEME:location.origin+location.pathname;
+ const url=SB_URL+'/auth/v1/authorize?provider='+p+'&redirect_to='+encodeURIComponent(redirect)+(p==='google'?'&prompt=select_account':'');
+ if(IS_NATIVE){if(window.NativeAuth)window.NativeAuth.open(url);else window.open(url,'_blank')}else location.href=url}
+async function handleAuthRedirect(u){
+ const i=u.indexOf('#');if(i<0)return;const P=new URLSearchParams(u.slice(i+1));
+ try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}
+ if(P.get('error')||P.get('error_description')){S.view='signin';S.err=/email/i.test(P.get('error_description')||'')?'e_oauthmail':'e_oauth';render();return}
+ const at=P.get('access_token');if(!at)return;
+ try{
+  const us=await sb('/auth/v1/user',{tok:at}),m=us.user_metadata||{};
+  await adoptSession({access_token:at,refresh_token:P.get('refresh_token'),expires_in:+P.get('expires_in')||3600,expires_at:+P.get('expires_at')||0,user:us},null,{id:us.id,name:m.full_name||m.name||(us.email||'').split('@')[0]||'',email:us.email||'',phone:'',role:'user'});
+  S.view='app';S.f=null;S.err='';render();sync()}
+ catch(e){S.view='signin';S.err=authErr(e,false);render()}}
+if(IS_NATIVE){const sc=document.createElement('script');sc.src='native.js';sc.onload=()=>{if(window.NativeAuth)window.NativeAuth.onUrl(u=>{if(String(u).indexOf('com.marma.language:')===0)handleAuthRedirect(u)})};document.head.appendChild(sc)}
+function authErr(e,signup){
+ if(e.net)return 'e_net';
+ if(e.code==='confirm'||e.code==='email_not_confirmed')return 'e_confirm';
+ if(e.code==='user_already_exists'||/already (registered|been registered)/i.test(e.message))return 'e_exist';
+ if(e.code==='weak_password')return 'e_len';
+ if(e.code==='same_password')return 'e_same';
+ if(e.status===429||/rate.?limit/i.test(e.code||''))return 'e_rate';
+ if(e.code==='email_address_invalid'||e.code==='validation_failed')return 'e_id';
+ if(!signup&&(e.status===400||e.status===401||e.code==='invalid_credentials'))return 'e_wrong';
+ return 'e_srv'}
+addEventListener('online',()=>sync());
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')sync()});
+setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)sync()},60000);
+// </CLOUD>
+
+function syncT(){const x=S.tid&&curT();if(!x||!$('#t_cap'))return;x.cap=val('t_cap');if(S.cell&&$('#cf_m')){const y=(x.rows[S.cell.r]||{c:[]}).c[S.cell.c];if(y){y.m=val('cf_m');y.p=val('cf_p');y.b=val('cf_b');y.e=val('cf_e')}}}
+function pic(file){const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=160;const s=Math.min(im.width,im.height);c.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,160,160);user().pic=c.toDataURL('image/jpeg',.8);store.set('ml_users',USERS);SYNC.pdirty=true;saveSync();pushProfile();render()};im.src=URL.createObjectURL(file)}
+document.addEventListener('input',e=>{if(e.target.id==='q'){S.q=e.target.value;body()}});
+$('#pfile').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)pic(f)});
+$('#afile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';const x=curT();if(!f||!S.tgt||!x||!isAdmin())return;const y=x.rows[S.tgt.r].c[S.tgt.c];adel(y.k);const k=uid();if(await aput(k,f))y.k=k;else alert(t('audioFail'));save();body()});
+document.addEventListener('click',async e=>{
+ const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,d=b.dataset,ADM=['saveitem','delitem','rmau','newtbl','edittbl','backtbl','deltbl','addcol','addrow','delcol','delrow','savetbl','cellau','cellrm','cellopen','cellsave','cellclose','addcat'];
+ if(ADM.includes(a)&&!isAdmin())return;
+ if(a==='go'){S.view=d.v;S.err='';S.f=null;S.fp=null;render()}
+ else if(a==='lang'){CFG.lang=d.l;store.set('ml_cfg',CFG);render()}
+ else if(a==='eye'){const i=$('#a_pass'),s=i.type==='password';i.type=s?'text':'password';b.textContent=s?'🙈':'👁'}
+ else if(a==='signup'){const name=val('a_name'),idv=val('a_id'),pass=val('a_pass'),I=parseId(idv);S.f={name,id:idv};S.err='';
+  if(!name||!idv||pass.length<8)S.err='e_fill';
+  else if(!I)S.err='e_id';
+  if(S.err){render();return}
+  b.disabled=true;
+  try{await cloudAuth(I,pass,name)}catch(e){S.err=authErr(e,true);render();return}
+  S.view='app';S.f=null;render();sync()}
+ else if(a==='signin'){const idv=val('a_id'),pass=val('a_pass'),I=parseId(idv);S.f={id:idv};S.err='';
+  if(!I||!pass){S.err='e_wrong';render();return}
+  b.disabled=true;
+  try{await cloudAuth(I,pass)}catch(e){S.err=authErr(e,false);render();return}
+  S.view='app';S.f=null;render();sync()}
+ else if(a==='fpsend'){const resend=!!d.resend,idv=resend?(S.fp?.to||''):val('a_id'),I=parseId(idv);S.err='';
+  if(resend&&S.fp&&Date.now()-S.fp.at<30000){S.err='e_wait';S.f={id:idv};render();return}
+  if(!I){S.err='e_id';S.f={id:idv};S.fp=null;render();return}
+  if(!I.email){S.err='e_fpphone';S.f={id:idv};S.fp=null;render();return}
+  b.disabled=true;
+  try{await sb('/auth/v1/recover',{method:'POST',body:{email:I.email}});S.fp={step:2,to:I.email,at:Date.now()};S.f=null}
+  catch(e){S.err=e.net?'e_net':(e.status===429?'e_rate':'e_send');S.f={id:idv}}
+  render()}
+ else if(a==='fpreset'){const P=S.fp,otp=val('a_otp').replace(/\s/g,''),n=val('a_pass'),k=val('a_pass2');S.err='';S.f={otp};
+  if(!P){S.err='e_otpexp';S.f=null;render();return}
+  if(!/^\d{6,8}$/.test(otp)){S.err='e_otp';render();return}
+  if(n.length<8){S.err='e_len';render();return}
+  if(n!==k){S.err='e_mis';render();return}
+  b.disabled=true;
+  try{const j=await sb('/auth/v1/verify',{method:'POST',body:{type:'recovery',email:P.to,token:otp}});
+   await sb('/auth/v1/user',{method:'PUT',tok:j.access_token,body:{password:n}});
+   S.fp=null;S.f=null;S.view='signin';S.err='';render();alert(t('pwReset'))}
+  catch(e){S.err=e.net?'e_net':(e.code==='same_password'?'e_same':(e.status===422&&e.code==='weak_password'?'e_len':((e.status>=400&&e.status<500)?'e_otp':'e_srv')));render()}}
+ else if(a==='syncnow'){sync()}
+ else if(a==='oauth'){oauthStart(d.p)}
+ else if(a==='logout'){if(AUTH&&!AUTH.dead&&navigator.onLine!==false){try{await Promise.race([sync({pull:false}),new Promise(r=>setTimeout(r,4000))])}catch(e){}try{sb('/auth/v1/logout?scope=local',{method:'POST',tok:AUTH.access_token}).catch(()=>{})}catch(e){}}AUTH=null;store.set('ml_auth',null);ME=null;store.set('ml_sess',null);Object.assign(S,{view:'welcome',sub:'',tab:'dict',q:''});render()}
+ else if(a==='tab'){Object.assign(S,{tab:d.t,sub:'',q:'',pf:null});render()}
+ else if(a==='myprof'){Object.assign(S,{tab:'menu',sub:'profile',q:''});render()}
+ else if(a==='dir'){S.dir=d.d;body()}
+ else if(a==='fav'){let f=favs();f=f.includes(d.k)?f.filter(x=>x!==d.k):[...f,d.k];store.set(favKey(),f);body()}
+ else if(a==='play')play(d.k);
+ else if(a==='sub'){syncT();save();S.sub=d.s;S.edit=null;S.tid=null;S.cell=null;body()}
+ else if(a==='share'){const url=location.href,txt=t('shareTxt');try{if(navigator.share){await navigator.share({title:'Marma Language',text:txt,url})}else throw 0}catch(x){try{await navigator.clipboard.writeText(url);alert(t('copied'))}catch(y){prompt('Link:',url)}}}
+ else if(a==='star'){S.rtxt=val('r_txt');S.rs=+d.n;body()}
+ else if(a==='rate'){const s=S.rs||DB.ratings.find(r=>r.by===ME)?.s;if(!s)return;const r={by:ME,an:user().name,s,x:val('r_txt'),ts:Date.now()},i=DB.ratings.findIndex(x=>x.by===ME);i<0?DB.ratings.push(r):DB.ratings[i]=r;S.rs=0;S.rtxt='';save();body();alert(t('thanks'))}
+ else if(a==='theme'){CFG.theme=d.t;store.set('ml_cfg',CFG);applyCfg();body()}
+ else if(a==='size'){CFG.size=+d.n;store.set('ml_cfg',CFG);applyCfg();body()}
+ else if(a==='saveprofile'){const u=user(),n=val('p_name'),em=val('p_email').toLowerCase(),ph=normPhone(val('p_phone'));
+  if(!n){alert(t('e_name'));return}
+  if(em&&!okMail(em)){alert(t('e_mail'));return}
+  if(ph&&!okPhone(ph)){alert(t('e_phone'));return}
+  if(!em&&!ph){alert(t('e_need'));return}
+  u.name=n;u.email=em;u.phone=ph;store.set('ml_users',USERS);
+  DB.lit.posts.forEach(p=>{if(p.by===ME)p.an=n;(p.cm||[]).forEach(m=>{if(m.by===ME)m.an=n})});DB.ratings.forEach(r=>{if(r.by===ME)r.an=n});save();
+  SYNC.pdirty=true;saveSync();pushProfile();
+  S.sub='profile';render();alert(t('saved'))}
+ else if(a==='savepw'){const c=val('pw_cur'),n=val('pw_new'),k=val('pw_con');
+  if(n.length<8){alert(t('e_len'));return}
+  if(n!==k){alert(t('e_mis'));return}
+  if(!AUTH||!AUTH.login){alert(t('syncAuth'));return}
+  b.disabled=true;
+  try{const j=await sb('/auth/v1/token?grant_type=password',{method:'POST',body:{email:AUTH.login,password:c}});setAuth(j);
+   await sb('/auth/v1/user',{method:'PUT',tok:j.access_token,body:{password:n}});b.disabled=false;body();alert(t('pwDone'))}
+  catch(e){b.disabled=false;alert(t(e.net?'e_net':(e.code==='same_password'?'e_same':(e.code==='weak_password'?'e_len':(e.status===400||e.status===401||e.code==='invalid_credentials'?'e_cur':'e_srv')))))}}
+ else if(a==='picpick')$('#pfile').click();
+ else if(a==='picrm'){delete user().pic;store.set('ml_users',USERS);SYNC.pdirty=true;saveSync();pushProfile();render()}
+ // Literature
+ else if(a==='lcat'){S.lcat=d.c;body()}
+ else if(a==='newpost'){S.pf='new';body()}
+ else if(a==='editpost'){const p=DB.lit.posts.find(x=>x.id===d.id);if(p&&canEdit(p)){S.pf=d.id;body();scrollTo(0,0)}}
+ else if(a==='cancelpost'){S.pf=null;body()}
+ else if(a==='savepost'){const p={cat:val('l_cat'),title:val('l_title'),lang:val('l_lang'),body:$('#l_body').value.trim()};if(!p.title||!p.body){alert(t('fillTB'));return}
+  const ex=S.pf!=='new'?DB.lit.posts.find(x=>x.id===S.pf):null;
+  if(ex){if(!canEdit(ex))return;Object.assign(ex,p)}else DB.lit.posts.unshift({id:uid(),...p,by:ME,an:user().name,ts:Date.now(),rx:{},cm:[]});
+  S.pf=null;save();body()}
+ else if(a==='delpost'){const p=DB.lit.posts.find(x=>x.id===d.id);if(p&&canEdit(p)&&confirm(t('sure'))){DB.lit.posts=DB.lit.posts.filter(x=>x!==p);save();body()}}
+ else if(a==='react'){const p=DB.lit.posts.find(x=>x.id===d.id);p.rx=p.rx||{};const L=p.rx[d.e]||[];p.rx[d.e]=L.includes(ME)?L.filter(x=>x!==ME):[...L,ME];save();body()}
+ else if(a==='cm'){S.open=S.open===d.id?null:d.id;body()}
+ else if(a==='addcm'){const x=val('cm_'+d.id);if(!x)return;const p=DB.lit.posts.find(q=>q.id===d.id);(p.cm=p.cm||[]).push({id:uid(),by:ME,an:user().name,text:x,ts:Date.now()});save();body()}
+ else if(a==='delcm'){const p=DB.lit.posts.find(q=>q.id===d.id),m=p.cm.find(x=>x.id===d.c);if(m&&(m.by===ME||isAdmin())){p.cm=p.cm.filter(x=>x!==m);save();body()}}
+ // Admin
+ else if(a==='col'){if((d.c==='admins'||d.c==='data')&&!isMain())return;syncT();save();S.col=d.c;S.edit=null;S.tid=null;S.cell=null;body()}
+ else if(a==='setrole'){if(!isMain())return;const u=USERS.find(x=>x.id===d.e);if(!u||u.role==='main')return;
+  try{const r=await rest('/profiles?id=eq.'+encodeURIComponent(u.id),{method:'PATCH',body:{role:d.r},headers:{Prefer:'return=representation'}});if(!r||!r.length)throw 0;u.role=d.r;store.set('ml_users',USERS);body()}catch(e){alert(t(e&&e.net?'e_net':'e_srv'))}}
+ else if(a==='addcat'){const en=val('k_en'),bn=val('k_bn');if(!en&&!bn)return;DB.lit.cats.push({id:uid(),en,bn});save();body()}
+ else if(a==='delcat'){if(isMain()&&confirm(t('sure'))){DB.lit.cats=DB.lit.cats.filter(x=>x.id!==d.id);save();body()}}
+ else if(a==='edititem'){S.edit=d.id;body();scrollTo(0,0)}
+ else if(a==='canceledit'){S.edit=null;body()}
+ else if(a==='rmau'){const x=DB[S.col].find(x=>x.id===S.edit);if(x){adel(x.k);x.k=null;save();body()}}
+ else if(a==='saveitem'){const it={marma:val('f_marma'),pron:val('f_pron'),bn:val('f_bn'),en:val('f_en')};if(S.col==='words')it.cat=val('f_cat')||'Others';
+  if(!it.marma&&!it.pron){alert(t('needOne'));return}
+  const ex=S.edit&&S.edit!=='new'?DB[S.col].find(x=>x.id===S.edit):null,f=$('#f_au')?.files[0];let x=ex;
+  if(ex)Object.assign(ex,it);else{x={id:uid(),...it};DB[S.col].unshift(x)}
+  if(f){adel(x.k);const k=uid();if(await aput(k,f))x.k=k;else alert(t('audioFail'))}
+  S.edit=null;save();body()}
+ else if(a==='delitem'){if(confirm(t('sure'))){const x=DB[S.col].find(x=>x.id===d.id);adel(x&&x.k);DB[S.col]=DB[S.col].filter(x=>x.id!==d.id);save();body()}}
+ else if(a==='newtbl'){const x={id:uid(),cap:'New table',cols:['',''],rows:[{id:uid(),c:[E(),E()]}]};DB.tables.push(x);S.tid=x.id;S.cell=null;save();body()}
+ else if(a==='edittbl'){S.tid=d.id;S.cell=null;body()}
+ else if(a==='backtbl'){syncT();save();S.tid=null;S.cell=null;body()}
+ else if(a==='deltbl'){if(confirm(t('sure'))){const x=DB.tables.find(x=>x.id===d.id);x.rows.forEach(r=>r.c.forEach(y=>adel(y.k)));DB.tables=DB.tables.filter(y=>y!==x);save();body()}}
+ else if(a==='addcol'){syncT();const x=curT();x.cols.push('');x.rows.forEach(r=>r.c.push(E()));save();body()}
+ else if(a==='addrow'){syncT();const x=curT();x.rows.push({id:uid(),c:x.cols.map(()=>E())});save();body()}
+ else if(a==='delcol'){syncT();const x=curT(),i=+d.i;if(x.cols.length<2){alert(t('oneCol'));return}S.cell=null;x.cols.splice(i,1);x.rows.forEach(r=>{adel(r.c[i].k);r.c.splice(i,1)});save();body()}
+ else if(a==='delrow'){syncT();const x=curT(),r=x.rows[+d.r];S.cell=null;r.c.forEach(y=>adel(y.k));x.rows.splice(+d.r,1);save();body()}
+ else if(a==='savetbl'){syncT();save();body();alert(t('saved'))}
+ else if(a==='cellau'){syncT();save();S.tgt={r:+d.r,c:+d.c};$('#afile').click()}
+ else if(a==='cellrm'){syncT();const y=curT().rows[+d.r].c[+d.c];adel(y.k);y.k=null;save();body()}
+ else if(a==='cellopen'){syncT();S.cell={r:+d.r,c:+d.c};body()}
+ else if(a==='cellsave'){syncT();S.cell=null;save();body()}
+ else if(a==='cellclose'){S.cell=null;body()}
+ else if(a==='export'&&isMain()){$('#io').value=JSON.stringify(DB,null,1)}
+ else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];DB=o;DB.tables.forEach(normT);save();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
+ else if(a==='clear'&&isMain()){if(confirm(t('sureAll'))){DB={dict:[],words:[],sentences:[],tables:[],lit:{cats:DB.lit.cats,posts:[]},ratings:[]};save();S.tid=null;body()}}
+ else if(a==='reset'&&isMain()){if(confirm(t('sureReset'))){DB=clone(SEED);save();S.tid=null;body()}}
+});
+render();
+if(/[#&](access_token|error_description)=/.test(location.hash))handleAuthRedirect(location.href);
+if(AUTH&&ME)setTimeout(sync,300);
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+</script>
+</body>
+</html>
