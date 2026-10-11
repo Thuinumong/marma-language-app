@@ -45,6 +45,7 @@ h2{margin:12px 0 4px}h3{margin:16px 0 0;color:var(--mu);font-size:.9rem;text-tra
 .menu .row{display:flex;justify-content:space-between;align-items:center;width:100%;padding:14px;margin:8px 0;border-radius:14px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit;cursor:pointer}
 .tw{overflow-x:auto}table{border-collapse:collapse;width:100%}caption{font-weight:600;text-align:left;padding:2px 0 8px;color:var(--pr);font-size:1.05rem}
 th,td{border:1px solid var(--bd);padding:7px 9px;text-align:left;vertical-align:middle}th{background:var(--bg);color:var(--mu);font-size:.85rem}
+td.bx{min-width:110px;vertical-align:top}td.ed{cursor:pointer}td.ed.sel{outline:2px solid var(--pr);outline-offset:-2px}td.bx .play{margin:4px 4px 0 0}
 td .in,th .in{min-width:120px;margin:0}.x{border:0;background:none;color:var(--rd);cursor:pointer;font-size:1rem}
 .av{border-radius:50%;object-fit:cover;background:var(--pr);color:var(--pt);display:inline-flex;align-items:center;justify-content:center;font-weight:600;cursor:pointer}
 .pw{position:relative}.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;font-size:1.2rem;cursor:pointer}
@@ -157,7 +158,7 @@ fpHelp:['Enter the email or phone number of your account. We will send a 6-digit
 otpPh:['6-digit code','৬ সংখ্যার কোড'],resetBtn:['Change password','পাসওয়ার্ড বদলান'],
 e_nouser:['No account found with this email or phone.','এই ইমেইল বা ফোনে কোনো অ্যাকাউন্ট নেই।'],e_otp:['Wrong code. Try again.','কোড ভুল। আবার চেষ্টা করুন।'],e_otpexp:['The code has expired or too many wrong tries. Please request a new one.','কোডের মেয়াদ শেষ বা অনেকবার ভুল হয়েছে। নতুন কোড নিন।'],e_send:['Could not send the code. Check your internet and try again.','কোড পাঠানো যায়নি। ইন্টারনেট দেখে আবার চেষ্টা করুন।'],e_wait:['Please wait a few seconds before asking for a new code.','নতুন কোড নেওয়ার আগে কয়েক সেকেন্ড অপেক্ষা করুন।'],
 pwReset:['Password changed. Please log in.','পাসওয়ার্ড বদলানো হয়েছে। এখন লগ ইন করুন।'],e_mis:['Passwords do not match.','পাসওয়ার্ড দুটি মেলেনি।'],pwDone:['Password changed ✔','পাসওয়ার্ড বদলানো হয়েছে ✔'],
-tblNote:['Audio can be added only in the first column (Marma).','অডিও শুধু প্রথম কলামে (Marma) যোগ করা যাবে।']};
+tblNote:['Tap a box to edit it: Marma, pronunciation, Bangla, English and audio. Leave any field empty.','বক্সে ট্যাপ করে সম্পাদনা করুন: মর্ম, উচ্চারণ, বাংলা, ইংরেজি ও অডিও। যেকোনো ফিল্ড খালি রাখা যাবে।']};
 const t=k=>(TX[k]||[k,k])[CFG.lang==='bn'?1:0];
 // ---- Audio (IndexedDB) ----
 const idb=new Promise(r=>{try{const q=indexedDB.open('ml_audio',1);q.onupgradeneeded=()=>q.result.createObjectStore('a');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}});
@@ -185,8 +186,11 @@ tables:[
 {id:'t2',cap:'বর্ণমালা (Alphabet)',cols:['Alphabet','উচ্চারণ','বাংলা'],rows:[
 {id:'r3',c:[{t:'က'},{t:'কা'},{t:'ক'}]},{id:'r4',c:[{t:'ခ'},{t:'খা'},{t:'খ'}]},{id:'r5',c:[{t:'ဂ'},{t:'গা'},{t:'গ'}]}]}],
 lit:{cats:[{id:'c1',en:'Story',bn:'গল্প'},{id:'c2',en:'Poem',bn:'কবিতা'}],posts:[]},ratings:[]};
+const E=()=>({m:'',p:'',b:'',e:'',k:null});
+function HK(h){h=(h||'').toLowerCase();return /pron|উচ্চারণ/.test(h)?'p':/বাংলা|bangla|bengali/.test(h)?'b':/english|ইংরেজি/.test(h)?'e':'m'}
+function normT(x){if(!x||!Array.isArray(x.rows))return x;x.cols=x.cols||[];x.rows.forEach(r=>{r.c=(r.c||[]).map((y,ci)=>{if(y&&('t' in y)){const n=E();n[HK(x.cols[ci])]=y.t||'';n.k=y.k||null;return n}return y||E()})});return x}
 let DB=store.get('ml_db',null)||clone(SEED);
-if(!DB.tables){DB.tables=clone(SEED.tables);if(DB.phrases&&DB.phrases.length)DB.tables.unshift({id:uid(),cap:'Sangbusa',cols:['Marma','উচ্চারণ','বাংলা','English'],rows:DB.phrases.map(p=>({id:uid(),c:[{t:p.marma},{t:p.pron},{t:p.bn},{t:p.en}]}))});delete DB.phrases}
+if(!DB.tables){DB.tables=clone(SEED.tables);if(DB.phrases&&DB.phrases.length)DB.tables.unshift({id:uid(),cap:'Sangbusa',cols:['Marma','উচ্চারণ','বাংলা','English'],rows:DB.phrases.map(p=>({id:uid(),c:[{t:p.marma},{t:p.pron},{t:p.bn},{t:p.en}]}))});delete DB.phrases}DB.tables.forEach(normT);
 if(!DB.lit)DB.lit=clone(SEED.lit);if(!DB.ratings)DB.ratings=[];if(!DB.dict)DB.dict=[];
 const save=()=>{store.set('ml_db',DB);if(cloudHook)cloudHook()};
 let USERS=store.get('ml_users',[]),ME=store.get('ml_sess',null),CFG=store.get('ml_cfg',{theme:'auto',size:16,lang:'en'});
@@ -196,7 +200,7 @@ USERS.forEach(u=>{if(!u.role)u.role=u.admin?'main':'user';if(!u.id)u.id=u.email}
 const user=()=>USERS.find(u=>u.id===ME);
 const isAdmin=()=>{const u=user();return !!u&&u.role!=='user'},isMain=()=>user()?.role==='main';
 const canEdit=p=>isAdmin()||p.by===ME;
-const S={view:user()?'app':'welcome',tab:'dict',q:'',dir:'m2b',sub:'',col:'dict',edit:null,tid:null,tgt:null,err:'',lcat:'all',pf:null,open:null,rs:0,rtxt:'',f:null};
+const S={view:user()?'app':'welcome',tab:'dict',q:'',dir:'m2b',sub:'',col:'dict',edit:null,tid:null,cell:null,tgt:null,err:'',lcat:'all',pf:null,open:null,rs:0,rtxt:'',f:null};
 const TABS=['dict','word','sang','sent','lit'];
 const favKey=()=>'ml_fav_'+ME,favs=()=>store.get(favKey(),[]);
 const curT=()=>DB.tables.find(x=>x.id===S.tid);
@@ -209,7 +213,9 @@ function card(col,it,rev){
  const head=rev?`<div class="mm">${esc(it.bn)}</div><div class="en">${esc(it.en)}</div>`:`<div class="mm">${esc(it.marma)}</div><div class="pr">${esc(it.pron)}</div>`;
  const body=rev?`<div class="bn" style="color:var(--pr);font-weight:600">${esc(it.marma)}</div><div class="pr">${esc(it.pron)}</div>`:`<div class="bn">${esc(it.bn)}</div>${it.en?`<div class="en">${esc(it.en)}</div>`:''}`;
  return `<div class="card"><div class="top"><div>${head}</div><div class="acts">${au(it.k)}<button class="star" data-act="fav" data-k="${esc(k)}" aria-label="favourite">${f?'★':'☆'}</button></div></div>${body}</div>`}
-const tbl=(x,rows)=>`<div class="card tw"><table><caption>${esc(x.cap)}</caption><thead><tr>${x.cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.c.map((c,ci)=>`<td>${esc(c.t)}${ci===0?au(c.k):''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const cellH=c=>[c.m&&`<div class="mm">${esc(c.m)}</div>`,c.p&&`<div class="pr">${esc(c.p)}</div>`,c.b&&`<div class="bn">${esc(c.b)}</div>`,c.e&&`<div class="en">${esc(c.e)}</div>`].filter(Boolean).join('')+au(c.k);
+const ctext=c=>[c.m,c.p,c.b,c.e,c.t].join(' ').toLowerCase();
+const tbl=(x,rows)=>`<div class="card tw"><table>${x.cap?`<caption>${esc(x.cap)}</caption>`:''}<tbody>${rows.map(r=>`<tr>${r.c.map(c=>`<td class="bx">${cellH(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 const match=(it,q)=>[it.marma,it.pron,it.bn,it.en,it.cat].join(' ').toLowerCase().includes(q);
 const fmt=ts=>new Date(ts).toLocaleDateString(CFG.lang==='bn'?'bn-BD':'en-GB');
 const RX=['👍','❤️','👏','😊'];
@@ -246,13 +252,15 @@ const list=(c,rev)=>DB[c].length?DB[c].map(i=>card(c,i,rev)).join(''):`<p class=
 function body(){
  const B=$('#body'),q=S.q.trim().toLowerCase();let h='';
  if(q){const parts=['dict','words','sentences'].map(c=>[c,DB[c].filter(i=>match(i,q))]).filter(p=>p[1].length);
-  const ts=DB.tables.map(x=>[x,x.cap.toLowerCase().includes(q)?x.rows:x.rows.filter(r=>r.c.some(c=>c.t.toLowerCase().includes(q)))]).filter(p=>p[1].length);
+  const ts=DB.tables.map(x=>[x,x.cap.toLowerCase().includes(q)?x.rows:x.rows.filter(r=>r.c.some(c=>ctext(c).includes(q)))]).filter(p=>p[1].length);
   const ls=DB.lit.posts.filter(p=>(p.title+' '+p.body).toLowerCase().includes(q));
   h=`<h3>${t('results')}</h3>`+parts.map(p=>`<h3>${t(p[0]==='sentences'?'sent':p[0]==='dict'?'dict':'word')}</h3>`+p[1].map(i=>card(p[0],i,false)).join('')).join('')+(ts.length?`<h3>${t('sang')}</h3>`+ts.map(p=>tbl(p[0],p[1])).join(''):'')+(ls.length?`<h3>${t('lit')}</h3>`+ls.map(post).join(''):'')+(parts.length||ts.length||ls.length?'':`<p class="note">${t('none')}</p>`)}
  else if(S.tab==='dict')h=`<div class="seg"><button class="${S.dir==='m2b'?'on':''}" data-act="dir" data-d="m2b">${t('m2b')}</button><button class="${S.dir==='b2m'?'on':''}" data-act="dir" data-d="b2m">${t('b2m')}</button></div>`+dlist(S.dir==='b2m');
  else if(S.tab==='word'){const g={};DB.words.forEach(w=>(g[w.cat||'Others']=g[w.cat||'Others']||[]).push(w));
   h=Object.keys(g).length?Object.keys(g).map(c=>`<details open><summary>${esc(c)} (${g[c].length})</summary>${g[c].map(i=>card('words',i,false)).join('')}</details>`).join(''):list('words')}
- else if(S.tab==='sang')h=`<h2>${t('sang')}</h2>`+(DB.tables.map(x=>tbl(x,x.rows)).join('')||`<p class="note">${t('empty')}</p>`);
+  else if(S.tab==='sang'){const A=isAdmin(),x=A&&S.tid&&curT();
+   if(x)h=`<h2>${t('sang')}</h2>`+tblEditor(x);
+   else h=`<h2>${t('sang')}</h2>`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(DB.tables.map(x=>(A?`<div><button class="btn sm" data-act="edittbl" data-id="${x.id}">${t('edit')}</button><button class="btn sm dng" data-act="deltbl" data-id="${x.id}">${t('del')}</button></div>`:'')+tbl(x,x.rows)).join('')||`<p class="note">${t('empty')}</p>`)}
  else if(S.tab==='sent')h=`<h2>${t('sent')}</h2>`+list('sentences');
  else if(S.tab==='lit')h=litPage();
  else h=menu();
@@ -271,6 +279,11 @@ function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s=
  const R=(a,s,i,l)=>`<button class="row" data-act="${a}" data-s="${s}"><span>${i} ${l}</span><span>›</span></button>`;
  return `<div class="menu"><h2 aria-label="${t('menu')}">${burger(26)}</h2><div class="en" id="syncst" style="margin:0 2px 6px">${syncText()}</div>${R('sub','profile','👤',t('profile'))}${R('sub','fav','★',t('fav'))}${R('sub','language','🌐',t('language')+' ('+(CFG.lang==='bn'?'বাংলা':'English')+')')}${R('sub','rate','⭐',t('rating'))}${R('share','','📤',t('share'))}${R('sub','privacy','🔒',t('privacy'))}${R('sub','about','ℹ️',t('about'))}${R('sub','settings','⚙️',t('settings'))}${isAdmin()?R('sub','admin','🛠',t('admin')):''}${R('syncnow','','🔄',t('syncNow'))}${R('logout','','⏻',t('logout'))}</div>`}
 function dataTools(){return `<div class="note">${t('dataNote')}</div><textarea class="in" id="io" placeholder="${t('ioPh')}"></textarea><button class="btn sm" data-act="export">${t('exp')}</button><button class="btn sm" data-act="import">${t('imp')}</button><button class="btn sm dng" data-act="clear">${t('clearAll')}</button><button class="btn sm ghost" data-act="reset">${t('resetSeed')}</button>`}
+function tblEditor(x){
+  const sc=S.cell&&x.rows[S.cell.r]&&x.rows[S.cell.r].c[S.cell.c],fv=k=>esc(sc?sc[k]||'':'');
+  const form=sc?`<div class="card"><b>${t('edit')}</b> <span class="en">(${S.cell.r+1}, ${S.cell.c+1})</span><input class="in" id="cf_m" placeholder="${t('marmaPh')}" value="${fv('m')}"><input class="in" id="cf_p" placeholder="${t('pronPh')}" value="${fv('p')}"><input class="in" id="cf_b" placeholder="${t('bnPh')}" value="${fv('b')}"><input class="in" id="cf_e" placeholder="${t('enPh')}" value="${fv('e')}"><div class="en">🎙 ${sc.k?t('audioHas'):t('audioLbl')}</div><button class="play" data-act="cellau" data-r="${S.cell.r}" data-c="${S.cell.c}" title="audio">${sc.k?'🔊':'🎙'}</button>${sc.k?au(sc.k)+`<button class="x" data-act="cellrm" data-r="${S.cell.r}" data-c="${S.cell.c}">⊘</button>`:''}<div><button class="btn sm" data-act="cellsave">💾 ${t('saved').replace(' ✔','')}</button><button class="btn sm" data-act="cellclose">✕</button></div></div>`:'';
+  return `<button class="back" data-act="backtbl">${t('allTbl')}</button><input class="in" id="t_cap" placeholder="${t('caption')}" value="${esc(x.cap)}"><div class="note">${t('tblNote')}</div>${form}<div class="card tw"><table><thead><tr>${x.cols.map((c,i)=>`<th style="text-align:center;padding:2px;background:none;border:0"><button class="x" data-act="delcol" data-i="${i}" aria-label="delete column">✕</button></th>`).join('')}<th></th></tr></thead><tbody>${x.rows.map((r,ri)=>`<tr>${r.c.map((y,ci)=>`<td class="bx ed${S.cell&&S.cell.r===ri&&S.cell.c===ci?' sel':''}" data-act="cellopen" data-r="${ri}" data-c="${ci}">${cellH(y)||'<span class="en">＋</span>'}</td>`).join('')}<td><button class="x" data-act="delrow" data-r="${ri}" aria-label="delete row">✕</button></td></tr>`).join('')}</tbody></table></div><button class="btn sm" data-act="addcol">${t('addCol')}</button><button class="btn sm" data-act="addrow">${t('addRow')}</button><button class="btn sm" data-act="savetbl">💾 ${t('saved').replace(' ✔','')}</button>`}
+
 function admin(){const c=S.col,M=isMain();
  const tabs=[['dict','dict'],['words','aw'],['sentences','as'],['tables','at'],['cats','ac'],...(M?[['admins','aa'],['data','ad']]:[])];
  const nav=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button><h2>${t('admin')}</h2><div class="seg">${tabs.map(x=>`<button class="${c===x[0]?'on':''}" data-act="col" data-c="${x[0]}">${t(x[1])}</button>`).join('')}</div>`;
@@ -279,7 +292,7 @@ function admin(){const c=S.col,M=isMain();
  if(c==='cats')return nav+`<div class="card"><input class="in" id="k_en" placeholder="${t('catEn')}"><input class="in" id="k_bn" placeholder="${t('catBn')}"><button class="btn" data-act="addcat">${t('addBtn')}</button></div>`+DB.lit.cats.map(k=>`<div class="card top"><div><b>${esc(k.en||'')}</b> · ${esc(k.bn||'')}</div>${M?`<button class="btn sm dng" data-act="delcat" data-id="${k.id}">${t('del')}</button>`:''}</div>`).join('');
  if(c==='tables'){const x=S.tid&&curT();
   if(!x)return nav+`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`+DB.tables.map(x=>`<div class="card"><b>${esc(x.cap)}</b><div class="en">${x.cols.length} ${t('cols')} · ${x.rows.length} ${t('rows')}</div><button class="btn sm" data-act="edittbl" data-id="${x.id}">${t('edit')}</button><button class="btn sm dng" data-act="deltbl" data-id="${x.id}">${t('del')}</button></div>`).join('');
-  return nav+`<button class="back" data-act="backtbl">${t('allTbl')}</button><input class="in" id="t_cap" placeholder="${t('caption')}" value="${esc(x.cap)}"><div class="note">${t('tblNote')}</div><div class="card tw"><table><thead><tr>${x.cols.map((c,i)=>`<th><input class="in" id="h${i}" value="${esc(c)}" placeholder="${t('colPh')}"><button class="x" data-act="delcol" data-i="${i}" aria-label="delete column">✕</button></th>`).join('')}<th></th></tr></thead><tbody>${x.rows.map((r,ri)=>`<tr>${r.c.map((y,ci)=>`<td><input class="in" id="c${ri}_${ci}" value="${esc(y.t)}">${ci===0?`<button class="play" data-act="cellau" data-r="${ri}" data-c="${ci}" title="audio">${y.k?'🔊':'🎙'}</button>${y.k?`<button class="x" data-act="cellrm" data-r="${ri}" data-c="${ci}">⊘</button>`:''}`:''}</td>`).join('')}<td><button class="x" data-act="delrow" data-r="${ri}" aria-label="delete row">✕</button></td></tr>`).join('')}</tbody></table></div><button class="btn sm" data-act="addcol">${t('addCol')}</button><button class="btn sm" data-act="addrow">${t('addRow')}</button><button class="btn sm" data-act="savetbl">💾 ${t('saved').replace(' ✔','')}</button>`}
+  return nav+tblEditor(x)}
  const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;
  return nav+`<div class="card"><b>${e?t('edit'):t('addNew')}</b>${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${c==='words'?f('cat','secPh'):''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`+DB[c].map(i=>`<div class="card"><div class="top"><div><div class="mm">${esc(i.marma)}</div><div class="pr">${esc(i.pron)}</div></div>${au(i.k)}</div><div class="bn">${esc(i.bn)} · ${esc(i.en)}</div><button class="btn sm" data-act="edititem" data-id="${i.id}">${t('edit')}</button><button class="btn sm dng" data-act="delitem" data-id="${i.id}">${t('del')}</button></div>`).join('')}
 // <CLOUD>
@@ -325,7 +338,7 @@ function applyRemote(it){
  const {col,id,deleted}=it,d=it.data||{},same=(a,b)=>String(a)===String(b);
  const put=(arr,front)=>{const i=arr.findIndex(y=>same(y.id,id));if(deleted){if(i>=0)arr.splice(i,1);return}if(i>=0)arr[i]=d;else front?arr.unshift(d):arr.push(d)};
  if(col==='dict'||col==='words'||col==='sentences'){DB[col]=DB[col]||[];put(DB[col],true)}
- else if(col==='tables')put(DB.tables,false);
+ else if(col==='tables'){if(!deleted)normT(d);put(DB.tables,false)}
  else if(col==='cats')put(DB.lit.cats,false);
  else if(col==='ratings'){const i=DB.ratings.findIndex(r=>same(r.by,id));if(deleted){if(i>=0)DB.ratings.splice(i,1)}else if(i>=0)DB.ratings[i]=d;else DB.ratings.push(d)}
  else if(col==='posts'){const P=DB.lit.posts,i=P.findIndex(p=>same(p.id,id));if(deleted){if(i>=0)P.splice(i,1)}else{const old=i>=0?P[i]:{},x={...d,cm:old.cm||[],rx:old.rx||{}};if(i>=0)P[i]=x;else P.push(x)}}
@@ -481,13 +494,13 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)sync()},60000);
 // </CLOUD>
 
-function syncT(){const x=S.tid&&curT();if(!x||!$('#t_cap'))return;x.cap=val('t_cap');x.cols=x.cols.map((_,i)=>val('h'+i));x.rows.forEach((r,ri)=>r.c.forEach((y,ci)=>y.t=val(`c${ri}_${ci}`)))}
+function syncT(){const x=S.tid&&curT();if(!x||!$('#t_cap'))return;x.cap=val('t_cap');if(S.cell&&$('#cf_m')){const y=(x.rows[S.cell.r]||{c:[]}).c[S.cell.c];if(y){y.m=val('cf_m');y.p=val('cf_p');y.b=val('cf_b');y.e=val('cf_e')}}}
 function pic(file){const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=160;const s=Math.min(im.width,im.height);c.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,160,160);user().pic=c.toDataURL('image/jpeg',.8);store.set('ml_users',USERS);SYNC.pdirty=true;saveSync();pushProfile();render()};im.src=URL.createObjectURL(file)}
 document.addEventListener('input',e=>{if(e.target.id==='q'){S.q=e.target.value;body()}});
 $('#pfile').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)pic(f)});
 $('#afile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';const x=curT();if(!f||!S.tgt||!x||!isAdmin())return;const y=x.rows[S.tgt.r].c[S.tgt.c];adel(y.k);const k=uid();if(await aput(k,f))y.k=k;else alert(t('audioFail'));save();body()});
 document.addEventListener('click',async e=>{
- const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,d=b.dataset,ADM=['saveitem','delitem','rmau','newtbl','edittbl','backtbl','deltbl','addcol','addrow','delcol','delrow','savetbl','cellau','cellrm','addcat'];
+ const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,d=b.dataset,ADM=['saveitem','delitem','rmau','newtbl','edittbl','backtbl','deltbl','addcol','addrow','delcol','delrow','savetbl','cellau','cellrm','cellopen','cellsave','cellclose','addcat'];
  if(ADM.includes(a)&&!isAdmin())return;
  if(a==='go'){S.view=d.v;S.err='';S.f=null;S.fp=null;render()}
  else if(a==='lang'){CFG.lang=d.l;store.set('ml_cfg',CFG);render()}
@@ -525,12 +538,12 @@ document.addEventListener('click',async e=>{
  else if(a==='syncnow'){sync()}
  else if(a==='oauth'){oauthStart(d.p)}
  else if(a==='logout'){if(AUTH&&!AUTH.dead&&navigator.onLine!==false){try{await Promise.race([sync({pull:false}),new Promise(r=>setTimeout(r,4000))])}catch(e){}try{sb('/auth/v1/logout?scope=local',{method:'POST',tok:AUTH.access_token}).catch(()=>{})}catch(e){}}AUTH=null;store.set('ml_auth',null);ME=null;store.set('ml_sess',null);Object.assign(S,{view:'welcome',sub:'',tab:'dict',q:''});render()}
- else if(a==='tab'){Object.assign(S,{tab:d.t,sub:'',q:'',pf:null});render()}
+ else if(a==='tab'){syncT();save();Object.assign(S,{tab:d.t,sub:'',q:'',pf:null,tid:null,cell:null});render()}
  else if(a==='myprof'){Object.assign(S,{tab:'menu',sub:'profile',q:''});render()}
  else if(a==='dir'){S.dir=d.d;body()}
  else if(a==='fav'){let f=favs();f=f.includes(d.k)?f.filter(x=>x!==d.k):[...f,d.k];store.set(favKey(),f);body()}
  else if(a==='play')play(d.k);
- else if(a==='sub'){syncT();save();S.sub=d.s;S.edit=null;S.tid=null;body()}
+ else if(a==='sub'){syncT();save();S.sub=d.s;S.edit=null;S.tid=null;S.cell=null;body()}
  else if(a==='share'){const url=location.href,txt=t('shareTxt');try{if(navigator.share){await navigator.share({title:'Marma Language',text:txt,url})}else throw 0}catch(x){try{await navigator.clipboard.writeText(url);alert(t('copied'))}catch(y){prompt('Link:',url)}}}
  else if(a==='star'){S.rtxt=val('r_txt');S.rs=+d.n;body()}
  else if(a==='rate'){const s=S.rs||DB.ratings.find(r=>r.by===ME)?.s;if(!s)return;const r={by:ME,an:user().name,s,x:val('r_txt'),ts:Date.now()},i=DB.ratings.findIndex(x=>x.by===ME);i<0?DB.ratings.push(r):DB.ratings[i]=r;S.rs=0;S.rtxt='';save();body();alert(t('thanks'))}
@@ -570,7 +583,7 @@ document.addEventListener('click',async e=>{
  else if(a==='addcm'){const x=val('cm_'+d.id);if(!x)return;const p=DB.lit.posts.find(q=>q.id===d.id);(p.cm=p.cm||[]).push({id:uid(),by:ME,an:user().name,text:x,ts:Date.now()});save();body()}
  else if(a==='delcm'){const p=DB.lit.posts.find(q=>q.id===d.id),m=p.cm.find(x=>x.id===d.c);if(m&&(m.by===ME||isAdmin())){p.cm=p.cm.filter(x=>x!==m);save();body()}}
  // Admin
- else if(a==='col'){if((d.c==='admins'||d.c==='data')&&!isMain())return;syncT();save();S.col=d.c;S.edit=null;S.tid=null;body()}
+ else if(a==='col'){if((d.c==='admins'||d.c==='data')&&!isMain())return;syncT();save();S.col=d.c;S.edit=null;S.tid=null;S.cell=null;body()}
  else if(a==='setrole'){if(!isMain())return;const u=USERS.find(x=>x.id===d.e);if(!u||u.role==='main')return;
   try{const r=await rest('/profiles?id=eq.'+encodeURIComponent(u.id),{method:'PATCH',body:{role:d.r},headers:{Prefer:'return=representation'}});if(!r||!r.length)throw 0;u.role=d.r;store.set('ml_users',USERS);body()}catch(e){alert(t(e&&e.net?'e_net':'e_srv'))}}
  else if(a==='addcat'){const en=val('k_en'),bn=val('k_bn');if(!en&&!bn)return;DB.lit.cats.push({id:uid(),en,bn});save();body()}
@@ -585,19 +598,22 @@ document.addEventListener('click',async e=>{
   if(f){adel(x.k);const k=uid();if(await aput(k,f))x.k=k;else alert(t('audioFail'))}
   S.edit=null;save();body()}
  else if(a==='delitem'){if(confirm(t('sure'))){const x=DB[S.col].find(x=>x.id===d.id);adel(x&&x.k);DB[S.col]=DB[S.col].filter(x=>x.id!==d.id);save();body()}}
- else if(a==='newtbl'){const x={id:uid(),cap:'New table',cols:['Marma','উচ্চারণ','বাংলা','English'],rows:[]};DB.tables.push(x);S.tid=x.id;save();body()}
- else if(a==='edittbl'){S.tid=d.id;body()}
- else if(a==='backtbl'){syncT();save();S.tid=null;body()}
+ else if(a==='newtbl'){const x={id:uid(),cap:'New table',cols:['',''],rows:[{id:uid(),c:[E(),E()]}]};DB.tables.push(x);S.tid=x.id;S.cell=null;save();body()}
+ else if(a==='edittbl'){S.tid=d.id;S.cell=null;body()}
+ else if(a==='backtbl'){syncT();save();S.tid=null;S.cell=null;body()}
  else if(a==='deltbl'){if(confirm(t('sure'))){const x=DB.tables.find(x=>x.id===d.id);x.rows.forEach(r=>r.c.forEach(y=>adel(y.k)));DB.tables=DB.tables.filter(y=>y!==x);save();body()}}
- else if(a==='addcol'){syncT();const x=curT();x.cols.push(t('colPh')+' '+(x.cols.length+1));x.rows.forEach(r=>r.c.push({t:''}));save();body()}
- else if(a==='addrow'){syncT();const x=curT();x.rows.push({id:uid(),c:x.cols.map(()=>({t:''}))});save();body()}
- else if(a==='delcol'){syncT();const x=curT(),i=+d.i;if(x.cols.length<2){alert(t('oneCol'));return}x.cols.splice(i,1);x.rows.forEach(r=>{adel(r.c[i].k);r.c.splice(i,1)});save();body()}
- else if(a==='delrow'){syncT();const x=curT(),r=x.rows[+d.r];r.c.forEach(y=>adel(y.k));x.rows.splice(+d.r,1);save();body()}
+ else if(a==='addcol'){syncT();const x=curT();x.cols.push('');x.rows.forEach(r=>r.c.push(E()));save();body()}
+ else if(a==='addrow'){syncT();const x=curT();x.rows.push({id:uid(),c:x.cols.map(()=>E())});save();body()}
+ else if(a==='delcol'){syncT();const x=curT(),i=+d.i;if(x.cols.length<2){alert(t('oneCol'));return}S.cell=null;x.cols.splice(i,1);x.rows.forEach(r=>{adel(r.c[i].k);r.c.splice(i,1)});save();body()}
+ else if(a==='delrow'){syncT();const x=curT(),r=x.rows[+d.r];S.cell=null;r.c.forEach(y=>adel(y.k));x.rows.splice(+d.r,1);save();body()}
  else if(a==='savetbl'){syncT();save();body();alert(t('saved'))}
- else if(a==='cellau'){if(+d.c!==0)return;syncT();save();S.tgt={r:+d.r,c:+d.c};$('#afile').click()}
+ else if(a==='cellau'){syncT();save();S.tgt={r:+d.r,c:+d.c};$('#afile').click()}
  else if(a==='cellrm'){syncT();const y=curT().rows[+d.r].c[+d.c];adel(y.k);y.k=null;save();body()}
+ else if(a==='cellopen'){syncT();S.cell={r:+d.r,c:+d.c};body()}
+ else if(a==='cellsave'){syncT();S.cell=null;save();body()}
+ else if(a==='cellclose'){S.cell=null;body()}
  else if(a==='export'&&isMain()){$('#io').value=JSON.stringify(DB,null,1)}
- else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];DB=o;save();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
+ else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];DB=o;DB.tables.forEach(normT);save();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
  else if(a==='clear'&&isMain()){if(confirm(t('sureAll'))){DB={dict:[],words:[],sentences:[],tables:[],lit:{cats:DB.lit.cats,posts:[]},ratings:[]};save();S.tid=null;body()}}
  else if(a==='reset'&&isMain()){if(confirm(t('sureReset'))){DB=clone(SEED);save();S.tid=null;body()}}
 });
