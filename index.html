@@ -20,7 +20,7 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:'Hind Siliguri','Noto Sans Myanmar','Noto Sans Bengali',system-ui,sans-serif;line-height:1.5}
 #app{max-width:560px;margin:0 auto;min-height:100vh}#app.wide{max-width:1000px;display:flex;flex-direction:column}.hero{flex:1;display:flex;flex-direction:column;align-items:center}.hero .cta{margin-top:auto;width:100%;padding-top:40px}
 header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;padding:10px 14px 0}
-.brand{display:flex;align-items:center;gap:10px;font-size:1.15rem;margin-bottom:8px}.sp{flex:1}
+.hrow{display:flex;align-items:center;gap:10px;margin-bottom:8px}.brand,.hact{display:flex;align-items:center;gap:10px;font-size:1.15rem}.sp{flex:1}.badge.tn{margin-left:8px;font-weight:400;vertical-align:middle;color:var(--pr);border-color:var(--pr)}
 .search,.in{width:100%;padding:12px 14px;border-radius:14px;border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit}
 .in{margin:6px 0;border-radius:12px}.search:focus,.in:focus{outline:2px solid var(--pr)}
 .tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 0;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
@@ -73,6 +73,20 @@ main.grid details[open]{display:grid;grid-template-columns:repeat(auto-fill,minm
 main.grid details>summary{grid-column:1/-1}
 main.narrow{max-width:820px;margin:0 auto}
 .search{max-width:520px}
+}
+@media(min-width:1000px){
+#app.shell{max-width:none;height:100vh;overflow:hidden;display:grid;grid-template-columns:260px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);position:relative}
+#app.shell::before{content:"";position:absolute;left:0;top:0;bottom:0;width:260px;background:var(--sf);border-right:1px solid var(--bd)}
+#app.shell header,#app.shell .hrow{display:contents}
+#app.shell .brand{grid-column:1;grid-row:1;position:relative;padding:18px 20px;font-size:1.2rem}
+#app.shell .search{grid-column:2;grid-row:1;align-self:center;justify-self:start;width:calc(100% - 200px);max-width:620px;margin:0 24px;position:relative}
+#app.shell .hact{grid-column:2;grid-row:1;justify-self:end;margin-right:28px;position:relative}
+#app.shell .sp{display:none}
+#app.shell nav.tabs{grid-column:1;grid-row:2;position:relative;flex-direction:column;overflow:auto;padding:8px 14px;gap:6px}
+#app.shell nav.tabs .tab,#app.shell nav.tabs .mbtn{width:100%;text-align:left;border-radius:12px;padding:11px 16px;display:flex;align-items:center;gap:8px}
+#app.shell main{grid-column:2;grid-row:2;overflow-y:auto;padding:8px 28px 40px}
+#app.shell main.grid{grid-template-columns:repeat(auto-fill,minmax(340px,1fr));align-content:start}
+#app.shell main.narrow{max-width:900px;margin:0;width:100%}
 }
 </style>
 </head>
@@ -136,7 +150,7 @@ aboutTxt:['Marma Language helps you learn and preserve Marma words, alphabet, sa
 theme:['Theme','থিম'],fsize:['Font size','অক্ষরের আকার'],small:['Small','ছোট'],medium:['Medium','মাঝারি'],large:['Large','বড়'],chooseLang:['Choose app language','অ্যাপের ভাষা বাছুন'],
 rateTitle:['Rate this app','অ্যাপটিকে রেটিং দিন'],avg:['Average','গড়'],votes:['ratings','টি রেটিং'],feedback:['Write your feedback (optional)','মতামত লিখুন (ঐচ্ছিক)'],submit:['Submit','জমা দিন'],thanks:['Thank you for rating!','রেটিং দেওয়ার জন্য ধন্যবাদ!'],allRatings:['All ratings','সব রেটিং'],
 shareTxt:['Learn the Marma language with the Marma Language app!','Marma Language অ্যাপে মারমা ভাষা শিখুন!'],copied:['Link copied ✔','লিংক কপি হয়েছে ✔'],
-all:['All','সব'],subAdd:['+ Subsection','+ সাব সেকশন'],subName:['Subsection name','সাব সেকশনের নাম'],subRen:['Rename','নাম বদলান'],subDel:['Delete subsection','সাব সেকশন মুছুন'],subSel:['Subsection','সাব সেকশন'],subNone:['No subsection','সাব সেকশন নেই'],subSure:['Delete this subsection? Its sentences stay under All.','এই সাব সেকশন মুছবেন? বাক্যগুলো "সব" এ থাকবে।'],pWrite:['Write here...','এখানে লিখুন...'],pImg:['Image (optional)','ছবি (ঐচ্ছিক)'],pAud:['Audio (optional)','অডিও (ঐচ্ছিক)'],pImgRm:['Remove image','ছবি সরান'],pAudRm:['Remove audio','অডিও সরান'],needText:['Write something first.','আগে কিছু লিখুন।'],write:['+ Write','+ লিখুন'],editPost:['Edit post','পোস্ট এডিট'],newPost:['New post','নতুন পোস্ট'],category:['Category','বিভাগ'],ptitle:['Title','শিরোনাম'],plang:['Written in','যে ভাষায় লেখা'],pbody:['Write here…','এখানে লিখুন…'],publish:['Publish','প্রকাশ করুন'],update:['Update','আপডেট'],cancel:['Cancel','বাতিল'],
+all:['All','সব'],tensePh:['Tense (optional)','টেন্স (ঐচ্ছিক)'],subAdd:['+ Subsection','+ সাব সেকশন'],subName:['Subsection name','সাব সেকশনের নাম'],subRen:['Rename','নাম বদলান'],subDel:['Delete subsection','সাব সেকশন মুছুন'],subSel:['Subsection','সাব সেকশন'],subNone:['No subsection','সাব সেকশন নেই'],subSure:['Delete this subsection? Its sentences stay under All.','এই সাব সেকশন মুছবেন? বাক্যগুলো "সব" এ থাকবে।'],pWrite:['Write here...','এখানে লিখুন...'],pImg:['Image (optional)','ছবি (ঐচ্ছিক)'],pAud:['Audio (optional)','অডিও (ঐচ্ছিক)'],pImgRm:['Remove image','ছবি সরান'],pAudRm:['Remove audio','অডিও সরান'],needText:['Write something first.','আগে কিছু লিখুন।'],write:['+ Write','+ লিখুন'],editPost:['Edit post','পোস্ট এডিট'],newPost:['New post','নতুন পোস্ট'],category:['Category','বিভাগ'],ptitle:['Title','শিরোনাম'],plang:['Written in','যে ভাষায় লেখা'],pbody:['Write here…','এখানে লিখুন…'],publish:['Publish','প্রকাশ করুন'],update:['Update','আপডেট'],cancel:['Cancel','বাতিল'],
 edit:['Edit','এডিট'],del:['Delete','মুছুন'],sure:['Delete this?','মুছে ফেলবেন?'],noPosts:['No posts yet. Be the first to write!','এখনো কোনো লেখা নেই। প্রথম লেখাটি আপনার হোক!'],fillTB:['Please enter a title and some text.','শিরোনাম ও লেখা দিন।'],
 cmts:['Comments','মন্তব্য'],addCm:['Write a comment…','মন্তব্য লিখুন…'],send:['Send','পাঠান'],by:['by','লেখক'],
 L_marma:['Marma','মারমা'],L_bn:['Bangla','বাংলা'],L_en:['English','ইংরেজি'],
@@ -227,13 +241,17 @@ const logo=n=>`<svg width="${n}" height="${n}" viewBox="0 0 200 200" style="flex
 const av=(n,u=user())=>u.pic?`<img class="av" src="${u.pic}" style="width:${n}px;height:${n}px" data-act="myprof" alt="">`:`<div class="av" style="width:${n}px;height:${n}px" data-act="myprof">${esc((u.name||'?')[0])}</div>`;
 function card(col,it,rev){
  const k=col+':'+it.id,f=favs().includes(k),adm=isAdmin()&&['dict','words','sentences'].includes(col)?`<div><button class="btn sm" data-act="iedit" data-c="${col}" data-id="${it.id}">${t('edit')}</button><button class="btn sm dng" data-act="delitem" data-c="${col}" data-id="${it.id}">${t('del')}</button></div>`:'';
- const head=rev?`<div class="mm">${esc(it.bn)}</div><div class="en">${esc(it.en)}</div>`:`<div class="mm">${esc(it.marma)}</div><div class="pr">${esc(it.pron)}</div>`;
+ const head=rev?`<div class="mm">${esc(it.bn)}${tbadge(it.tense)}</div><div class="en">${esc(it.en)}</div>`:`<div class="mm">${esc(it.marma)}${tbadge(it.tense)}</div><div class="pr">${esc(it.pron)}</div>`;
  const body=rev?`<div class="bn" style="color:var(--pr);font-weight:600">${esc(it.marma)}</div><div class="pr">${esc(it.pron)}</div>`:`<div class="bn">${esc(it.bn)}</div>${it.en?`<div class="en">${esc(it.en)}</div>`:''}`;
  return `<div class="card"><div class="top"><div>${head}</div><div class="acts">${au(it.k)}<button class="star" data-act="fav" data-k="${esc(k)}" aria-label="favourite">${f?'★':'☆'}</button></div></div>${body}${adm}</div>`}
 const cellH=c=>[c.m&&`<div class="mm">${esc(c.m)}</div>`,c.p&&`<div class="pr">${esc(c.p)}</div>`,c.b&&`<div class="bn">${esc(c.b)}</div>`,c.e&&`<div class="en">${esc(c.e)}</div>`].filter(Boolean).join('')+au(c.k);
 const ctext=c=>[c.m,c.p,c.b,c.e,c.t].join(' ').toLowerCase();
 const tbl=(x,rows)=>`<div class="card tw"><table>${x.cap?`<caption>${esc(x.cap)}</caption>`:''}<tbody>${rows.map(r=>`<tr>${r.c.map(c=>`<td class="bx">${cellH(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-const match=(it,q)=>[it.marma,it.pron,it.bn,it.en,it.cat].join(' ').toLowerCase().includes(q);
+const TENSES=[['pres','Present','বর্তমান'],['past','Past','অতীত'],['fut','Future','ভবিষ্যৎ'],['presc','Present Continuous','চলমান বর্তমান'],['pastc','Past Continuous','চলমান অতীত'],['futc','Future Continuous','চলমান ভবিষ্যৎ'],['presp','Present Perfect','পূর্ণ বর্তমান'],['pastp','Past Perfect','পূর্ণ অতীত'],['futp','Future Perfect','পূর্ণ ভবিষ্যৎ']];
+const tnm=k=>{const x=TENSES.find(y=>y[0]===k);return x?(CFG.lang==='bn'?x[2]:x[1]):''};
+const tAll=k=>{const x=TENSES.find(y=>y[0]===k);return x?x[1]+' '+x[2]+' '+x[0]:''};
+const tbadge=k=>k&&tnm(k)?`<span class="badge tn">${esc(tnm(k))}</span>`:'';
+const match=(it,q)=>[it.marma,it.pron,it.bn,it.en,it.cat,tAll(it.tense)].join(' ').toLowerCase().includes(q);
 const fmt=ts=>new Date(ts).toLocaleDateString(CFG.lang==='bn'?'bn-BD':'en-GB');
 const RX=['👍','❤️','👏','😊'];
 function post(p){
@@ -262,7 +280,7 @@ function render(){
   A.innerHTML=`<div class="auth">${logo(96)}<h1 style="margin:10px 0 0">Marma Language</h1><h2>${t('forgotT')}</h2>${inner}<button class="back" data-act="go" data-v="signin">← ${t('signin')}</button></div><footer>© 2026 Marma Language</footer>`;return}
  if(S.view==='signin'||S.view==='signup'){const up=S.view==='signup',F=S.f||{};
   A.innerHTML=`<div class="auth">${logo(96)}<h1 style="margin:10px 0 0">Marma Language</h1><p class="en">${t('welcome')}</p><h2>${t(up?'signup':'signin')}</h2>${up?`<input class="in" id="a_name" autocomplete="name" placeholder="${t('name')}" value="${esc(F.name)}">`:''}<input class="in" id="a_id" autocomplete="username" placeholder="${t('idPh2')}" value="${esc(F.id)}"><div class="pw"><input class="in" id="a_pass" type="password" autocomplete="${up?'new-password':'current-password'}" placeholder="${t('pass')}"><button type="button" class="eye" data-act="eye" aria-label="show password">👁</button></div><div class="err">${t(S.err||'x')==='x'?'':t(S.err)}</div><button class="btn" data-act="${up?'signup':'signin'}">${t(up?'create':'signin')}</button><div class="en" style="margin:10px 0 2px">— ${t('orWith')} —</div><button class="btn ghost" data-act="oauth" data-p="google"><b>G</b> &nbsp;${t('contG')}</button><button class="btn ghost" data-act="oauth" data-p="facebook"><b>f</b> &nbsp;${t('contF')}</button>${up?'':`<button class="back" data-act="go" data-v="forgot">${t('forgot')}</button>`}<button class="back" data-act="go" data-v="${up?'signin':'signup'}">${t(up?'have':'newq')}</button><button class="back" data-act="go" data-v="privacy">${t('privacy')}</button></div><footer>© 2026 Marma Language</footer>`;return}
- A.innerHTML=`<header><div class="brand">${logo(34)}<b>Marma Language</b><span class="sp"></span>${syncBtn()}${av(34)}</div><input id="q" class="search" placeholder="${t('search')}" value="${esc(S.q)}"><nav class="tabs">${TABS.map(k=>`<button class="tab ${S.tab===k?'on':''}" data-act="tab" data-t="${k}">${t(k)}</button>`).join('')}<button class="mbtn ${S.tab==='menu'?'on':''}" data-act="tab" data-t="menu" aria-label="${t('menu')}" title="${t('menu')}">${burger(22)}</button></nav></header><main id="body"></main>`;
+ A.className='shell';A.innerHTML=`<header><div class="hrow"><div class="brand">${logo(34)}<b>Marma Language</b></div><span class="sp"></span><div class="hact">${syncBtn()}${av(34)}</div></div><input id="q" class="search" placeholder="${t('search')}" value="${esc(S.q)}"><nav class="tabs">${TABS.map(k=>`<button class="tab ${S.tab===k?'on':''}" data-act="tab" data-t="${k}">${t(k)}</button>`).join('')}<button class="mbtn ${S.tab==='menu'?'on':''}" data-act="tab" data-t="menu" aria-label="${t('menu')}" title="${t('menu')}">${burger(22)}</button></nav></header><main id="body"></main>`;
  body()}
 const dlist=rev=>{const L=[...DB.dict.map(i=>['dict',i]),...DB.words.map(i=>['words',i])];return L.length?L.map(p=>card(p[0],p[1],rev)).join(''):`<p class="note">${t('empty')}</p>`};
 const list=(c,rev)=>DB[c].length?DB[c].map(i=>card(c,i,rev)).join(''):`<p class="note">${t('empty')}</p>`;
@@ -314,7 +332,7 @@ function tblEditor(x){
   const form=sc?`<div class="card"><b>${t('edit')}</b> <span class="en">(${S.cell.r+1}, ${S.cell.c+1})</span><input class="in" id="cf_m" placeholder="${t('marmaPh')}" value="${fv('m')}"><input class="in" id="cf_p" placeholder="${t('pronPh')}" value="${fv('p')}"><input class="in" id="cf_b" placeholder="${t('bnPh')}" value="${fv('b')}"><input class="in" id="cf_e" placeholder="${t('enPh')}" value="${fv('e')}"><div class="en">🎙 ${sc.k?t('audioHas'):t('audioLbl')}</div><button class="play" data-act="cellau" data-r="${S.cell.r}" data-c="${S.cell.c}" title="audio">${sc.k?'🔊':'🎙'}</button>${sc.k?au(sc.k)+`<button class="x" data-act="cellrm" data-r="${S.cell.r}" data-c="${S.cell.c}">⊘</button>`:''}<div><button class="btn sm" data-act="cellsave">💾 ${t('saved').replace(' ✔','')}</button><button class="btn sm" data-act="cellclose">✕</button></div></div>`:'';
   return `<button class="back" data-act="backtbl">${t('allTbl')}</button><input class="in" id="t_cap" placeholder="${t('caption')}" value="${esc(x.cap)}"><div class="note">${t('tblNote')}</div>${form}<div class="card tw"><table><thead><tr>${x.cols.map((c,i)=>`<th style="text-align:center;padding:2px;background:none;border:0"><button class="x" data-act="delcol" data-i="${i}" aria-label="delete column">✕</button></th>`).join('')}<th></th></tr></thead><tbody>${x.rows.map((r,ri)=>`<tr>${r.c.map((y,ci)=>`<td class="bx ed${S.cell&&S.cell.r===ri&&S.cell.c===ci?' sel':''}" data-act="cellopen" data-r="${ri}" data-c="${ci}">${cellH(y)||'<span class="en">＋</span>'}</td>`).join('')}<td><button class="x" data-act="delrow" data-r="${ri}" aria-label="delete row">✕</button></td></tr>`).join('')}</tbody></table></div><button class="btn sm" data-act="addcol">${t('addCol')}</button><button class="btn sm" data-act="addrow">${t('addRow')}</button><button class="btn sm" data-act="savetbl">💾 ${t('saved').replace(' ✔','')}</button>`}
 
-function itemForm(c){const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;return `<div class="card"><b>${e?t('edit'):t('addNew')}</b>${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${c==='words'?f('cat','secPh'):''}${c==='sentences'?`<select class="in" id="f_sub"><option value="">${t('subNone')}</option>${(DB.ssubs||[]).map(x=>`<option value="${x.id}" ${(e?e.sub:S.ssub)===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`:''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`}
+function itemForm(c){const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;return `<div class="card"><b>${e?t('edit'):t('addNew')}</b>${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${c==='words'?f('cat','secPh'):''}${c==='sentences'?`<select class="in" id="f_tense"><option value="">${t('tensePh')}</option>${TENSES.map(x=>`<option value="${x[0]}" ${e&&e.tense===x[0]?'selected':''}>${CFG.lang==='bn'?x[2]:x[1]}</option>`).join('')}</select><select class="in" id="f_sub"><option value="">${t('subNone')}</option>${(DB.ssubs||[]).map(x=>`<option value="${x.id}" ${(e?e.sub:S.ssub)===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`:''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`}
 function admin(){const c=S.ac==='updates'?'updates':'admins',M=isMain();
  const tabs=[['admins','aa'],['updates','upd']];
  const nav=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button><h2>${t('admin')}</h2><div class="seg">${tabs.map(x=>`<button class="${c===x[0]?'on':''}" data-act="col" data-c="${x[0]}">${t(x[1])}</button>`).join('')}</div>`;
@@ -601,7 +619,7 @@ document.addEventListener('click',async e=>{
  // Literature
  else if(a==='lcat'){S.lcat=d.c;body()}
  else if(a==='newpost'){S.pf='new';body()}
- else if(a==='editpost'){const p=DB.lit.posts.find(x=>x.id===d.id);if(p&&canEdit(p)){S.pf=d.id;body();scrollTo(0,0)}}
+ else if(a==='editpost'){const p=DB.lit.posts.find(x=>x.id===d.id);if(p&&canEdit(p)){S.pf=d.id;body();scrollTo(0,0);{const m=$('#body');if(m)m.scrollTop=0}}}
  else if(a==='cancelpost'){S.pf=null;body()}
  else if(a==='savepost'){const bd=$('#l_body').value.trim();if(!bd){alert(t('needText'));return}
   const p={cat:val('l_cat'),body:bd,title:''},ex=S.pf!=='new'?DB.lit.posts.find(x=>x.id===S.pf):null;
@@ -631,12 +649,12 @@ document.addEventListener('click',async e=>{
  else if(a==='addupd'){if(!isMain())return;const ver=val('u_ver'),link=val('u_link'),note=val('u_note');if(!/^\d+(\.\d+)*$/.test(ver)){alert(t('verBad'));return}if(!safeLink(link)){alert(t('linkBad'));return}DB.updates=(DB.updates||[]).filter(x=>x.ver!==ver);DB.updates.push({id:uid(),ver,link,note,ts:Date.now()});save();body()}
  else if(a==='delupd'){if(isMain()&&confirm(t('sure'))){DB.updates=(DB.updates||[]).filter(x=>x.id!==d.id);save();body()}}
  else if(a==='updhide'){S.updHide=true;body()}
- else if(a==='edititem'){S.edit=d.id;body();scrollTo(0,0)}
+ else if(a==='edititem'){S.edit=d.id;body();scrollTo(0,0);{const m=$('#body');if(m)m.scrollTop=0}}
 else if(a==='canceledit'){S.edit=null;S.inl=false;body()}
- else if(a==='iadd'){S.col=d.c;S.edit='new';S.inl=true;body();scrollTo(0,0)}
- else if(a==='iedit'){S.col=d.c;S.edit=d.id;S.inl=true;body();scrollTo(0,0)}
+ else if(a==='iadd'){S.col=d.c;S.edit='new';S.inl=true;body();scrollTo(0,0);{const m=$('#body');if(m)m.scrollTop=0}}
+ else if(a==='iedit'){S.col=d.c;S.edit=d.id;S.inl=true;body();scrollTo(0,0);{const m=$('#body');if(m)m.scrollTop=0}}
  else if(a==='rmau'){const x=DB[S.col].find(x=>x.id===S.edit);if(x){adel(x.k);x.k=null;save();body()}}
- else if(a==='saveitem'){const it={marma:val('f_marma'),pron:val('f_pron'),bn:val('f_bn'),en:val('f_en')};if(S.col==='words')it.cat=val('f_cat')||'Others';if(S.col==='sentences')it.sub=$('#f_sub')?.value||'';
+ else if(a==='saveitem'){const it={marma:val('f_marma'),pron:val('f_pron'),bn:val('f_bn'),en:val('f_en')};if(S.col==='words')it.cat=val('f_cat')||'Others';if(S.col==='sentences')it.sub=$('#f_sub')?.value||'';it.tense=$('#f_tense')?.value||'';
   if(!it.marma&&!it.pron){alert(t('needOne'));return}
   const ex=S.edit&&S.edit!=='new'?DB[S.col].find(x=>x.id===S.edit):null,f=$('#f_au')?.files[0];let x=ex;
   if(ex)Object.assign(ex,it);else{x={id:uid(),...it};DB[S.col].unshift(x)}
