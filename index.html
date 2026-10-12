@@ -72,6 +72,12 @@ textarea.in{min-height:90px}.pbody{white-space:pre-wrap;margin:8px 0}.badge{font
 .v-compact .mm{font-size:1.05rem}.v-compact .btn.sm{padding:3px 9px;margin:0 4px 0 0}
 .v-compact .post .pbody{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:4px 0}.v-compact .post img{display:none}
 .v-compact th,.v-compact td{padding:3px 6px;font-size:.9rem}.v-compact td.bx{min-width:80px}
+.opt{display:block;width:100%;text-align:left;padding:12px 14px;margin:8px 0;border-radius:12px;border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--pr)}.opt.sel{border-color:var(--pr);outline:2px solid var(--pr)}
+.opt.ok{background:rgba(31,140,80,.18);border-color:#1f8c50;color:var(--tx)}.opt.bad{background:rgba(179,38,30,.15);border-color:var(--rd);color:var(--tx)}.opt:disabled{cursor:default}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.gbar{height:6px;background:var(--bd);border-radius:6px;overflow:hidden;margin:6px 0}.gbar i{display:block;height:100%;background:var(--pr)}
+.gcard .top{align-items:center}
 @media(min-width:700px){
 main.grid>.tblw{grid-column:auto}
 #app{max-width:1100px}
@@ -150,7 +156,7 @@ name:['Your name','আপনার নাম'],email:['Email','ইমেইল']
 newq:['New? Sign up','নতুন? Sign up'],have:['Already have an account? Log in','অ্যাকাউন্ট আছে? Log in'],
 e_fill:['Enter your name, an email or phone number, and a password of 8+ characters.','নাম, ইমেইল বা ফোন নম্বর ও ৮+ অক্ষরের পাসওয়ার্ড দিন।'],e_exist:['An account with this email or phone already exists.','এই ইমেইল বা ফোন নম্বরে অ্যাকাউন্ট আছে।'],e_wrong:['Wrong email/phone or password.','ইমেইল/ফোন বা পাসওয়ার্ড ভুল।'],
 search:['Search Marma, Bangla, English…','খুঁজুন: Marma, বাংলা, English…'],
-dict:['Dictionary','অভিধান'],word:['Word','শব্দ'],sang:['Sangbusa','সংবুসা'],sent:['Sentence','বাক্য'],lit:['Literature','সাহিত্য'],menu:['Menu','মেনু'],
+dict:['Dictionary','অভিধান'],game:['Games & Quiz','গেম ও কুইজ'],word:['Word','শব্দ'],sang:['Sangbusa','সংবুসা'],sent:['Sentence','বাক্য'],lit:['Literature','সাহিত্য'],menu:['Menu','মেনু'],
 m2b:['Marma → Bangla/English','Marma → বাংলা/English'],b2m:['Bangla/English → Marma','বাংলা/English → Marma'],
 empty:['Nothing here yet.','এখনো কিছু নেই।'],results:['Search results','সার্চ ফলাফল'],none:['Nothing found.','কিছু পাওয়া যায়নি।'],
 fd1:['Marma ⇄ Bangla/English','Marma ⇄ বাংলা/English'],fd2:['Words by topic','বিষয়ভিত্তিক শব্দ'],fd3:['Alphabet & phrase tables','বর্ণমালা ও বাক্যাংশ টেবিল'],fd4:['Sentences with pronunciation','উচ্চারণসহ বাক্য'],fd5:['Stories & poems by everyone','সবার গল্প ও কবিতা'],fd6:['Learn by listening','শুনে শেখা'],audio:['Audio','অডিও'],
@@ -245,7 +251,7 @@ const user=()=>USERS.find(u=>u.id===ME);
 const isAdmin=()=>{const u=user();return !!u&&u.role!=='user'},isMain=()=>user()?.role==='main';
 const canEdit=p=>isAdmin()||p.by===ME;
 const S={view:user()?'app':'welcome',tab:'dict',q:'',dir:'m2b',sub:'',col:'dict',ac:'admins',edit:null,tid:null,cell:null,inl:false,tgt:null,err:'',lcat:'all',pf:null,open:null,rs:0,rtxt:'',f:null};
-const TABS=['dict','word','sang','sent','lit'];
+const TABS=['dict','word','sang','sent','lit','game'];
 const favKey=()=>'ml_fav_'+ME,favs=()=>store.get(favKey(),[]);
 const curT=()=>DB.tables.find(x=>x.id===S.tid);
 const catName=c=>CFG.lang==='bn'?(c.bn||c.en):(c.en||c.bn);
@@ -295,7 +301,7 @@ function render(){
   A.innerHTML=`<div class="auth">${logo(96)}<h1 style="margin:10px 0 0">Marma Language</h1><p class="en">${t('welcome')}</p><h2>${t(up?'signup':'signin')}</h2>${up?`<input class="in" id="a_name" autocomplete="name" placeholder="${t('name')}" value="${esc(F.name)}">`:''}<input class="in" id="a_id" autocomplete="username" placeholder="${t('idPh2')}" value="${esc(F.id)}"><div class="pw"><input class="in" id="a_pass" type="password" autocomplete="${up?'new-password':'current-password'}" placeholder="${t('pass')}"><button type="button" class="eye" data-act="eye" aria-label="show password">👁</button></div><div class="err">${t(S.err||'x')==='x'?'':t(S.err)}</div><button class="btn" data-act="${up?'signup':'signin'}">${t(up?'create':'signin')}</button><div class="en" style="margin:10px 0 2px">— ${t('orWith')} —</div><button class="btn ghost" data-act="oauth" data-p="google"><b>G</b> &nbsp;${t('contG')}</button><button class="btn ghost" data-act="oauth" data-p="facebook"><b>f</b> &nbsp;${t('contF')}</button>${up?'':`<button class="back" data-act="go" data-v="forgot">${t('forgot')}</button>`}<button class="back" data-act="go" data-v="${up?'signin':'signup'}">${t(up?'have':'newq')}</button><button class="back" data-act="go" data-v="privacy">${t('privacy')}</button></div><footer>© 2026 Marma Language</footer>`;return}
  A.className='shell';A.innerHTML=`<header><div class="hrow"><div class="brand">${logo(34)}<b>Marma Language</b></div><span class="sp"></span><div class="hact">${syncBtn()}${av(34)}</div></div><input id="q" class="search" placeholder="${t('search')}" value="${esc(S.q)}"><nav class="tabs">${TABS.map(k=>`<button class="tab ${S.tab===k?'on':''}" data-act="tab" data-t="${k}">${t(k)}</button>`).join('')}<button class="mbtn ${S.tab==='menu'?'on':''}" data-act="tab" data-t="menu" aria-label="${t('menu')}" title="${t('menu')}">${burger(22)}</button></nav></header><main id="body"></main>`;
  body()}
-const VDEF={dict:'grid',word:'grid',sent:'grid',sang:'list',lit:'list'};
+const VDEF={game:'list',dict:'grid',word:'grid',sent:'grid',sang:'list',lit:'list'};
 const getView=tab=>(CFG.views&&CFG.views[tab])||VDEF[tab]||'grid';
 const getSort=tab=>(CFG.sorts&&CFG.sorts[tab])||'new';
 function sortItems(L,mode,key=x=>x){if(mode==='new')return L;if(mode==='old')return [...L].reverse();const f={marma:['marma','my'],bn:['bn','bn'],en:['en','en']}[mode];if(!f)return L;
@@ -312,6 +318,65 @@ function sentPage(){
  return `<h2>${t('sent')}</h2>${bar('sent',true)}${chips}${tools}`+(L.length?L.map(i=>card('sentences',i,false)).join(''):`<p class="note">${t('empty')}</p>`)}
 function hydrate(){document.querySelectorAll('img[data-ik]').forEach(async im=>{const k=im.dataset.ik;if(!k||im.src)return;const b=await aget(k);if(b&&im.isConnected)im.src=URL.createObjectURL(b)})}
 async function shrink(f){if(!f||!/^image\//.test(f.type)||f.type==='image/gif')return f;try{const u=URL.createObjectURL(f),im=await new Promise((r,j)=>{const i=new Image;i.onload=()=>r(i);i.onerror=j;i.src=u});const m=1280,sc=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);return await new Promise(r=>c.toBlob(b=>r(b||f),'image/jpeg',.82))}catch(e){return f}}
+
+// ---- games & quiz (built from the dictionary, words and sentences) ----
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const G=(e,b)=>CFG.lang==='bn'?b:e;
+const gMean=it=>CFG.lang==='bn'?(it.bn||it.en||''):(it.en||it.bn||'');
+const gMarma=it=>it.marma+(it.pron?'  ('+it.pron+')':'');
+function sangItems(){const out=[];(DB.tables||[]).forEach(x=>x.rows.forEach(r=>{const cs=r.c||[],own=cs.filter(c=>c.m&&(c.b||c.e));
+ if(own.length)own.forEach(c=>out.push({marma:c.m,pron:c.p||'',bn:c.b||'',en:c.e||'',k:c.k||null}));
+ else{const f=k=>(cs.find(c=>c[k])||{})[k]||'';out.push({marma:f('m'),pron:f('p'),bn:f('b'),en:f('e'),k:f('k')||null})}}));return out}
+const gPool=(src,audio)=>(src==='sent'?DB.sentences:src==='sang'?sangItems():src==='all'?[...DB.dict,...DB.words,...DB.sentences,...sangItems()]:[...DB.dict,...DB.words]).filter(x=>x.marma&&(x.bn||x.en)&&(!audio||x.k));
+const bestKey=()=>'ml_best_'+ME,bests=()=>store.get(bestKey(),{});
+function setBest(k,v,lower){const b=bests();if(b[k]===undefined||(lower?v<b[k]:v>b[k])){b[k]=v;store.set(bestKey(),b);return true}return false}
+function mkQuiz(mode,src,n=10){
+ const P=gPool(src,mode==='listen');if(P.length<4)return null;
+ const key=mode==='m2b'?gMean:gMarma;
+ const qs=shuf(P).slice(0,n).map(it=>{const ans=key(it),d=[];for(const x of shuf(P)){if(x===it||key(x)===ans||d.some(y=>key(y)===key(x)))continue;d.push(x);if(d.length===3)break}
+  if(d.length<3)return null;return {it,opts:shuf([it,...d]).map(x=>({t:mode==='b2m'||mode==='listen'?gMarma(x):gMean(x),ok:x===it}))}}).filter(Boolean);
+ return qs.length?{type:'quiz',mode,src,qs,i:0,score:0,pick:null,wrong:[]}:null}
+function mkMatch(src){const P=gPool(src).filter(x=>(x.marma||'').length<40&&gMean(x).length<50),u=[];
+ for(const x of shuf(P)){if(!u.some(y=>gMean(y)===gMean(x)||y.marma===x.marma))u.push(x);if(u.length===6)break}
+ if(u.length<3)return null;return {type:'match',src,pairs:u,L:shuf(u.map((_,i)=>i)),R:shuf(u.map((_,i)=>i)),sel:null,done:[],bad:null,moves:0}}
+function mkFlash(src,deck){const P=deck||gPool(src);if(P.length<2)return null;return {type:'flash',src,deck:shuf(P),i:0,flip:false,known:0,again:[]}}
+const gNeed=(n)=>G('Add at least '+n+' items to the chosen section first.','আগে বেছে নেওয়া অংশে অন্তত '+n+'টি যোগ করুন।');
+function gamePage(){
+ const g=S.game,home=`<button class="back" data-act="ghome">← ${G('Games','গেম')}</button>`;
+ if(!g){
+  const b=bests(),src=S.gsrc||'words',cnt=gPool(src).length,ac=gPool(src,true).length;
+  const card=(id,ic,ti,de,ex)=>`<div class="card gcard"><div class="top"><div><b class="mm">${ic} ${ti}</b><div class="en">${de}</div>${b[id]!==undefined?`<div class="en">🏆 ${G('Best','সেরা')}: ${b[id]}${id==='match'?' '+G('moves','চাল'):''}</div>`:''}${ex?`<div class="err">${ex}</div>`:''}</div><button class="btn sm" data-act="gstart" data-g="${id}">${G('Play','খেলুন')}</button></div></div>`;
+  return `<h2>${t('game')}</h2><p class="en">${G('Practice with your own dictionary data. Pick what to practise:','আপনার অভিধানের ডাটা দিয়ে অনুশীলন করুন। কী অনুশীলন করবেন:')}</p>
+  <div><button class="chip ${src==='words'?'on':''}" data-act="gsrc" data-s="words">${G('Words & Dictionary','শব্দ ও অভিধান')}</button><button class="chip ${src==='sent'?'on':''}" data-act="gsrc" data-s="sent">${G('Sentences','বাক্য')}</button><button class="chip ${src==='sang'?'on':''}" data-act="gsrc" data-s="sang">${G('Sangbusa','সংবুসা')}</button><button class="chip ${src==='all'?'on':''}" data-act="gsrc" data-s="all">${G('All','সব')}</button> <span class="en">(${cnt} ${G('items','টি')})</span></div>
+  ${card('quiz','❓',G('Quiz: Marma → meaning','কুইজ: মারমা → অর্থ'),G('10 questions, choose the right meaning.','১০টি প্রশ্ন, সঠিক অর্থ বাছুন।'),cnt<4?gNeed(4):'')}
+  ${card('quiz2','🔁',G('Quiz: meaning → Marma','কুইজ: অর্থ → মারমা'),G('See the meaning, choose the Marma word.','অর্থ দেখে মারমা শব্দ বাছুন।'),cnt<4?gNeed(4):'')}
+  ${card('match','🧩',G('Match the pairs','জোড়া মেলান'),G('Match Marma words with their meaning in fewest moves.','কম চালে মারমা শব্দের সাথে অর্থ মেলান।'),cnt<3?gNeed(3):'')}
+  ${card('flash','🃏',G('Flashcards','ফ্ল্যাশকার্ড'),G('Flip cards and mark what you know.','কার্ড উল্টান, যা জানেন তা চিহ্নিত করুন।'),cnt<2?gNeed(2):'')}
+  ${card('listen','🎧',G('Listen & choose','শুনে বাছুন'),G('Hear the audio, choose the Marma word.','অডিও শুনে মারমা শব্দ বাছুন।'),ac<4?G('Needs at least 4 items with audio.','অন্তত ৪টি অডিওসহ আইটেম লাগবে।'):'')}`}
+ if(g.type==='quiz'){
+  if(g.i>=g.qs.length){const pct=Math.round(g.score/g.qs.length*100);
+   return `${home}<div class="card" style="text-align:center"><div style="font-size:3rem">${pct>=80?'🎉':pct>=50?'👍':'💪'}</div><h2>${g.score} / ${g.qs.length}</h2><div class="en">${pct}%${g.newBest?' · 🏆 '+G('New best!','নতুন সেরা!'):''}</div><button class="btn" data-act="gagain">${G('Play again','আবার খেলুন')}</button><button class="btn ghost" data-act="ghome">${G('Back to games','গেমে ফিরুন')}</button></div>`
+   +(g.wrong.length?`<h3>${G('Review','পর্যালোচনা')}</h3>`+g.wrong.map(it=>`<div class="card"><div class="mm">${esc(it.marma)}</div>${it.pron?`<div class="pr">${esc(it.pron)}</div>`:''}<div class="bn">${esc(it.bn||'')}</div><div class="en">${esc(it.en||'')}</div></div>`).join(''):'')}
+  const q=g.qs[g.i],m=g.mode,ans=g.pick!==null;
+  const head=m==='listen'?`<div style="text-align:center"><button class="play" style="width:64px;height:64px;font-size:1.5rem" data-act="play" data-k="${q.it.k}">▶</button><div class="en">${G('Listen and choose the word','শুনে সঠিক শব্দটি বাছুন')}</div></div>`:m==='m2b'?`<div class="mm" style="font-size:1.8rem">${esc(q.it.marma)}${au(q.it.k)}</div>${q.it.pron?`<div class="pr">${esc(q.it.pron)}</div>`:''}`:`<div class="bn" style="font-size:1.4rem;font-weight:600">${esc(gMean(q.it))}</div>`;
+  return `${home}<div class="en">${G('Question','প্রশ্ন')} ${g.i+1}/${g.qs.length} · ⭐ ${g.score}</div><div class="gbar"><i style="width:${g.i/g.qs.length*100}%"></i></div><div class="card">${head}</div>`
+   +q.opts.map((o,k)=>`<button class="opt ${ans?(o.ok?'ok':g.pick===k?'bad':''):''}" data-act="gpick" data-k="${k}" ${ans?'disabled':''}>${esc(o.t)}</button>`).join('')
+   +(ans?`<div class="note">${q.opts[g.pick].ok?'✅ '+G('Correct!','সঠিক!'):'❌ '+G('Answer','উত্তর')+': '+esc(m==='m2b'?gMean(q.it):gMarma(q.it))}${m==='b2m'||m==='listen'?'<br>'+esc(gMean(q.it)):''}</div><button class="btn" data-act="gnext">${g.i+1>=g.qs.length?G('Finish','শেষ করুন'):G('Next','পরের')} →</button>`:'')}
+ if(g.type==='match'){
+  const fin=g.done.length===g.pairs.length;
+  const L=g.L.map(i=>{const d=g.done.includes(i),s=g.sel===i,bad=g.bad&&g.bad[0]===i;return `<button class="opt ${d?'ok':s?'sel':bad?'bad':''}" data-act="mL" data-i="${i}" ${d?'disabled':''}>${esc(g.pairs[i].marma)}</button>`}).join('');
+  const R=g.R.map(i=>{const d=g.done.includes(i),bad=g.bad&&g.bad[1]===i;return `<button class="opt ${d?'ok':bad?'bad':''}" data-act="mR" data-i="${i}" ${d?'disabled':''}>${esc(gMean(g.pairs[i]))}</button>`}).join('');
+  return `${home}<div class="en">${G('Moves','চাল')}: ${g.moves} · ${g.done.length}/${g.pairs.length}</div>`+(fin?`<div class="card" style="text-align:center"><div style="font-size:3rem">🎉</div><h2>${G('Done in','সম্পন্ন')} ${g.moves} ${G('moves','চালে')}</h2>${g.newBest?`<div class="en">🏆 ${G('New best!','নতুন সেরা!')}</div>`:''}<button class="btn" data-act="gagain">${G('Play again','আবার খেলুন')}</button></div>`:`<div class="en">${G('Tap a Marma word, then its meaning.','মারমা শব্দ চাপুন, তারপর তার অর্থ।')}</div>`)+`<div class="mgrid"><div>${L}</div><div>${R}</div></div>`}
+ if(g.type==='flash'){
+  if(g.i>=g.deck.length)return `${home}<div class="card" style="text-align:center"><div style="font-size:3rem">✅</div><h2>${g.known} / ${g.deck.length}</h2><div class="en">${G('cards you know','কার্ড আপনি জানেন')}</div>${g.again.length?`<button class="btn" data-act="gretry">${G('Practise the','আবার অনুশীলন করুন')} ${g.again.length} ${G('you missed','টি যা ভুল হয়েছে')}</button>`:''}<button class="btn ghost" data-act="gagain">${G('New round','নতুন রাউন্ড')}</button></div>`;
+  const it=g.deck[g.i];
+  return `${home}<div class="en">${g.i+1}/${g.deck.length} · ✓ ${g.known}</div><div class="gbar"><i style="width:${g.i/g.deck.length*100}%"></i></div><div class="card flip" data-act="gflip" style="min-height:180px;text-align:center;cursor:pointer">${g.flip?`<div class="bn" style="font-size:1.4rem;font-weight:600">${esc(it.bn||'')}</div><div class="en" style="font-size:1.1rem">${esc(it.en||'')}</div>`:`<div class="mm" style="font-size:2rem">${esc(it.marma)}</div>${it.pron?`<div class="pr">${esc(it.pron)}</div>`:''}${it.k?`<div>${au(it.k)}</div>`:''}<div class="en" style="margin-top:12px">${G('Tap to flip','উল্টাতে চাপুন')}</div>`}</div>`+(g.flip?`<div style="display:flex;gap:10px"><button class="btn ghost" data-act="gknow" data-v="0">↻ ${G('Again','আবার')}</button><button class="btn" data-act="gknow" data-v="1">✓ ${G('I know it','জানি')}</button></div>`:'')}
+ return ''}
+function gStartGame(id){const src=S.gsrc||'words';
+ const mk={quiz:()=>mkQuiz('m2b',src),quiz2:()=>mkQuiz('b2m',src),listen:()=>mkQuiz('listen',src),match:()=>mkMatch(src),flash:()=>mkFlash(src)}[id];
+ const g=mk&&mk();if(!g){alert(G('Not enough data for this game yet.','এই গেমের জন্য এখনো যথেষ্ট ডাটা নেই।'));return}
+ g.id=id;S.game=g;body();{const m=$('#body');if(m)m.scrollTop=0}scrollTo(0,0)}
+function gFinishQuiz(g){const id=g.id==='listen'?'listen':g.id;g.newBest=setBest(id,g.score)&&g.score>0}
 function body(){
  const B=$('#body'),q=S.q.trim().toLowerCase();let h='';
  if(q){const parts=['dict','words','sentences'].map(c=>[c,DB[c].filter(i=>match(i,q))]).filter(p=>p[1].length);
@@ -324,6 +389,7 @@ function body(){
   else if(S.tab==='sang'){const A=isAdmin(),x=A&&S.tid&&curT();
    if(x)h=`<h2>${t('sang')}</h2>`+tblEditor(x);
    else h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(DB.tables.map(x=>`<div class="tblw">`+(A?`<div><button class="btn sm" data-act="edittbl" data-id="${x.id}">${t('edit')}</button><button class="btn sm dng" data-act="deltbl" data-id="${x.id}">${t('del')}</button></div>`:'')+tbl(x,x.rows)+`</div>`).join('')||`<p class="note">${t('empty')}</p>`)}
+ else if(S.tab==='game')h=gamePage();
  else if(S.tab==='sent')h=sentPage();
  else if(S.tab==='lit')h=litPage();
  else h=menu();
@@ -607,7 +673,7 @@ document.addEventListener('click',async e=>{
  else if(a==='syncnow'){sync()}
  else if(a==='oauth'){oauthStart(d.p)}
  else if(a==='logout'){if(AUTH&&!AUTH.dead&&navigator.onLine!==false){try{await Promise.race([sync({pull:false}),new Promise(r=>setTimeout(r,4000))])}catch(e){}try{sb('/auth/v1/logout?scope=local',{method:'POST',tok:AUTH.access_token}).catch(()=>{})}catch(e){}}AUTH=null;store.set('ml_auth',null);ME=null;store.set('ml_sess',null);Object.assign(S,{view:'welcome',sub:'',tab:'dict',q:''});render()}
- else if(a==='tab'){syncT();save();Object.assign(S,{tab:d.t,sub:'',q:'',pf:null,tid:null,cell:null,edit:null,inl:false});render()}
+ else if(a==='tab'){syncT();save();Object.assign(S,{tab:d.t,game:null,sub:'',q:'',pf:null,tid:null,cell:null,edit:null,inl:false});render()}
  else if(a==='myprof'){Object.assign(S,{tab:'menu',sub:'profile',q:''});render()}
  else if(a==='dir'){S.dir=d.d;body()}
  else if(a==='fav'){let f=favs();f=f.includes(d.k)?f.filter(x=>x!==d.k):[...f,d.k];store.set(favKey(),f);body()}
@@ -653,6 +719,18 @@ document.addEventListener('click',async e=>{
  else if(a==='rmpimg'){const p=DB.lit.posts.find(x=>x.id===S.pf);if(p){adel(p.img);p.img=null;save();body()}}
  else if(a==='rmpau'){const p=DB.lit.posts.find(x=>x.id===S.pf);if(p){adel(p.k);p.k=null;save();body()}}
  else if(a==='view'){CFG.views=CFG.views||{};CFG.views[S.tab]=d.v;store.set('ml_cfg',CFG);body()}
+ else if(a==='gsrc'){S.gsrc=d.s;body()}
+ else if(a==='gstart'){gStartGame(d.g)}
+ else if(a==='ghome'){S.game=null;body()}
+ else if(a==='gagain'){if(S.game)gStartGame(S.game.id)}
+ else if(a==='gpick'){const g=S.game;if(!g||g.pick!==null)return;g.pick=+d.k;const q=g.qs[g.i];if(q.opts[g.pick].ok)g.score++;else g.wrong.push(q.it);body()}
+ else if(a==='gnext'){const g=S.game;g.i++;g.pick=null;if(g.i>=g.qs.length)gFinishQuiz(g);body()}
+ else if(a==='mL'){const g=S.game;g.sel=+d.i;g.bad=null;body()}
+ else if(a==='mR'){const g=S.game;if(g.sel===null)return;g.moves++;const l=g.sel,r=+d.i;g.sel=null;
+  if(l===r){g.done.push(l);if(g.done.length===g.pairs.length)g.newBest=setBest('match',g.moves,true)}else{g.bad=[l,r];setTimeout(()=>{if(S.game===g&&g.bad){g.bad=null;body()}},700)}body()}
+ else if(a==='gflip'){S.game.flip=!S.game.flip;body()}
+ else if(a==='gknow'){const g=S.game;if(d.v==='1')g.known++;else g.again.push(g.deck[g.i]);g.i++;g.flip=false;body()}
+ else if(a==='gretry'){const g=S.game,n=mkFlash(g.src,g.again);if(n){n.id='flash';S.game=n;body()}}
  else if(a==='ssub'){S.ssub=d.c;body()}
  else if(a==='ssadd'){const n=val('ss_name');if(!n)return;const x={id:uid(),name:n};DB.ssubs.push(x);S.ssub=x.id;save();body()}
  else if(a==='ssren'){const n=val('ss_name'),x=DB.ssubs.find(y=>y.id===S.ssub);if(!n||!x)return;x.name=n;save();body()}
