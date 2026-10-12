@@ -62,6 +62,18 @@ textarea.in{min-height:90px}.pbody{white-space:pre-wrap;margin:8px 0}.badge{font
 .mbtn{flex:0 0 auto;align-self:center;width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);cursor:pointer;padding:0}.mbtn.on{background:var(--pr);color:var(--pt);border-color:var(--pr)}
 .back svg{vertical-align:-3px}.menu h2 svg{display:block}
 .legal h3{text-transform:none;letter-spacing:0;color:var(--pr);font-size:1rem;margin:14px 0 2px}.legal h3:first-child{margin-top:0}.legal p{margin:2px 0}
+@media(min-width:700px){
+#app{max-width:1100px}
+header{padding:14px 24px 0}main{padding:6px 24px 48px}
+main.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:0 16px;align-items:start}
+main.grid>*{grid-column:1/-1}
+main.grid>.card{grid-column:auto}
+main.grid>.card.tw,main.grid>.card:has(input,textarea,select,.x){grid-column:1/-1}
+main.grid details[open]{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:0 16px;align-items:start}
+main.grid details>summary{grid-column:1/-1}
+main.narrow{max-width:820px;margin:0 auto}
+.search{max-width:520px}
+}
 </style>
 </head>
 <body>
@@ -124,7 +136,7 @@ aboutTxt:['Marma Language helps you learn and preserve Marma words, alphabet, sa
 theme:['Theme','থিম'],fsize:['Font size','অক্ষরের আকার'],small:['Small','ছোট'],medium:['Medium','মাঝারি'],large:['Large','বড়'],chooseLang:['Choose app language','অ্যাপের ভাষা বাছুন'],
 rateTitle:['Rate this app','অ্যাপটিকে রেটিং দিন'],avg:['Average','গড়'],votes:['ratings','টি রেটিং'],feedback:['Write your feedback (optional)','মতামত লিখুন (ঐচ্ছিক)'],submit:['Submit','জমা দিন'],thanks:['Thank you for rating!','রেটিং দেওয়ার জন্য ধন্যবাদ!'],allRatings:['All ratings','সব রেটিং'],
 shareTxt:['Learn the Marma language with the Marma Language app!','Marma Language অ্যাপে মারমা ভাষা শিখুন!'],copied:['Link copied ✔','লিংক কপি হয়েছে ✔'],
-all:['All','সব'],write:['+ Write','+ লিখুন'],editPost:['Edit post','পোস্ট এডিট'],newPost:['New post','নতুন পোস্ট'],category:['Category','বিভাগ'],ptitle:['Title','শিরোনাম'],plang:['Written in','যে ভাষায় লেখা'],pbody:['Write here…','এখানে লিখুন…'],publish:['Publish','প্রকাশ করুন'],update:['Update','আপডেট'],cancel:['Cancel','বাতিল'],
+all:['All','সব'],subAdd:['+ Subsection','+ সাব সেকশন'],subName:['Subsection name','সাব সেকশনের নাম'],subRen:['Rename','নাম বদলান'],subDel:['Delete subsection','সাব সেকশন মুছুন'],subSel:['Subsection','সাব সেকশন'],subNone:['No subsection','সাব সেকশন নেই'],subSure:['Delete this subsection? Its sentences stay under All.','এই সাব সেকশন মুছবেন? বাক্যগুলো "সব" এ থাকবে।'],pWrite:['Write here...','এখানে লিখুন...'],pImg:['Image (optional)','ছবি (ঐচ্ছিক)'],pAud:['Audio (optional)','অডিও (ঐচ্ছিক)'],pImgRm:['Remove image','ছবি সরান'],pAudRm:['Remove audio','অডিও সরান'],needText:['Write something first.','আগে কিছু লিখুন।'],write:['+ Write','+ লিখুন'],editPost:['Edit post','পোস্ট এডিট'],newPost:['New post','নতুন পোস্ট'],category:['Category','বিভাগ'],ptitle:['Title','শিরোনাম'],plang:['Written in','যে ভাষায় লেখা'],pbody:['Write here…','এখানে লিখুন…'],publish:['Publish','প্রকাশ করুন'],update:['Update','আপডেট'],cancel:['Cancel','বাতিল'],
 edit:['Edit','এডিট'],del:['Delete','মুছুন'],sure:['Delete this?','মুছে ফেলবেন?'],noPosts:['No posts yet. Be the first to write!','এখনো কোনো লেখা নেই। প্রথম লেখাটি আপনার হোক!'],fillTB:['Please enter a title and some text.','শিরোনাম ও লেখা দিন।'],
 cmts:['Comments','মন্তব্য'],addCm:['Write a comment…','মন্তব্য লিখুন…'],send:['Send','পাঠান'],by:['by','লেখক'],
 L_marma:['Marma','মারমা'],L_bn:['Bangla','বাংলা'],L_en:['English','ইংরেজি'],
@@ -194,7 +206,7 @@ const safeLink=l=>/^https?:\/\//i.test(l||'');
 const vcmp=(a,b)=>{const x=String(a).split('.').map(n=>parseInt(n)||0),y=String(b).split('.').map(n=>parseInt(n)||0);for(let i=0;i<Math.max(x.length,y.length);i++){const d=(x[i]||0)-(y[i]||0);if(d)return d}return 0};
 let DB=store.get('ml_db',null)||clone(SEED);
 if(!DB.tables){DB.tables=clone(SEED.tables);if(DB.phrases&&DB.phrases.length)DB.tables.unshift({id:uid(),cap:'Sangbusa',cols:['Marma','উচ্চারণ','বাংলা','English'],rows:DB.phrases.map(p=>({id:uid(),c:[{t:p.marma},{t:p.pron},{t:p.bn},{t:p.en}]}))});delete DB.phrases}DB.tables.forEach(normT);
-if(!DB.lit)DB.lit=clone(SEED.lit);if(!DB.ratings)DB.ratings=[];if(!DB.dict)DB.dict=[];if(!DB.updates)DB.updates=[];
+if(!DB.ssubs)DB.ssubs=[];if(!DB.lit)DB.lit=clone(SEED.lit);if(!DB.ratings)DB.ratings=[];if(!DB.dict)DB.dict=[];if(!DB.updates)DB.updates=[];
 const updSorted=()=>[...(DB.updates||[])].sort((a,b)=>vcmp(b.ver,a.ver));
 const hasNew=()=>{const u=updSorted()[0];return !!u&&vcmp(u.ver,APP_VER)>0};
 const save=()=>{store.set('ml_db',DB);if(cloudHook)cloudHook()};
@@ -226,14 +238,14 @@ const fmt=ts=>new Date(ts).toLocaleDateString(CFG.lang==='bn'?'bn-BD':'en-GB');
 const RX=['👍','❤️','👏','😊'];
 function post(p){
  const c=DB.lit.cats.find(x=>x.id===p.cat),ed=canEdit(p),open=S.open===p.id,cm=p.cm||[];
- return `<div class="card"><div class="top"><b class="mm">${esc(p.title)}</b><span class="badge">${t('L_'+p.lang)}</span></div>
- <div class="en">${t('by')} ${esc(p.an)} · ${fmt(p.ts)}${c?' · '+esc(catName(c)):''}</div><div class="pbody">${esc(p.body)}</div>
+ return `<div class="card"><div class="top"><div class="en">${t('by')} ${esc(p.an)} · ${fmt(p.ts)}${c?' · '+esc(catName(c)):''}</div>${au(p.k)}</div>
+ ${p.title?`<b class="mm">${esc(p.title)}</b>`:''}<div class="pbody">${esc(p.body)}</div>${p.img?`<img data-ik="${p.img}" alt="" style="max-width:100%;border-radius:10px;margin-top:8px;display:block">`:''}
  <div>${RX.map(e=>{const n=(p.rx?.[e]||[]).length,on=(p.rx?.[e]||[]).includes(ME);return `<button class="chip ${on?'on':''}" data-act="react" data-id="${p.id}" data-e="${e}">${e} ${n||''}</button>`}).join('')}<button class="chip ${open?'on':''}" data-act="cm" data-id="${p.id}">💬 ${cm.length}</button></div>
  ${ed?`<button class="btn sm" data-act="editpost" data-id="${p.id}">${t('edit')}</button><button class="btn sm dng" data-act="delpost" data-id="${p.id}">${t('del')}</button>`:''}
  ${open?`<div style="margin-top:8px">${cm.map(m=>`<div class="cmt"><b>${esc(m.an)}</b> <span class="en">${fmt(m.ts)}</span>${m.by===ME||isAdmin()?` <button class="x" data-act="delcm" data-id="${p.id}" data-c="${m.id}" aria-label="delete">✕</button>`:''}<div>${esc(m.text)}</div></div>`).join('')}<input class="in" id="cm_${p.id}" placeholder="${t('addCm')}"><button class="btn sm" data-act="addcm" data-id="${p.id}">${t('send')}</button></div>`:''}</div>`}
 function litPage(){
- if(S.pf){const e=S.pf!=='new'?DB.lit.posts.find(x=>x.id===S.pf):null,v=k=>esc(e?e[k]:'');
-  return `<button class="back" data-act="cancelpost">← ${t('back')}</button><h2>${e?t('editPost'):t('newPost')}</h2><div class="card"><select class="in" id="l_cat">${DB.lit.cats.map(c=>`<option value="${c.id}" ${e&&e.cat===c.id?'selected':''}>${esc(catName(c))}</option>`).join('')}</select><select class="in" id="l_lang">${['marma','bn','en'].map(l=>`<option value="${l}" ${e&&e.lang===l?'selected':''}>${t('plang')}: ${t('L_'+l)}</option>`).join('')}</select><input class="in" id="l_title" placeholder="${t('ptitle')}" value="${v('title')}"><textarea class="in" id="l_body" rows="10" placeholder="${t('pbody')}">${v('body')}</textarea><button class="btn" data-act="savepost">${e?t('update'):t('publish')}</button><button class="btn ghost" data-act="cancelpost">${t('cancel')}</button></div>`}
+ if(S.pf){const e=S.pf!=='new'?DB.lit.posts.find(x=>x.id===S.pf):null;
+  return `<button class="back" data-act="cancelpost">← ${t('back')}</button><h2>${e?t('editPost'):t('newPost')}</h2><div class="card"><select class="in" id="l_cat">${DB.lit.cats.map(c=>`<option value="${c.id}" ${e&&e.cat===c.id?'selected':''}>${esc(catName(c))}</option>`).join('')}</select><textarea class="in" id="l_body" rows="12" placeholder="${t('pWrite')}">${esc(e?((e.title?e.title+'\n\n':'')+e.body):'')}</textarea><div class="en">🖼 ${t('pImg')}</div><input class="in" id="l_img" type="file" accept="image/*">${e&&e.img?`<button class="btn sm dng" data-act="rmpimg">${t('pImgRm')}</button>`:''}<div class="en">🎙 ${t('pAud')}</div><input class="in" id="l_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmpau">${t('pAudRm')}</button>`:''}<button class="btn" data-act="savepost">${e?t('update'):t('publish')}</button><button class="btn ghost" data-act="cancelpost">${t('cancel')}</button></div>`}
  const ps=DB.lit.posts.filter(p=>S.lcat==='all'||p.cat===S.lcat);
  return `<h2>${t('lit')}</h2><div><button class="chip ${S.lcat==='all'?'on':''}" data-act="lcat" data-c="all">${t('all')}</button>${DB.lit.cats.map(c=>`<button class="chip ${S.lcat===c.id?'on':''}" data-act="lcat" data-c="${c.id}">${esc(catName(c))}</button>`).join('')}</div>${isAdmin()?`<details><summary>⚙ ${t('ac')}</summary><div class="card"><input class="in" id="k_en" placeholder="${t('catEn')}"><input class="in" id="k_bn" placeholder="${t('catBn')}"><button class="btn" data-act="addcat">${t('addBtn')}</button>${DB.lit.cats.map(k=>`<div class="top" style="margin-top:8px"><div><b>${esc(k.en||'')}</b> · ${esc(k.bn||'')}</div>${isMain()?`<button class="btn sm dng" data-act="delcat" data-id="${k.id}">${t('del')}</button>`:''}</div>`).join('')}</div></details>`:''}<button class="btn" data-act="newpost">${t('write')}</button>${ps.map(post).join('')||`<p class="note">${t('noPosts')}</p>`}`}
 function render(){
@@ -254,11 +266,19 @@ function render(){
  body()}
 const dlist=rev=>{const L=[...DB.dict.map(i=>['dict',i]),...DB.words.map(i=>['words',i])];return L.length?L.map(p=>card(p[0],p[1],rev)).join(''):`<p class="note">${t('empty')}</p>`};
 const list=(c,rev)=>DB[c].length?DB[c].map(i=>card(c,i,rev)).join(''):`<p class="note">${t('empty')}</p>`;
+function sentPage(){
+ const subs=DB.ssubs||[],cur=subs.find(x=>x.id===S.ssub)?S.ssub:'all',adm=isAdmin();
+ const chips=`<div class="tabs" style="padding:4px 0"><button class="chip ${cur==='all'?'on':''}" data-act="ssub" data-c="all">${t('all')}</button>${subs.map(x=>`<button class="chip ${cur===x.id?'on':''}" data-act="ssub" data-c="${x.id}">${esc(x.name)}</button>`).join('')}</div>`;
+ const tools=adm?`<div class="card" style="grid-column:1/-1"><div style="display:flex;gap:8px;flex-wrap:wrap"><input class="in" id="ss_name" style="flex:1;min-width:160px;margin:0" placeholder="${t('subName')}" value="${cur!=='all'?esc(subs.find(x=>x.id===cur).name):''}"><button class="btn sm" data-act="ssadd">${t('subAdd')}</button>${cur!=='all'?`<button class="btn sm" data-act="ssren">${t('subRen')}</button><button class="btn sm dng" data-act="ssdel">${t('subDel')}</button>`:''}</div></div>`:'';
+ const L=DB.sentences.filter(i=>cur==='all'||i.sub===cur);
+ return `<h2>${t('sent')}</h2>${chips}${tools}`+(L.length?L.map(i=>card('sentences',i,false)).join(''):`<p class="note">${t('empty')}</p>`)}
+function hydrate(){document.querySelectorAll('img[data-ik]').forEach(async im=>{const k=im.dataset.ik;if(!k||im.src)return;const b=await aget(k);if(b&&im.isConnected)im.src=URL.createObjectURL(b)})}
+async function shrink(f){if(!f||!/^image\//.test(f.type)||f.type==='image/gif')return f;try{const u=URL.createObjectURL(f),im=await new Promise((r,j)=>{const i=new Image;i.onload=()=>r(i);i.onerror=j;i.src=u});const m=1280,sc=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);return await new Promise(r=>c.toBlob(b=>r(b||f),'image/jpeg',.82))}catch(e){return f}}
 function body(){
  const B=$('#body'),q=S.q.trim().toLowerCase();let h='';
  if(q){const parts=['dict','words','sentences'].map(c=>[c,DB[c].filter(i=>match(i,q))]).filter(p=>p[1].length);
   const ts=DB.tables.map(x=>[x,x.cap.toLowerCase().includes(q)?x.rows:x.rows.filter(r=>r.c.some(c=>ctext(c).includes(q)))]).filter(p=>p[1].length);
-  const ls=DB.lit.posts.filter(p=>(p.title+' '+p.body).toLowerCase().includes(q));
+  const ls=DB.lit.posts.filter(p=>((p.title||'')+' '+p.body).toLowerCase().includes(q));
   h=`<h3>${t('results')}</h3>`+parts.map(p=>`<h3>${t(p[0]==='sentences'?'sent':p[0]==='dict'?'dict':'word')}</h3>`+p[1].map(i=>card(p[0],i,false)).join('')).join('')+(ts.length?`<h3>${t('sang')}</h3>`+ts.map(p=>tbl(p[0],p[1])).join(''):'')+(ls.length?`<h3>${t('lit')}</h3>`+ls.map(post).join(''):'')+(parts.length||ts.length||ls.length?'':`<p class="note">${t('none')}</p>`)}
  else if(S.tab==='dict')h=`<div class="seg"><button class="${S.dir==='m2b'?'on':''}" data-act="dir" data-d="m2b">${t('m2b')}</button><button class="${S.dir==='b2m'?'on':''}" data-act="dir" data-d="b2m">${t('b2m')}</button></div>`+dlist(S.dir==='b2m');
  else if(S.tab==='word'){const g={};DB.words.forEach(w=>(g[w.cat||'Others']=g[w.cat||'Others']||[]).push(w));
@@ -266,13 +286,14 @@ function body(){
   else if(S.tab==='sang'){const A=isAdmin(),x=A&&S.tid&&curT();
    if(x)h=`<h2>${t('sang')}</h2>`+tblEditor(x);
    else h=`<h2>${t('sang')}</h2>`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(DB.tables.map(x=>(A?`<div><button class="btn sm" data-act="edittbl" data-id="${x.id}">${t('edit')}</button><button class="btn sm dng" data-act="deltbl" data-id="${x.id}">${t('del')}</button></div>`:'')+tbl(x,x.rows)).join('')||`<p class="note">${t('empty')}</p>`)}
- else if(S.tab==='sent')h=`<h2>${t('sent')}</h2>`+list('sentences');
+ else if(S.tab==='sent')h=sentPage();
  else if(S.tab==='lit')h=litPage();
  else h=menu();
 const IC={dict:'dict',word:'words',sent:'sentences'}[S.tab];
+
  if(!q&&IC&&isAdmin()){const m=S.tab==='dict'?['dict','words']:[IC];h=(S.inl&&S.edit&&m.includes(S.col)?itemForm(S.col):`<button class="btn" data-act="iadd" data-c="${IC}">＋ ${t('addNew')}</button>`)+h}
  if(hasNew()&&!S.updHide){const u=updSorted()[0];h=`<div class="card" style="border-color:var(--ac)"><div class="top"><div><b>🔔 ${t('newVer')}: ${esc(u.ver)}</b>${u.note?`<div class="en">${esc(u.note)}</div>`:''}</div><button class="x" data-act="updhide" aria-label="close">✕</button></div>${safeLink(u.link)?`<a class="btn sm" href="${esc(u.link)}" target="_blank" rel="noopener">⬇ ${t('download')}</a>`:''}</div>`+h}
- B.innerHTML=h}
+ B.className=(q||['dict','sent','word'].includes(S.tab))?'grid':'narrow';B.innerHTML=h;hydrate()}
 function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button>`;
  if(S.sub==='profile')return `${back}<h2>${t('profile')}</h2><div class="card" style="text-align:center">${av(96)}<div style="margin-top:8px"><b>${esc(u.name)}</b></div><div class="en">${t('role_'+u.role)}</div><div style="margin-top:6px">${u.email?`<div>✉️ ${esc(u.email)}</div>`:''}${u.phone?`<div>📞 ${esc(u.phone)}</div>`:''}</div></div><button class="btn" data-act="sub" data-s="editprofile">✏️ ${t('editProfile')}</button>`;
  if(S.sub==='editprofile')return `<button class="back" data-act="sub" data-s="profile">← ${t('profile')}</button><h2>${t('editProfile')}</h2><div class="card" style="text-align:center">${av(96)}<div><button class="btn sm" data-act="picpick">${t('changePic')}</button>${u.pic?`<button class="btn sm ghost" data-act="picrm">${t('rmPic')}</button>`:''}</div></div><div class="card"><b>${t('details')}</b><input class="in" id="p_name" autocomplete="name" placeholder="${t('name')}" value="${esc(u.name)}"><input class="in" id="p_email" type="email" autocomplete="email" placeholder="${t('emailOpt')}" value="${esc(u.email||'')}"><input class="in" id="p_phone" type="tel" autocomplete="tel" placeholder="${t('phoneOpt')}" value="${esc(u.phone||'')}"><button class="btn" data-act="saveprofile">${t('saveChanges')}</button><div class="en" style="margin-top:4px;font-size:.85rem">${t('loginNote')}</div></div>${AUTH&&AUTH.provider&&AUTH.provider!=='email'?'':`<div class="card"><b>${t('changePw')}</b><input class="in" id="pw_cur" type="password" autocomplete="current-password" placeholder="${t('curPw')}"><input class="in" id="pw_new" type="password" autocomplete="new-password" placeholder="${t('newPw')}"><input class="in" id="pw_con" type="password" autocomplete="new-password" placeholder="${t('conPw')}"><button class="btn" data-act="savepw">${t('changePw')}</button></div>`}`;
@@ -293,7 +314,7 @@ function tblEditor(x){
   const form=sc?`<div class="card"><b>${t('edit')}</b> <span class="en">(${S.cell.r+1}, ${S.cell.c+1})</span><input class="in" id="cf_m" placeholder="${t('marmaPh')}" value="${fv('m')}"><input class="in" id="cf_p" placeholder="${t('pronPh')}" value="${fv('p')}"><input class="in" id="cf_b" placeholder="${t('bnPh')}" value="${fv('b')}"><input class="in" id="cf_e" placeholder="${t('enPh')}" value="${fv('e')}"><div class="en">🎙 ${sc.k?t('audioHas'):t('audioLbl')}</div><button class="play" data-act="cellau" data-r="${S.cell.r}" data-c="${S.cell.c}" title="audio">${sc.k?'🔊':'🎙'}</button>${sc.k?au(sc.k)+`<button class="x" data-act="cellrm" data-r="${S.cell.r}" data-c="${S.cell.c}">⊘</button>`:''}<div><button class="btn sm" data-act="cellsave">💾 ${t('saved').replace(' ✔','')}</button><button class="btn sm" data-act="cellclose">✕</button></div></div>`:'';
   return `<button class="back" data-act="backtbl">${t('allTbl')}</button><input class="in" id="t_cap" placeholder="${t('caption')}" value="${esc(x.cap)}"><div class="note">${t('tblNote')}</div>${form}<div class="card tw"><table><thead><tr>${x.cols.map((c,i)=>`<th style="text-align:center;padding:2px;background:none;border:0"><button class="x" data-act="delcol" data-i="${i}" aria-label="delete column">✕</button></th>`).join('')}<th></th></tr></thead><tbody>${x.rows.map((r,ri)=>`<tr>${r.c.map((y,ci)=>`<td class="bx ed${S.cell&&S.cell.r===ri&&S.cell.c===ci?' sel':''}" data-act="cellopen" data-r="${ri}" data-c="${ci}">${cellH(y)||'<span class="en">＋</span>'}</td>`).join('')}<td><button class="x" data-act="delrow" data-r="${ri}" aria-label="delete row">✕</button></td></tr>`).join('')}</tbody></table></div><button class="btn sm" data-act="addcol">${t('addCol')}</button><button class="btn sm" data-act="addrow">${t('addRow')}</button><button class="btn sm" data-act="savetbl">💾 ${t('saved').replace(' ✔','')}</button>`}
 
-function itemForm(c){const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;return `<div class="card"><b>${e?t('edit'):t('addNew')}</b>${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${c==='words'?f('cat','secPh'):''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`}
+function itemForm(c){const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;return `<div class="card"><b>${e?t('edit'):t('addNew')}</b>${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${c==='words'?f('cat','secPh'):''}${c==='sentences'?`<select class="in" id="f_sub"><option value="">${t('subNone')}</option>${(DB.ssubs||[]).map(x=>`<option value="${x.id}" ${(e?e.sub:S.ssub)===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`:''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`}
 function admin(){const c=S.ac==='updates'?'updates':'admins',M=isMain();
  const tabs=[['admins','aa'],['updates','upd']];
  const nav=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button><h2>${t('admin')}</h2><div class="seg">${tabs.map(x=>`<button class="${c===x[0]?'on':''}" data-act="col" data-c="${x[0]}">${t(x[1])}</button>`).join('')}</div>`;
@@ -308,7 +329,7 @@ const PHONE_DOMAIN='thuinumong.github.io'; // phone-number accounts use <phone>@
 let AUTH=store.get('ml_auth',null);
 let SYNC=store.get('ml_sync',null)||{init:false,last:null,snap:{},uid:null,pdirty:false,aq:[]};
 const saveSync=()=>store.set('ml_sync',SYNC),saveAuth=()=>store.set('ml_auth',AUTH);
-const emptyDB=()=>({dict:[],words:[],sentences:[],tables:[],lit:{cats:[],posts:[]},ratings:[]});
+const emptyDB=()=>({ssubs:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:[],posts:[]},ratings:[]});
 const hsh=s=>{let x=5381;for(let i=0;i<s.length;i++)x=((x<<5)+x+s.charCodeAt(i))|0;return x+':'+s.length};
 const canon=v=>v===null||typeof v!=='object'?JSON.stringify(v):Array.isArray(v)?'['+v.map(x=>canon(x===undefined?null:x)).join(',')+']':'{'+Object.keys(v).filter(k=>v[k]!==undefined).sort().map(k=>JSON.stringify(k)+':'+canon(v[k])).join(',')+'}';
 const KCOL=k=>k.slice(0,k.indexOf('|')),KID=k=>k.slice(k.indexOf('|')+1);
@@ -333,13 +354,14 @@ function flat(){const m={},add=(col,id,data)=>{m[col+'|'+id]={col,id:String(id),
  ['dict','words','sentences'].forEach(c=>(DB[c]||[]).forEach(x=>add(c,x.id,x)));
  (DB.tables||[]).forEach(x=>add('tables',x.id,x));
  (DB.updates||[]).forEach(x=>add('updates',x.id,x));
+ (DB.ssubs||[]).forEach(x=>add('ssubs',x.id,x));
  DB.lit.cats.forEach(x=>add('cats',x.id,x));
  DB.lit.posts.forEach(p=>{const {cm,rx,...rest}=p;add('posts',p.id,rest);
   (cm||[]).forEach(c=>add('comments',c.id,{...c,post:p.id}));
   Object.entries(rx||{}).forEach(([e,L])=>(L||[]).forEach(u=>add('reactions',p.id+'|'+e+'|'+u,{post:p.id,e,by:u})))});
  (DB.ratings||[]).forEach(r=>add('ratings',r.by,r));
  return m}
-const PRI={cats:0,dict:1,words:1,sentences:1,tables:2,updates:1,posts:3,comments:4,reactions:5,ratings:6};
+const PRI={ssubs:0,cats:0,dict:1,words:1,sentences:1,tables:2,updates:1,posts:3,comments:4,reactions:5,ratings:6};
 function applyRemote(it){
  const {col,id,deleted}=it,d=it.data||{},same=(a,b)=>String(a)===String(b);
  const put=(arr,front)=>{const i=arr.findIndex(y=>same(y.id,id));if(deleted){if(i>=0)arr.splice(i,1);return}if(i>=0)arr[i]=d;else front?arr.unshift(d):arr.push(d)};
@@ -347,6 +369,7 @@ function applyRemote(it){
  else if(col==='tables'){if(!deleted)normT(d);put(DB.tables,false)}
   else if(col==='updates'){DB.updates=DB.updates||[];put(DB.updates,true)}
  else if(col==='cats')put(DB.lit.cats,false);
+ else if(col==='ssubs'){DB.ssubs=DB.ssubs||[];put(DB.ssubs,false)}
  else if(col==='ratings'){const i=DB.ratings.findIndex(r=>same(r.by,id));if(deleted){if(i>=0)DB.ratings.splice(i,1)}else if(i>=0)DB.ratings[i]=d;else DB.ratings.push(d)}
  else if(col==='posts'){const P=DB.lit.posts,i=P.findIndex(p=>same(p.id,id));if(deleted){if(i>=0)P.splice(i,1)}else{const old=i>=0?P[i]:{},x={...d,cm:old.cm||[],rx:old.rx||{}};if(i>=0)P[i]=x;else P.push(x)}}
  else if(col==='comments'){const p=d.post!==undefined?DB.lit.posts.find(q=>same(q.id,d.post)):DB.lit.posts.find(q=>(q.cm||[]).some(c=>same(c.id,id)));if(!p)return;p.cm=p.cm||[];const i=p.cm.findIndex(c=>same(c.id,id));if(deleted){if(i>=0)p.cm.splice(i,1)}else if(i>=0)p.cm[i]=d;else p.cm.push(d)}
@@ -407,9 +430,9 @@ async function pushProfile(){
  try{await rest('/profiles?id=eq.'+encodeURIComponent(ME),{method:'PATCH',body:{name:u.name,email:u.email||null,phone:u.phone||null,pic:u.pic||null}});SYNC.pdirty=false;saveSync()}catch(e){}}
 
 // ---- audio clips (Supabase Storage bucket "audio") ----
-const allAudioKeys=()=>{const s=new Set(),add=y=>{if(y&&y.k)s.add(y.k)};['dict','words','sentences'].forEach(c=>(DB[c]||[]).forEach(add));(DB.tables||[]).forEach(x=>x.rows.forEach(r=>r.c.forEach(add)));return [...s]};
+const allAudioKeys=()=>{const s=new Set(),add=y=>{if(y&&y.k)s.add(y.k)};['dict','words','sentences'].forEach(c=>(DB[c]||[]).forEach(add));(DB.tables||[]).forEach(x=>x.rows.forEach(r=>r.c.forEach(add)));DB.lit.posts.forEach(p=>{add(p);if(p.img)s.add(p.img)});return [...s]};
 async function pushAudio(){
- if(!isAdmin()||!SYNC.aq.length)return;
+ if(!user()||!SYNC.aq.length)return;
  for(const k of SYNC.aq.slice()){const b=await agetLocal(k);
   if(!b){SYNC.aq=SYNC.aq.filter(x=>x!==k);continue}
   const tk=await getTok();let r;
@@ -419,7 +442,7 @@ async function pushAudio(){
   saveSync()}}
 audioFetch=async k=>{try{const r=await fetch(SB_URL+'/storage/v1/object/public/audio/'+encodeURIComponent(k));return r.ok?await r.blob():null}catch(e){return null}};
 audioHook=k=>{if(!AUTH)return;if(!SYNC.aq.includes(k))SYNC.aq.push(k);saveSync();schedule()};
-audioDel=async k=>{SYNC.aq=SYNC.aq.filter(x=>x!==k);saveSync();if(!AUTH||AUTH.dead||!isAdmin())return;try{const tk=await getTok();await fetch(SB_URL+'/storage/v1/object/audio/'+encodeURIComponent(k),{method:'DELETE',headers:{apikey:SB_KEY,Authorization:'Bearer '+tk}})}catch(e){}};
+audioDel=async k=>{SYNC.aq=SYNC.aq.filter(x=>x!==k);saveSync();if(!AUTH||AUTH.dead)return;try{const tk=await getTok();await fetch(SB_URL+'/storage/v1/object/audio/'+encodeURIComponent(k),{method:'DELETE',headers:{apikey:SB_KEY,Authorization:'Bearer '+tk}})}catch(e){}};
 
 // ---- the sync loop ----
 let busy=false,again=false,timer=null;
@@ -507,7 +530,7 @@ document.addEventListener('input',e=>{if(e.target.id==='q'){S.q=e.target.value;b
 $('#pfile').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)pic(f)});
 $('#afile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';const x=curT();if(!f||!S.tgt||!x||!isAdmin())return;const y=x.rows[S.tgt.r].c[S.tgt.c];adel(y.k);const k=uid();if(await aput(k,f))y.k=k;else alert(t('audioFail'));save();body()});
 document.addEventListener('click',async e=>{
- const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,d=b.dataset,ADM=['saveitem','delitem','rmau','newtbl','edittbl','backtbl','deltbl','addcol','addrow','delcol','delrow','savetbl','cellau','cellrm','cellopen','cellsave','cellclose','addcat','iadd','iedit'];
+ const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,d=b.dataset,ADM=['saveitem','delitem','rmau','newtbl','edittbl','backtbl','deltbl','addcol','addrow','delcol','delrow','savetbl','cellau','cellrm','cellopen','cellsave','cellclose','addcat','iadd','iedit','ssadd','ssren','ssdel'];
  if(ADM.includes(a)&&!isAdmin())return;
  if(a==='go'){S.view=d.v;S.err='';S.f=null;S.fp=null;render()}
  else if(a==='lang'){CFG.lang=d.l;store.set('ml_cfg',CFG);render()}
@@ -580,11 +603,21 @@ document.addEventListener('click',async e=>{
  else if(a==='newpost'){S.pf='new';body()}
  else if(a==='editpost'){const p=DB.lit.posts.find(x=>x.id===d.id);if(p&&canEdit(p)){S.pf=d.id;body();scrollTo(0,0)}}
  else if(a==='cancelpost'){S.pf=null;body()}
- else if(a==='savepost'){const p={cat:val('l_cat'),title:val('l_title'),lang:val('l_lang'),body:$('#l_body').value.trim()};if(!p.title||!p.body){alert(t('fillTB'));return}
-  const ex=S.pf!=='new'?DB.lit.posts.find(x=>x.id===S.pf):null;
-  if(ex){if(!canEdit(ex))return;Object.assign(ex,p)}else DB.lit.posts.unshift({id:uid(),...p,by:ME,an:user().name,ts:Date.now(),rx:{},cm:[]});
+ else if(a==='savepost'){const bd=$('#l_body').value.trim();if(!bd){alert(t('needText'));return}
+  const p={cat:val('l_cat'),body:bd,title:''},ex=S.pf!=='new'?DB.lit.posts.find(x=>x.id===S.pf):null;
+  if(ex&&!canEdit(ex))return;
+  const fi=$('#l_img')?.files[0],fa=$('#l_au')?.files[0];let x=ex;
+  if(ex)Object.assign(ex,p);else{x={id:uid(),...p,by:ME,an:user().name,ts:Date.now(),rx:{},cm:[]};DB.lit.posts.unshift(x)}
+  if(fi){const b=await shrink(fi);adel(x.img);const k=uid();if(await aput(k,b))x.img=k;else alert(t('audioFail'))}
+  if(fa){adel(x.k);const k=uid();if(await aput(k,fa))x.k=k;else alert(t('audioFail'))}
   S.pf=null;save();body()}
- else if(a==='delpost'){const p=DB.lit.posts.find(x=>x.id===d.id);if(p&&canEdit(p)&&confirm(t('sure'))){DB.lit.posts=DB.lit.posts.filter(x=>x!==p);save();body()}}
+ else if(a==='rmpimg'){const p=DB.lit.posts.find(x=>x.id===S.pf);if(p){adel(p.img);p.img=null;save();body()}}
+ else if(a==='rmpau'){const p=DB.lit.posts.find(x=>x.id===S.pf);if(p){adel(p.k);p.k=null;save();body()}}
+ else if(a==='ssub'){S.ssub=d.c;body()}
+ else if(a==='ssadd'){const n=val('ss_name');if(!n)return;const x={id:uid(),name:n};DB.ssubs.push(x);S.ssub=x.id;save();body()}
+ else if(a==='ssren'){const n=val('ss_name'),x=DB.ssubs.find(y=>y.id===S.ssub);if(!n||!x)return;x.name=n;save();body()}
+ else if(a==='ssdel'){const x=DB.ssubs.find(y=>y.id===S.ssub);if(x&&confirm(t('subSure'))){DB.sentences.forEach(z=>{if(z.sub===x.id)z.sub=''});DB.ssubs=DB.ssubs.filter(y=>y!==x);S.ssub='all';save();body()}}
+ else if(a==='delpost'){const p=DB.lit.posts.find(x=>x.id===d.id);if(p&&canEdit(p)&&confirm(t('sure'))){adel(p.k);adel(p.img);DB.lit.posts=DB.lit.posts.filter(x=>x!==p);save();body()}}
  else if(a==='react'){const p=DB.lit.posts.find(x=>x.id===d.id);p.rx=p.rx||{};const L=p.rx[d.e]||[];p.rx[d.e]=L.includes(ME)?L.filter(x=>x!==ME):[...L,ME];save();body()}
  else if(a==='cm'){S.open=S.open===d.id?null:d.id;body()}
  else if(a==='addcm'){const x=val('cm_'+d.id);if(!x)return;const p=DB.lit.posts.find(q=>q.id===d.id);(p.cm=p.cm||[]).push({id:uid(),by:ME,an:user().name,text:x,ts:Date.now()});save();body()}
@@ -603,7 +636,7 @@ else if(a==='canceledit'){S.edit=null;S.inl=false;body()}
  else if(a==='iadd'){S.col=d.c;S.edit='new';S.inl=true;body();scrollTo(0,0)}
  else if(a==='iedit'){S.col=d.c;S.edit=d.id;S.inl=true;body();scrollTo(0,0)}
  else if(a==='rmau'){const x=DB[S.col].find(x=>x.id===S.edit);if(x){adel(x.k);x.k=null;save();body()}}
- else if(a==='saveitem'){const it={marma:val('f_marma'),pron:val('f_pron'),bn:val('f_bn'),en:val('f_en')};if(S.col==='words')it.cat=val('f_cat')||'Others';
+ else if(a==='saveitem'){const it={marma:val('f_marma'),pron:val('f_pron'),bn:val('f_bn'),en:val('f_en')};if(S.col==='words')it.cat=val('f_cat')||'Others';if(S.col==='sentences')it.sub=$('#f_sub')?.value||'';
   if(!it.marma&&!it.pron){alert(t('needOne'));return}
   const ex=S.edit&&S.edit!=='new'?DB[S.col].find(x=>x.id===S.edit):null,f=$('#f_au')?.files[0];let x=ex;
   if(ex)Object.assign(ex,it);else{x={id:uid(),...it};DB[S.col].unshift(x)}
@@ -625,8 +658,8 @@ else if(a==='delitem'){if(confirm(t('sure'))){const cc=d.c||S.col,x=DB[cc].find(
  else if(a==='cellsave'){syncT();S.cell=null;save();body()}
  else if(a==='cellclose'){S.cell=null;body()}
  else if(a==='export'&&isMain()){$('#io').value=JSON.stringify(DB,null,1)}
- else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];{const up=DB.updates||[];DB=o;DB.updates=up}DB.tables.forEach(normT);save();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
- else if(a==='clear'&&isMain()){if(confirm(t('sureAll'))){DB={dict:[],words:[],sentences:[],tables:[],lit:{cats:DB.lit.cats,posts:[]},ratings:[],updates:DB.updates||[]};save();S.tid=null;body()}}
+ else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];o.ssubs=o.ssubs||[];{const up=DB.updates||[];DB=o;DB.updates=up}DB.tables.forEach(normT);save();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
+ else if(a==='clear'&&isMain()){if(confirm(t('sureAll'))){DB={ssubs:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:DB.lit.cats,posts:[]},ratings:[],updates:DB.updates||[]};save();S.tid=null;body()}}
  else if(a==='reset'&&isMain()){if(confirm(t('sureReset'))){{const up=DB.updates||[];DB=clone(SEED);DB.updates=up}save();S.tid=null;body()}}
 });
 render();
