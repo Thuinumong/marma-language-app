@@ -49,11 +49,7 @@ jobs:
 
       - name: Apply Marma app icon
         run: |
-          set -e
-          test -d android-res || { echo "ERROR: android-res folder repo-te nai"; exit 1; }
           RES=android/app/src/main/res
-          rm -f $RES/mipmap-*/ic_launcher*.png $RES/mipmap-anydpi-v26/ic_launcher*.xml
-          rm -f $RES/drawable/ic_launcher_background.xml $RES/drawable-v24/ic_launcher_foreground.xml
           cp -r android-res/* $RES/
           mkdir -p $RES/mipmap-anydpi-v26
           for n in ic_launcher ic_launcher_round; do
@@ -65,10 +61,6 @@ jobs:
           </adaptive-icon>
           XML
           done
-          echo "=== Icon applied ==="
-          ls -la $RES/mipmap-xxxhdpi $RES/mipmap-anydpi-v26
-          cat $RES/values/ic_launcher_background.xml
-          grep -n "icon" android/app/src/main/AndroidManifest.xml
 
       - name: Sync Capacitor
         run: npx cap sync android
