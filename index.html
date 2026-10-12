@@ -62,7 +62,18 @@ textarea.in{min-height:90px}.pbody{white-space:pre-wrap;margin:8px 0}.badge{font
 .mbtn{flex:0 0 auto;align-self:center;width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);cursor:pointer;padding:0}.mbtn.on{background:var(--pr);color:var(--pt);border-color:var(--pr)}
 .back svg{vertical-align:-3px}.menu h2 svg{display:block}
 .legal h3{text-transform:none;letter-spacing:0;color:var(--pr);font-size:1rem;margin:14px 0 2px}.legal h3:first-child{margin-top:0}.legal p{margin:2px 0}
+.vbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;margin:6px 0}
+.vseg{display:inline-flex;border:1.5px solid var(--bd);border-radius:12px;overflow:hidden;background:var(--sf)}
+.vseg button{border:0;background:none;color:var(--tx);font:inherit;font-size:.9rem;padding:6px 12px;cursor:pointer}.vseg button.on{background:var(--pr);color:var(--pt)}
+.vsort{font-size:.9rem;color:var(--mu)}.vsort select{font:inherit;padding:6px 10px;border-radius:10px;border:1.5px solid var(--bd);background:var(--sf);color:var(--tx)}
+@media(max-width:420px){.vseg button span{display:none}}
+.v-compact .card:not(.tw):not(.post){display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 14px;padding:6px 12px;margin:4px 0}
+.v-compact .card:not(.tw):not(.post) .top{flex:1 1 240px}.v-compact .card:not(.tw):not(.post) .bn,.v-compact .card:not(.tw):not(.post) .en{margin:0;flex:1 1 150px}
+.v-compact .mm{font-size:1.05rem}.v-compact .btn.sm{padding:3px 9px;margin:0 4px 0 0}
+.v-compact .post .pbody{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:4px 0}.v-compact .post img{display:none}
+.v-compact th,.v-compact td{padding:3px 6px;font-size:.9rem}.v-compact td.bx{min-width:80px}
 @media(min-width:700px){
+main.grid>.tblw{grid-column:auto}
 #app{max-width:1100px}
 header{padding:14px 24px 0}main{padding:6px 24px 48px}
 main.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:0 16px;align-items:start}
@@ -71,6 +82,7 @@ main.grid>.card{grid-column:auto}
 main.grid>.card.tw,main.grid>.card:has(input,textarea,select,.x){grid-column:1/-1}
 main.grid details[open]{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:0 16px;align-items:start}
 main.grid details>summary{grid-column:1/-1}
+main.grid.v-compact{grid-template-columns:1fr}
 main.narrow{max-width:820px;margin:0 auto}
 .search{max-width:520px}
 }
@@ -86,6 +98,7 @@ main.narrow{max-width:820px;margin:0 auto}
 #app.shell nav.tabs .tab,#app.shell nav.tabs .mbtn{width:100%;text-align:left;border-radius:12px;padding:11px 16px;display:flex;align-items:center;gap:8px}
 #app.shell main{grid-column:2;grid-row:2;overflow-y:auto;padding:8px 28px 40px}
 #app.shell main.grid{grid-template-columns:repeat(auto-fill,minmax(340px,1fr));align-content:start}
+#app.shell main.grid.v-compact{grid-template-columns:1fr}
 #app.shell main.narrow{max-width:900px;margin:0;width:100%}
 }
 </style>
@@ -150,7 +163,7 @@ aboutTxt:['Marma Language helps you learn and preserve Marma words, alphabet, sa
 theme:['Theme','থিম'],fsize:['Font size','অক্ষরের আকার'],small:['Small','ছোট'],medium:['Medium','মাঝারি'],large:['Large','বড়'],chooseLang:['Choose app language','অ্যাপের ভাষা বাছুন'],
 rateTitle:['Rate this app','অ্যাপটিকে রেটিং দিন'],avg:['Average','গড়'],votes:['ratings','টি রেটিং'],feedback:['Write your feedback (optional)','মতামত লিখুন (ঐচ্ছিক)'],submit:['Submit','জমা দিন'],thanks:['Thank you for rating!','রেটিং দেওয়ার জন্য ধন্যবাদ!'],allRatings:['All ratings','সব রেটিং'],
 shareTxt:['Learn the Marma language with the Marma Language app!','Marma Language অ্যাপে মারমা ভাষা শিখুন!'],copied:['Link copied ✔','লিংক কপি হয়েছে ✔'],
-all:['All','সব'],tensePh:['Tense (optional)','টেন্স (ঐচ্ছিক)'],subAdd:['+ Subsection','+ সাব সেকশন'],subName:['Subsection name','সাব সেকশনের নাম'],subRen:['Rename','নাম বদলান'],subDel:['Delete subsection','সাব সেকশন মুছুন'],subSel:['Subsection','সাব সেকশন'],subNone:['No subsection','সাব সেকশন নেই'],subSure:['Delete this subsection? Its sentences stay under All.','এই সাব সেকশন মুছবেন? বাক্যগুলো "সব" এ থাকবে।'],pWrite:['Write here...','এখানে লিখুন...'],pImg:['Image (optional)','ছবি (ঐচ্ছিক)'],pAud:['Audio (optional)','অডিও (ঐচ্ছিক)'],pImgRm:['Remove image','ছবি সরান'],pAudRm:['Remove audio','অডিও সরান'],needText:['Write something first.','আগে কিছু লিখুন।'],write:['+ Write','+ লিখুন'],editPost:['Edit post','পোস্ট এডিট'],newPost:['New post','নতুন পোস্ট'],category:['Category','বিভাগ'],ptitle:['Title','শিরোনাম'],plang:['Written in','যে ভাষায় লেখা'],pbody:['Write here…','এখানে লিখুন…'],publish:['Publish','প্রকাশ করুন'],update:['Update','আপডেট'],cancel:['Cancel','বাতিল'],
+all:['All','সব'],vGrid:['Grid','গ্রিড'],vList:['List','লিস্ট'],vComp:['Compact','কম্প্যাক্ট'],sortBy:['Sort','সাজান'],sNew:['Newest first','নতুন আগে'],sOld:['Oldest first','পুরনো আগে'],sMarma:['Marma A–Z','মারমা A–Z'],sBn:['Bangla A–Z','বাংলা A–Z'],sEn:['English A–Z','English A–Z'],tensePh:['Tense (optional)','টেন্স (ঐচ্ছিক)'],subAdd:['+ Subsection','+ সাব সেকশন'],subName:['Subsection name','সাব সেকশনের নাম'],subRen:['Rename','নাম বদলান'],subDel:['Delete subsection','সাব সেকশন মুছুন'],subSel:['Subsection','সাব সেকশন'],subNone:['No subsection','সাব সেকশন নেই'],subSure:['Delete this subsection? Its sentences stay under All.','এই সাব সেকশন মুছবেন? বাক্যগুলো "সব" এ থাকবে।'],pWrite:['Write here...','এখানে লিখুন...'],pImg:['Image (optional)','ছবি (ঐচ্ছিক)'],pAud:['Audio (optional)','অডিও (ঐচ্ছিক)'],pImgRm:['Remove image','ছবি সরান'],pAudRm:['Remove audio','অডিও সরান'],needText:['Write something first.','আগে কিছু লিখুন।'],write:['+ Write','+ লিখুন'],editPost:['Edit post','পোস্ট এডিট'],newPost:['New post','নতুন পোস্ট'],category:['Category','বিভাগ'],ptitle:['Title','শিরোনাম'],plang:['Written in','যে ভাষায় লেখা'],pbody:['Write here…','এখানে লিখুন…'],publish:['Publish','প্রকাশ করুন'],update:['Update','আপডেট'],cancel:['Cancel','বাতিল'],
 edit:['Edit','এডিট'],del:['Delete','মুছুন'],sure:['Delete this?','মুছে ফেলবেন?'],noPosts:['No posts yet. Be the first to write!','এখনো কোনো লেখা নেই। প্রথম লেখাটি আপনার হোক!'],fillTB:['Please enter a title and some text.','শিরোনাম ও লেখা দিন।'],
 cmts:['Comments','মন্তব্য'],addCm:['Write a comment…','মন্তব্য লিখুন…'],send:['Send','পাঠান'],by:['by','লেখক'],
 L_marma:['Marma','মারমা'],L_bn:['Bangla','বাংলা'],L_en:['English','ইংরেজি'],
@@ -247,7 +260,7 @@ function card(col,it,rev){
 const cellH=c=>[c.m&&`<div class="mm">${esc(c.m)}</div>`,c.p&&`<div class="pr">${esc(c.p)}</div>`,c.b&&`<div class="bn">${esc(c.b)}</div>`,c.e&&`<div class="en">${esc(c.e)}</div>`].filter(Boolean).join('')+au(c.k);
 const ctext=c=>[c.m,c.p,c.b,c.e,c.t].join(' ').toLowerCase();
 const tbl=(x,rows)=>`<div class="card tw"><table>${x.cap?`<caption>${esc(x.cap)}</caption>`:''}<tbody>${rows.map(r=>`<tr>${r.c.map(c=>`<td class="bx">${cellH(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-const TENSES=[['pres','Present','বর্তমান'],['past','Past','অতীত'],['fut','Future','ভবিষ্যৎ'],['presc','Present Continuous','চলমান বর্তমান'],['pastc','Past Continuous','চলমান অতীত'],['futc','Future Continuous','চলমান ভবিষ্যৎ'],['presp','Present Perfect','পূর্ণ বর্তমান'],['pastp','Past Perfect','পূর্ণ অতীত'],['futp','Future Perfect','পূর্ণ ভবিষ্যৎ']];
+const TENSES=[['pres','Present Tense','বর্তমান কাল'],['past','Past Tense','অতীত কাল'],['fut','Future Tense','ভবিষ্যৎ কাল'],['presc','Present Continuous Tense','ঘটমান বর্তমান কাল'],['pastc','Past Continuous Tense','ঘটমান অতীত কাল'],['futc','Future Continuous Tense','ঘটমান ভবিষ্যৎ কাল'],['presp','Present Perfect Tense','পুরাঘটিত বর্তমান কাল'],['pastp','Past Perfect Tense','পুরাঘটিত অতীত কাল'],['futp','Future Perfect Tense','পুরাঘটিত ভবিষ্যৎ কাল'],['prespc','Present Perfect Continuous Tense','পুরাঘটিত ঘটমান বর্তমান কাল'],['pastpc','Past Perfect Continuous Tense','পুরাঘটিত ঘটমান অতীত কাল'],['futpc','Future Perfect Continuous Tense','পুরাঘটিত ঘটমান ভবিষ্যৎ কাল']];
 const tnm=k=>{const x=TENSES.find(y=>y[0]===k);return x?(CFG.lang==='bn'?x[2]:x[1]):''};
 const tAll=k=>{const x=TENSES.find(y=>y[0]===k);return x?x[1]+' '+x[2]+' '+x[0]:''};
 const tbadge=k=>k&&tnm(k)?`<span class="badge tn">${esc(tnm(k))}</span>`:'';
@@ -256,7 +269,7 @@ const fmt=ts=>new Date(ts).toLocaleDateString(CFG.lang==='bn'?'bn-BD':'en-GB');
 const RX=['👍','❤️','👏','😊'];
 function post(p){
  const c=DB.lit.cats.find(x=>x.id===p.cat),ed=canEdit(p),open=S.open===p.id,cm=p.cm||[];
- return `<div class="card"><div class="top"><div class="en">${t('by')} ${esc(p.an)} · ${fmt(p.ts)}${c?' · '+esc(catName(c)):''}</div>${au(p.k)}</div>
+ return `<div class="card post"><div class="top"><div class="en">${t('by')} ${esc(p.an)} · ${fmt(p.ts)}${c?' · '+esc(catName(c)):''}</div>${au(p.k)}</div>
  ${p.title?`<b class="mm">${esc(p.title)}</b>`:''}<div class="pbody">${esc(p.body)}</div>${p.img?`<img data-ik="${p.img}" alt="" style="max-width:100%;border-radius:10px;margin-top:8px;display:block">`:''}
  <div>${RX.map(e=>{const n=(p.rx?.[e]||[]).length,on=(p.rx?.[e]||[]).includes(ME);return `<button class="chip ${on?'on':''}" data-act="react" data-id="${p.id}" data-e="${e}">${e} ${n||''}</button>`}).join('')}<button class="chip ${open?'on':''}" data-act="cm" data-id="${p.id}">💬 ${cm.length}</button></div>
  ${ed?`<button class="btn sm" data-act="editpost" data-id="${p.id}">${t('edit')}</button><button class="btn sm dng" data-act="delpost" data-id="${p.id}">${t('del')}</button>`:''}
@@ -265,7 +278,7 @@ function litPage(){
  if(S.pf){const e=S.pf!=='new'?DB.lit.posts.find(x=>x.id===S.pf):null;
   return `<button class="back" data-act="cancelpost">← ${t('back')}</button><h2>${e?t('editPost'):t('newPost')}</h2><div class="card"><select class="in" id="l_cat">${DB.lit.cats.map(c=>`<option value="${c.id}" ${e&&e.cat===c.id?'selected':''}>${esc(catName(c))}</option>`).join('')}</select><textarea class="in" id="l_body" rows="12" placeholder="${t('pWrite')}">${esc(e?((e.title?e.title+'\n\n':'')+e.body):'')}</textarea><div class="en">🖼 ${t('pImg')}</div><input class="in" id="l_img" type="file" accept="image/*">${e&&e.img?`<button class="btn sm dng" data-act="rmpimg">${t('pImgRm')}</button>`:''}<div class="en">🎙 ${t('pAud')}</div><input class="in" id="l_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmpau">${t('pAudRm')}</button>`:''}<button class="btn" data-act="savepost">${e?t('update'):t('publish')}</button><button class="btn ghost" data-act="cancelpost">${t('cancel')}</button></div>`}
  const ps=DB.lit.posts.filter(p=>S.lcat==='all'||p.cat===S.lcat);
- return `<h2>${t('lit')}</h2><div><button class="chip ${S.lcat==='all'?'on':''}" data-act="lcat" data-c="all">${t('all')}</button>${DB.lit.cats.map(c=>`<button class="chip ${S.lcat===c.id?'on':''}" data-act="lcat" data-c="${c.id}">${esc(catName(c))}</button>`).join('')}</div>${isAdmin()?`<details><summary>⚙ ${t('ac')}</summary><div class="card"><input class="in" id="k_en" placeholder="${t('catEn')}"><input class="in" id="k_bn" placeholder="${t('catBn')}"><button class="btn" data-act="addcat">${t('addBtn')}</button>${DB.lit.cats.map(k=>`<div class="top" style="margin-top:8px"><div><b>${esc(k.en||'')}</b> · ${esc(k.bn||'')}</div>${isMain()?`<button class="btn sm dng" data-act="delcat" data-id="${k.id}">${t('del')}</button>`:''}</div>`).join('')}</div></details>`:''}<button class="btn" data-act="newpost">${t('write')}</button>${ps.map(post).join('')||`<p class="note">${t('noPosts')}</p>`}`}
+ return `<h2>${t('lit')}</h2>${bar('lit',false)}<div><button class="chip ${S.lcat==='all'?'on':''}" data-act="lcat" data-c="all">${t('all')}</button>${DB.lit.cats.map(c=>`<button class="chip ${S.lcat===c.id?'on':''}" data-act="lcat" data-c="${c.id}">${esc(catName(c))}</button>`).join('')}</div>${isAdmin()?`<details><summary>⚙ ${t('ac')}</summary><div class="card"><input class="in" id="k_en" placeholder="${t('catEn')}"><input class="in" id="k_bn" placeholder="${t('catBn')}"><button class="btn" data-act="addcat">${t('addBtn')}</button>${DB.lit.cats.map(k=>`<div class="top" style="margin-top:8px"><div><b>${esc(k.en||'')}</b> · ${esc(k.bn||'')}</div>${isMain()?`<button class="btn sm dng" data-act="delcat" data-id="${k.id}">${t('del')}</button>`:''}</div>`).join('')}</div></details>`:''}<button class="btn" data-act="newpost">${t('write')}</button>${ps.map(post).join('')||`<p class="note">${t('noPosts')}</p>`}`}
 function render(){
  applyCfg();const A=$('#app');if(S.view==='welcome')S.view='signin';A.className=['signin','signup','forgot'].includes(S.view)?'auth-pg':'';
  if(S.view==='welcome'){A.innerHTML=`<div class="snav">${logo(36)}<b>Marma Language</b></div>
@@ -282,14 +295,21 @@ function render(){
   A.innerHTML=`<div class="auth">${logo(96)}<h1 style="margin:10px 0 0">Marma Language</h1><p class="en">${t('welcome')}</p><h2>${t(up?'signup':'signin')}</h2>${up?`<input class="in" id="a_name" autocomplete="name" placeholder="${t('name')}" value="${esc(F.name)}">`:''}<input class="in" id="a_id" autocomplete="username" placeholder="${t('idPh2')}" value="${esc(F.id)}"><div class="pw"><input class="in" id="a_pass" type="password" autocomplete="${up?'new-password':'current-password'}" placeholder="${t('pass')}"><button type="button" class="eye" data-act="eye" aria-label="show password">👁</button></div><div class="err">${t(S.err||'x')==='x'?'':t(S.err)}</div><button class="btn" data-act="${up?'signup':'signin'}">${t(up?'create':'signin')}</button><div class="en" style="margin:10px 0 2px">— ${t('orWith')} —</div><button class="btn ghost" data-act="oauth" data-p="google"><b>G</b> &nbsp;${t('contG')}</button><button class="btn ghost" data-act="oauth" data-p="facebook"><b>f</b> &nbsp;${t('contF')}</button>${up?'':`<button class="back" data-act="go" data-v="forgot">${t('forgot')}</button>`}<button class="back" data-act="go" data-v="${up?'signin':'signup'}">${t(up?'have':'newq')}</button><button class="back" data-act="go" data-v="privacy">${t('privacy')}</button></div><footer>© 2026 Marma Language</footer>`;return}
  A.className='shell';A.innerHTML=`<header><div class="hrow"><div class="brand">${logo(34)}<b>Marma Language</b></div><span class="sp"></span><div class="hact">${syncBtn()}${av(34)}</div></div><input id="q" class="search" placeholder="${t('search')}" value="${esc(S.q)}"><nav class="tabs">${TABS.map(k=>`<button class="tab ${S.tab===k?'on':''}" data-act="tab" data-t="${k}">${t(k)}</button>`).join('')}<button class="mbtn ${S.tab==='menu'?'on':''}" data-act="tab" data-t="menu" aria-label="${t('menu')}" title="${t('menu')}">${burger(22)}</button></nav></header><main id="body"></main>`;
  body()}
-const dlist=rev=>{const L=[...DB.dict.map(i=>['dict',i]),...DB.words.map(i=>['words',i])];return L.length?L.map(p=>card(p[0],p[1],rev)).join(''):`<p class="note">${t('empty')}</p>`};
+const VDEF={dict:'grid',word:'grid',sent:'grid',sang:'list',lit:'list'};
+const getView=tab=>(CFG.views&&CFG.views[tab])||VDEF[tab]||'grid';
+const getSort=tab=>(CFG.sorts&&CFG.sorts[tab])||'new';
+function sortItems(L,mode,key=x=>x){if(mode==='new')return L;if(mode==='old')return [...L].reverse();const f={marma:['marma','my'],bn:['bn','bn'],en:['en','en']}[mode];if(!f)return L;
+ return [...L].sort((a,b)=>{const x=(key(a)[f[0]]||'').trim(),y=(key(b)[f[0]]||'').trim();if(!x&&y)return 1;if(x&&!y)return -1;return x.localeCompare(y,f[1])})}
+function bar(tab,sortable){const v=getView(tab),sm=getSort(tab);
+ return `<div class="vbar"><div class="vseg" role="group" aria-label="${t('view')}">${[['grid','▦','vGrid'],['list','☰','vList'],['compact','≡','vComp']].map(x=>`<button class="${v===x[0]?'on':''}" data-act="view" data-v="${x[0]}" title="${t(x[2])}">${x[1]} <span>${t(x[2])}</span></button>`).join('')}</div>${sortable?`<label class="vsort">${t('sortBy')}: <select data-sort="${tab}">${[['new','sNew'],['old','sOld'],['marma','sMarma'],['bn','sBn'],['en','sEn']].map(x=>`<option value="${x[0]}" ${sm===x[0]?'selected':''}>${t(x[1])}</option>`).join('')}</select></label>`:''}</div>`}
+const dlist=rev=>{const L=sortItems([...DB.dict.map(i=>['dict',i]),...DB.words.map(i=>['words',i])],getSort('dict'),p=>p[1]);return L.length?L.map(p=>card(p[0],p[1],rev)).join(''):`<p class="note">${t('empty')}</p>`};
 const list=(c,rev)=>DB[c].length?DB[c].map(i=>card(c,i,rev)).join(''):`<p class="note">${t('empty')}</p>`;
 function sentPage(){
  const subs=DB.ssubs||[],cur=subs.find(x=>x.id===S.ssub)?S.ssub:'all',adm=isAdmin();
  const chips=`<div class="tabs" style="padding:4px 0"><button class="chip ${cur==='all'?'on':''}" data-act="ssub" data-c="all">${t('all')}</button>${subs.map(x=>`<button class="chip ${cur===x.id?'on':''}" data-act="ssub" data-c="${x.id}">${esc(x.name)}</button>`).join('')}</div>`;
  const tools=adm?`<div class="card" style="grid-column:1/-1"><div style="display:flex;gap:8px;flex-wrap:wrap"><input class="in" id="ss_name" style="flex:1;min-width:160px;margin:0" placeholder="${t('subName')}" value="${cur!=='all'?esc(subs.find(x=>x.id===cur).name):''}"><button class="btn sm" data-act="ssadd">${t('subAdd')}</button>${cur!=='all'?`<button class="btn sm" data-act="ssren">${t('subRen')}</button><button class="btn sm dng" data-act="ssdel">${t('subDel')}</button>`:''}</div></div>`:'';
- const L=DB.sentences.filter(i=>cur==='all'||i.sub===cur);
- return `<h2>${t('sent')}</h2>${chips}${tools}`+(L.length?L.map(i=>card('sentences',i,false)).join(''):`<p class="note">${t('empty')}</p>`)}
+ const L=sortItems(DB.sentences.filter(i=>cur==='all'||i.sub===cur),getSort('sent'));
+ return `<h2>${t('sent')}</h2>${bar('sent',true)}${chips}${tools}`+(L.length?L.map(i=>card('sentences',i,false)).join(''):`<p class="note">${t('empty')}</p>`)}
 function hydrate(){document.querySelectorAll('img[data-ik]').forEach(async im=>{const k=im.dataset.ik;if(!k||im.src)return;const b=await aget(k);if(b&&im.isConnected)im.src=URL.createObjectURL(b)})}
 async function shrink(f){if(!f||!/^image\//.test(f.type)||f.type==='image/gif')return f;try{const u=URL.createObjectURL(f),im=await new Promise((r,j)=>{const i=new Image;i.onload=()=>r(i);i.onerror=j;i.src=u});const m=1280,sc=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);return await new Promise(r=>c.toBlob(b=>r(b||f),'image/jpeg',.82))}catch(e){return f}}
 function body(){
@@ -299,11 +319,12 @@ function body(){
   const ls=DB.lit.posts.filter(p=>((p.title||'')+' '+p.body).toLowerCase().includes(q));
   h=`<h3>${t('results')}</h3>`+parts.map(p=>`<h3>${t(p[0]==='sentences'?'sent':p[0]==='dict'?'dict':'word')}</h3>`+p[1].map(i=>card(p[0],i,false)).join('')).join('')+(ts.length?`<h3>${t('sang')}</h3>`+ts.map(p=>tbl(p[0],p[1])).join(''):'')+(ls.length?`<h3>${t('lit')}</h3>`+ls.map(post).join(''):'')+(parts.length||ts.length||ls.length?'':`<p class="note">${t('none')}</p>`)}
  else if(S.tab==='dict')h=`<div class="seg"><button class="${S.dir==='m2b'?'on':''}" data-act="dir" data-d="m2b">${t('m2b')}</button><button class="${S.dir==='b2m'?'on':''}" data-act="dir" data-d="b2m">${t('b2m')}</button></div>`+dlist(S.dir==='b2m');
+ if(!q&&S.tab==='dict')h=bar('dict',true)+h;
  else if(S.tab==='word'){const g={};DB.words.forEach(w=>(g[w.cat||'Others']=g[w.cat||'Others']||[]).push(w));
-  h=Object.keys(g).length?Object.keys(g).map(c=>`<details open><summary>${esc(c)} (${g[c].length})</summary>${g[c].map(i=>card('words',i,false)).join('')}</details>`).join(''):list('words')}
+  h=bar('word',false)+(Object.keys(g).length?Object.keys(g).map(c=>`<details open><summary>${esc(c)} (${g[c].length})</summary>${g[c].map(i=>card('words',i,false)).join('')}</details>`).join(''):list('words'))}
   else if(S.tab==='sang'){const A=isAdmin(),x=A&&S.tid&&curT();
    if(x)h=`<h2>${t('sang')}</h2>`+tblEditor(x);
-   else h=`<h2>${t('sang')}</h2>`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(DB.tables.map(x=>(A?`<div><button class="btn sm" data-act="edittbl" data-id="${x.id}">${t('edit')}</button><button class="btn sm dng" data-act="deltbl" data-id="${x.id}">${t('del')}</button></div>`:'')+tbl(x,x.rows)).join('')||`<p class="note">${t('empty')}</p>`)}
+   else h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(DB.tables.map(x=>`<div class="tblw">`+(A?`<div><button class="btn sm" data-act="edittbl" data-id="${x.id}">${t('edit')}</button><button class="btn sm dng" data-act="deltbl" data-id="${x.id}">${t('del')}</button></div>`:'')+tbl(x,x.rows)+`</div>`).join('')||`<p class="note">${t('empty')}</p>`)}
  else if(S.tab==='sent')h=sentPage();
  else if(S.tab==='lit')h=litPage();
  else h=menu();
@@ -311,7 +332,7 @@ const IC={dict:'dict',word:'words',sent:'sentences'}[S.tab];
 
  if(!q&&IC&&isAdmin()){const m=S.tab==='dict'?['dict','words']:[IC];h=(S.inl&&S.edit&&m.includes(S.col)?itemForm(S.col):`<button class="btn" data-act="iadd" data-c="${IC}">＋ ${t('addNew')}</button>`)+h}
  if(hasNew()&&!S.updHide){const u=updSorted()[0];h=`<div class="card" style="border-color:var(--ac)"><div class="top"><div><b>🔔 ${t('newVer')}: ${esc(u.ver)}</b>${u.note?`<div class="en">${esc(u.note)}</div>`:''}</div><button class="x" data-act="updhide" aria-label="close">✕</button></div>${safeLink(u.link)?`<a class="btn sm" href="${esc(u.link)}" target="_blank" rel="noopener">⬇ ${t('download')}</a>`:''}</div>`+h}
- B.className=(q||['dict','sent','word'].includes(S.tab))?'grid':'narrow';B.innerHTML=h;hydrate()}
+ {const v=q?'grid':getView(S.tab);B.className=(v==='list'?'narrow':'grid')+(v==='compact'?' v-compact':'')}B.innerHTML=h;hydrate()}
 function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button>`;
  if(S.sub==='profile')return `${back}<h2>${t('profile')}</h2><div class="card" style="text-align:center">${av(96)}<div style="margin-top:8px"><b>${esc(u.name)}</b></div><div class="en">${t('role_'+u.role)}</div><div style="margin-top:6px">${u.email?`<div>✉️ ${esc(u.email)}</div>`:''}${u.phone?`<div>📞 ${esc(u.phone)}</div>`:''}</div></div><button class="btn" data-act="sub" data-s="editprofile">✏️ ${t('editProfile')}</button>`;
  if(S.sub==='editprofile')return `<button class="back" data-act="sub" data-s="profile">← ${t('profile')}</button><h2>${t('editProfile')}</h2><div class="card" style="text-align:center">${av(96)}<div><button class="btn sm" data-act="picpick">${t('changePic')}</button>${u.pic?`<button class="btn sm ghost" data-act="picrm">${t('rmPic')}</button>`:''}</div></div><div class="card"><b>${t('details')}</b><input class="in" id="p_name" autocomplete="name" placeholder="${t('name')}" value="${esc(u.name)}"><input class="in" id="p_email" type="email" autocomplete="email" placeholder="${t('emailOpt')}" value="${esc(u.email||'')}"><input class="in" id="p_phone" type="tel" autocomplete="tel" placeholder="${t('phoneOpt')}" value="${esc(u.phone||'')}"><button class="btn" data-act="saveprofile">${t('saveChanges')}</button><div class="en" style="margin-top:4px;font-size:.85rem">${t('loginNote')}</div></div>${AUTH&&AUTH.provider&&AUTH.provider!=='email'?'':`<div class="card"><b>${t('changePw')}</b><input class="in" id="pw_cur" type="password" autocomplete="current-password" placeholder="${t('curPw')}"><input class="in" id="pw_new" type="password" autocomplete="new-password" placeholder="${t('newPw')}"><input class="in" id="pw_con" type="password" autocomplete="new-password" placeholder="${t('conPw')}"><button class="btn" data-act="savepw">${t('changePw')}</button></div>`}`;
@@ -547,6 +568,7 @@ function pic(file){const im=new Image();im.onload=()=>{const c=document.createEl
 document.addEventListener('input',e=>{if(e.target.id==='q'){S.q=e.target.value;body()}});
 $('#pfile').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)pic(f)});
 $('#afile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';const x=curT();if(!f||!S.tgt||!x||!isAdmin())return;const y=x.rows[S.tgt.r].c[S.tgt.c];adel(y.k);const k=uid();if(await aput(k,f))y.k=k;else alert(t('audioFail'));save();body()});
+document.addEventListener('change',e=>{const el=e.target.closest('[data-sort]');if(!el)return;CFG.sorts=CFG.sorts||{};CFG.sorts[el.dataset.sort]=el.value;store.set('ml_cfg',CFG);body()});
 document.addEventListener('click',async e=>{
  const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,d=b.dataset,ADM=['saveitem','delitem','rmau','newtbl','edittbl','backtbl','deltbl','addcol','addrow','delcol','delrow','savetbl','cellau','cellrm','cellopen','cellsave','cellclose','addcat','iadd','iedit','ssadd','ssren','ssdel'];
  if(ADM.includes(a)&&!isAdmin())return;
@@ -631,6 +653,7 @@ document.addEventListener('click',async e=>{
   S.pf=null;save();body()}
  else if(a==='rmpimg'){const p=DB.lit.posts.find(x=>x.id===S.pf);if(p){adel(p.img);p.img=null;save();body()}}
  else if(a==='rmpau'){const p=DB.lit.posts.find(x=>x.id===S.pf);if(p){adel(p.k);p.k=null;save();body()}}
+ else if(a==='view'){CFG.views=CFG.views||{};CFG.views[S.tab]=d.v;store.set('ml_cfg',CFG);body()}
  else if(a==='ssub'){S.ssub=d.c;body()}
  else if(a==='ssadd'){const n=val('ss_name');if(!n)return;const x={id:uid(),name:n};DB.ssubs.push(x);S.ssub=x.id;save();body()}
  else if(a==='ssren'){const n=val('ss_name'),x=DB.ssubs.find(y=>y.id===S.ssub);if(!n||!x)return;x.name=n;save();body()}
