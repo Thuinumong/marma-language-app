@@ -137,10 +137,18 @@ body.hidepp .pp{visibility:hidden}
 .pinb{font-size:.75rem;color:var(--pr)}
 
 /* Floating, movable Sangbusa cell editor */
-.float-editor{position:fixed!important;left:18px;top:110px;width:min(430px,calc(100vw - 36px));max-width:calc(100vw - 20px);max-height:calc(100vh - 130px);overflow:auto;resize:both;z-index:30;box-shadow:0 12px 38px #0005;border:2px solid var(--pr);background:var(--sf)}
-.float-editor .float-handle{cursor:move;touch-action:none;user-select:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;margin:-2px -2px 8px;background:var(--pr);color:var(--pt);border-radius:10px;font-weight:600}
+.float-editor{position:fixed!important;left:18px;top:110px;width:min(430px,calc(100vw - 36px));max-width:calc(100vw - 20px);height:auto;max-height:calc(100vh - 24px);overflow:auto;resize:none;z-index:999;box-shadow:0 12px 38px #0005;border:2px solid var(--pr);background:var(--sf);box-sizing:border-box}
+.float-editor .float-handle{cursor:move;touch-action:none;user-select:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;margin:-2px -2px 8px;background:var(--pr);color:var(--pt);border-radius:10px;font-weight:600;position:sticky;top:0;z-index:2}
 .float-editor .float-handle small{font-weight:400;opacity:.85}.float-editor .in{background:var(--bg)}
-@media(max-width:520px){.float-editor{left:8px;top:90px;width:calc(100vw - 16px);max-height:calc(100vh - 100px);resize:both}}
+.float-editor .resize-grip{position:absolute;z-index:5;touch-action:none;background:transparent}
+.float-editor .resize-grip.n,.float-editor .resize-grip.s{left:10px;right:10px;height:10px;cursor:ns-resize}
+.float-editor .resize-grip.n{top:0}.float-editor .resize-grip.s{bottom:0}
+.float-editor .resize-grip.e,.float-editor .resize-grip.w{top:10px;bottom:10px;width:10px;cursor:ew-resize}
+.float-editor .resize-grip.e{right:0}.float-editor .resize-grip.w{left:0}
+.float-editor .resize-grip.ne,.float-editor .resize-grip.nw,.float-editor .resize-grip.se,.float-editor .resize-grip.sw{width:16px;height:16px}
+.float-editor .resize-grip.ne{top:0;right:0;cursor:nesw-resize}.float-editor .resize-grip.nw{top:0;left:0;cursor:nwse-resize}
+.float-editor .resize-grip.se{bottom:0;right:0;cursor:nwse-resize}.float-editor .resize-grip.sw{bottom:0;left:0;cursor:nesw-resize}
+@media(max-width:520px){.float-editor{left:8px;top:90px;width:calc(100vw - 16px);max-height:calc(100vh - 16px)}}
 </style>
 </head>
 <body>
@@ -452,14 +460,36 @@ function sentPage(){
  const tools=adm?`<div class="card" style="grid-column:1/-1"><div style="display:flex;gap:8px;flex-wrap:wrap"><input class="in" id="ss_name" style="flex:1;min-width:160px;margin:0" placeholder="${t('subName')}" value="${cur!=='all'?esc(subs.find(x=>x.id===cur).name):''}"><button class="btn sm" data-act="ssadd">${t('subAdd')}</button>${cur!=='all'?`<button class="btn sm" data-act="ssren">${t('subRen')}</button><button class="btn sm dng" data-act="ssdel">${t('subDel')}</button>`:''}</div></div>`:'';
  const L=sortItems(DB.sentences.filter(i=>cur==='all'||i.sub===cur),getSort('sent'));
  return `<h2>${t('sent')}</h2>${bar('sent',true)}${chips}${tools}`+(L.length?L.map(i=>card('sentences',i,false)).join(''):`<p class="note">${t('empty')}</p>`)}
-// Drag the floating cell editor by its title bar; remember its position and size.
+// Floating editors: fixed to the viewport while scrolling, draggable and resizable from all 4 sides/corners.
 (function(){
- let drag=null;
- document.addEventListener('pointerdown',e=>{const h=e.target.closest('.float-handle');if(!h||e.target.closest('button'))return;const el=h.closest('.float-editor');if(!el)return;const r=el.getBoundingClientRect();drag={el,x:e.clientX,y:e.clientY,left:r.left,top:r.top};h.setPointerCapture?.(e.pointerId);e.preventDefault()});
- document.addEventListener('pointermove',e=>{if(!drag)return;const el=drag.el;const left=Math.max(0,Math.min(innerWidth-el.offsetWidth,drag.left+e.clientX-drag.x));const top=Math.max(0,Math.min(innerHeight-70,drag.top+e.clientY-drag.y));el.style.left=left+'px';el.style.top=top+'px';el.style.right='auto'});
- document.addEventListener('pointerup',()=>{if(!drag)return;try{localStorage.setItem('ml_cell_float_pos',JSON.stringify({left:drag.el.style.left,top:drag.el.style.top,width:drag.el.style.width,height:drag.el.style.height}))}catch(e){}drag=null});
- const obs=new MutationObserver(()=>{const el=document.getElementById('cellFloat');if(!el||el.dataset.positioned)return;try{const p=JSON.parse(localStorage.getItem('ml_cell_float_pos')||'null');if(p){if(p.left)el.style.left=p.left;if(p.top)el.style.top=p.top;if(p.width)el.style.width=p.width;if(p.height)el.style.height=p.height;el.style.right='auto'}}catch(e){}el.dataset.positioned='1'});
+ let action=null;
+ const grips=['n','s','e','w','ne','nw','se','sw'];
+ // Enable floating drag/resize only for the requested editors: Dictionary/Word/Sentence, VisualVocab, and Sangbusa.
+ const allowedIds=new Set(['itemFloat','vocabFloat','cellFloat']);
+ const isAllowed=el=>!!el&&allowedIds.has(el.id);
+ function addGrips(el){if(!isAllowed(el)||el.querySelector('.resize-grip'))return;grips.forEach(dir=>{const g=document.createElement('div');g.className='resize-grip '+dir;g.dataset.resize=dir;g.setAttribute('aria-label','Resize editor');el.appendChild(g)});}
+ function remember(el){try{const r=el.getBoundingClientRect();localStorage.setItem('ml_float_'+(el.id||'editor'),JSON.stringify({left:r.left,top:r.top,width:r.width,height:r.height}))}catch(e){}}
+ function restore(el){if(!el||el.dataset.positioned)return;try{const key='ml_float_'+(el.id||'editor');const p=JSON.parse(localStorage.getItem(key)||'null');if(p){el.style.left=Math.max(0,Math.min(innerWidth-100,p.left))+'px';el.style.top=Math.max(0,Math.min(innerHeight-70,p.top))+'px';el.style.width=Math.min(innerWidth-Math.max(0,p.left),Math.max(260,p.width))+'px';el.style.height=Math.min(innerHeight-Math.max(0,p.top),Math.max(180,p.height))+'px';el.style.right='auto'}}catch(e){}el.dataset.positioned='1';}
+ document.addEventListener('pointerdown',e=>{
+  const grip=e.target.closest('.resize-grip');
+  if(grip){const el=grip.closest('.float-editor');if(!isAllowed(el))return;const r=el.getBoundingClientRect();action={type:'resize',el,dir:grip.dataset.resize,x:e.clientX,y:e.clientY,left:r.left,top:r.top,width:r.width,height:r.height};e.preventDefault();e.stopPropagation();try{grip.setPointerCapture(e.pointerId)}catch(_){}return;}
+  const h=e.target.closest('.float-handle');if(!h||e.target.closest('button'))return;const el=h.closest('.float-editor');if(!isAllowed(el))return;const r=el.getBoundingClientRect();action={type:'drag',el,x:e.clientX,y:e.clientY,left:r.left,top:r.top,width:r.width,height:r.height};e.preventDefault();try{h.setPointerCapture(e.pointerId)}catch(_){}
+ });
+ document.addEventListener('pointermove',e=>{
+  if(!action)return;const a=action,dx=e.clientX-a.x,dy=e.clientY-a.y,el=a.el;
+  if(a.type==='drag'){el.style.left=Math.max(0,Math.min(innerWidth-el.offsetWidth,a.left+dx))+'px';el.style.top=Math.max(0,Math.min(innerHeight-60,a.top+dy))+'px';el.style.right='auto';}
+  else {let l=a.left,t=a.top,w=a.width,h=a.height;const d=a.dir,minW=260,minH=180;
+   if(d.includes('e'))w=Math.max(minW,Math.min(innerWidth-l,a.width+dx));
+   if(d.includes('s'))h=Math.max(minH,Math.min(innerHeight-t,a.height+dy));
+   if(d.includes('w')){w=Math.max(minW,Math.min(a.width+ a.left, a.width-dx));l=a.left+(a.width-w)}
+   if(d.includes('n')){h=Math.max(minH,Math.min(a.height+a.top,a.height-dy));t=a.top+(a.height-h)}
+   el.style.left=Math.max(0,l)+'px';el.style.top=Math.max(0,t)+'px';el.style.width=w+'px';el.style.height=h+'px';el.style.right='auto';
+  }e.preventDefault();
+ });
+ const finish=()=>{if(action)remember(action.el);action=null;};document.addEventListener('pointerup',finish);document.addEventListener('pointercancel',finish);
+ const obs=new MutationObserver(()=>document.querySelectorAll('.float-editor').forEach(el=>{if(isAllowed(el)){addGrips(el);restore(el)}}));
  obs.observe(document.documentElement,{childList:true,subtree:true});
+ window.addEventListener('resize',()=>document.querySelectorAll('.float-editor').forEach(el=>{if(!isAllowed(el))return;el.style.left=Math.max(0,Math.min(innerWidth-el.offsetWidth,parseFloat(el.style.left)||0))+'px';el.style.top=Math.max(0,Math.min(innerHeight-60,parseFloat(el.style.top)||0))+'px'}));
 })();
 function hydrate(){document.querySelectorAll('img[data-ik]').forEach(async im=>{const k=im.dataset.ik;if(!k||im.src)return;const b=await aget(k);if(b&&im.isConnected)im.src=URL.createObjectURL(b)})}
 async function shrink(f){if(!f||!/^image\//.test(f.type)||f.type==='image/gif')return f;try{const u=URL.createObjectURL(f),im=await new Promise((r,j)=>{const i=new Image;i.onload=()=>r(i);i.onerror=j;i.src=u});const m=1280,sc=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);return await new Promise(r=>c.toBlob(b=>r(b||f),'image/jpeg',.82))}catch(e){return f}}
