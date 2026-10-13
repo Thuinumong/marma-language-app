@@ -338,7 +338,7 @@ const gimg=it=>it&&it.img?`<img class="gimg" data-ik="${esc(it.img)}" alt="">`:'
 const vcard=it=>{const k='vocab:'+it.id,f=favs().includes(k),adm=isAdmin()?`<div><button class="btn sm" data-act="vedit" data-id="${it.id}">${t('edit')}</button><button class="btn sm dng" data-act="vdel" data-id="${it.id}">${t('del')}</button></div>`:'';
  return `<div class="card vc"><div style="display:flex;gap:12px;align-items:flex-start">${it.img?`<img class="vimg" data-ik="${esc(it.img)}" alt="">`:''}<div style="flex:1;min-width:0"><div class="top"><div><div class="mm">${esc(it.marma)}</div>${it.pron?`<div class="pr">${esc(it.pron)}</div>`:''}</div><div class="acts">${au(it.k)}<button class="star" data-act="fav" data-k="${esc(k)}" aria-label="favourite">${f?'★':'☆'}</button></div></div>${it.bn?`<div class="bn">${esc(it.bn)}</div>`:''}${it.en?`<div class="en">${esc(it.en)}</div>`:''}</div></div>${adm}</div>`};
 function vocabPage(){const adm=isAdmin(),L=sortItems(DB.vocab,getSort('vocab'));
- return `<h2>${t('vocab')}</h2>${bar('vocab',true)}`+(adm&&S.vf?vform():'')+(L.length?L.map(vcard).join(''):`<p class="note">${t('empty')}</p>`)+(adm&&!S.vf?`<button class="btn" data-act="vadd">＋ ${t('addNew')}</button>`:'')}
+ return `<h2>${t('vocab')}</h2>${bar('vocab',true)}`+(adm?`<button class="btn" data-act="vadd">＋ ${t('addNew')}</button>`:'')+(L.length?L.map(vcard).join(''):`<p class="note">${t('empty')}</p>`)+(adm&&S.vf?vform():'')}
 const TABS=['dict','word','sang','sent','vocab','lit','game'];
 const favKey=()=>'ml_fav_'+ME,favs=()=>store.get(favKey(),[]);
 const curT=()=>DB.tables.find(x=>x.id===S.tid);
@@ -527,8 +527,7 @@ function body0(){
  else if(S.tab==='word'){const g={};DB.words.forEach(w=>(g[w.cat||'Others']=g[w.cat||'Others']||[]).push(w));
   h=bar('word',false)+(Object.keys(g).length?Object.keys(g).map(c=>`<details open><summary>${esc(c)} (${g[c].length})</summary><div class="wgrid">${g[c].map(i=>card('words',i,false)).join('')}</div></details>`).join(''):list('words'))}
   else if(S.tab==='sang'){const A=isAdmin(),x=A&&S.tid&&curT();
-   if(x)h=`<h2>${t('sang')}</h2>`+tblEditor(x);
-   else h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(DB.tables.map(x=>`<div class="tblw">`+(A?`<div><button class="btn sm" data-act="edittbl" data-id="${x.id}">${t('edit')}</button><button class="btn sm dng" data-act="deltbl" data-id="${x.id}">${t('del')}</button></div>`:'')+tbl(x,x.rows)+`</div>`).join('')||`<p class="note">${t('empty')}</p>`)}
+   h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(DB.tables.map(x=>`<div class="tblw">`+(A?`<div><button class="btn sm" data-act="edittbl" data-id="${x.id}">${t('edit')}</button><button class="btn sm dng" data-act="deltbl" data-id="${x.id}">${t('del')}</button></div>`:'')+tbl(x,x.rows)+`</div>`).join('')||`<p class="note">${t('empty')}</p>`)+(x?tblEditor(x):'')}
  else if(S.tab==='game')h=gamePage();
  else if(S.tab==='sent')h=sentPage();
  else if(S.tab==='lit')h=litPage();
@@ -537,7 +536,7 @@ function body0(){
   else h=menu();
 const IC={dict:'dict',word:'words',sent:'sentences'}[S.tab];
 
- if(!q&&IC&&isAdmin()){const m=S.tab==='dict'?['dict','words']:[IC];h=(S.inl&&S.edit&&m.includes(S.col)?itemForm(S.col)+h:h+`<button class="btn" data-act="iadd" data-c="${IC}">＋ ${t('addNew')}</button>`)}
+ if(!q&&IC&&isAdmin()){const m=S.tab==='dict'?['dict','words']:[IC];h=`<button class="btn" data-act="iadd" data-c="${IC}">＋ ${t('addNew')}</button>`+h+(S.inl&&S.edit&&m.includes(S.col)?itemForm(S.col):'')}
  if(hasNew()&&!S.updHide){const u=updSorted()[0];h=`<div class="card" style="border-color:var(--ac)"><div class="top"><div><b>🔔 ${t('newVer')}: ${esc(u.ver)}</b>${u.note?`<div class="en">${esc(u.note)}</div>`:''}</div><button class="x" data-act="updhide" aria-label="close">✕</button></div>${safeLink(u.link)?`<a class="btn sm" href="${esc(u.link)}" target="_blank" rel="noopener">⬇ ${t('download')}</a>`:''}</div>`+h}
  {const v=q?'grid':getView(S.tab);B.className=(v==='list'?'narrow':'grid')+(v==='compact'?' v-compact':'')}B.innerHTML=h;hydrate();try{updateBadge()}catch(e){}}
 function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button>`;
