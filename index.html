@@ -377,7 +377,35 @@ function litPage(){
   return `<button class="back" data-act="cancelpost">← ${t('back')}</button><h2>${e?t('editPost'):t('createPost')}</h2><div class="card">${catSel}<textarea class="in" id="l_body" rows="12" placeholder="${t('pWrite')}">${esc(e?((e.title?e.title+'\n\n':'')+e.body):'')}</textarea><div class="en">🖼 ${t('pImg')}</div><input class="in" id="l_img" type="file" accept="image/*"><div class="verr" id="l_img_err"></div>${e&&e.img?`<button class="btn sm dng" data-act="rmpimg">${t('pImgRm')}</button>`:''}<div class="en">🎙 ${t('pAud')}</div><input class="in" id="l_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmpau">${t('pAudRm')}</button>`:''}${notify?`<label style="display:flex;gap:8px;align-items:center;margin:10px 0 4px"><input type="checkbox" id="l_ntf" checked> ${t('notifyAuthor')}</label><input class="in" id="l_why" placeholder="${t('whyPh')}">`:''}<button class="btn" data-act="savepost">${e?t('update'):t('publish')}</button><button class="btn ghost" data-act="cancelpost">${t('cancel')}</button></div>`}
  const pn=pins(),ps=DB.lit.posts.filter(p=>S.lcat==='all'||p.cat===S.lcat).sort((a,b)=>(pn.includes(b.id)?1:0)-(pn.includes(a.id)?1:0));
  return `<h2>${t('lit')}</h2>${bar('lit',false)}<div><button class="chip ${S.lcat==='all'?'on':''}" data-act="lcat" data-c="all">${t('all')}</button>${DB.lit.cats.map(c=>`<button class="chip ${S.lcat===c.id?'on':''}" data-act="lcat" data-c="${c.id}">${esc(catName(c))}</button>`).join('')}</div>${isAdmin()?`<details><summary>⚙ ${t('ac')}</summary><div class="card"><input class="in" id="k_en" placeholder="${t('catEn')}"><input class="in" id="k_bn" placeholder="${t('catBn')}"><button class="btn" data-act="addcat">${t('addBtn')}</button>${DB.lit.cats.map(k=>`<div class="top" style="margin-top:8px"><div><b>${esc(k.en||'')}</b> · ${esc(k.bn||'')}</div>${isMain()?`<button class="btn sm dng" data-act="delcat" data-id="${k.id}">${t('del')}</button>`:''}</div>`).join('')}</div></details>`:''}<button class="btn" data-act="newpost">＋ ${t('createPost')}</button>${ps.map(post).join('')||`<p class="note">${t('noPosts')}</p>`}`}
-function render(){
+let NAVK=null,NAVST=[],NAVPOP=false,NAVSKIP=0;
+const NAVF=['view','tab','sub','pf','pcat','tid','edit','col','inl','open','lcat','ssub','vf','uid','uret','cedit','dir'];
+const navSnap=()=>{const o={};NAVF.forEach(k=>o[k]=S[k]===undefined?null:S[k]);o.g=!!S.game;return o};
+const navKey=o=>[o.view==='app'?'app':o.view,o.tab,o.sub,o.pf,o.tid,o.edit,o.vf,o.uid,o.lcat,o.cedit,o.g?1:0].join('|');
+const navRoot=o=>o.view==='app'&&!o.sub&&!o.pf&&!o.tid&&!o.edit&&!o.vf&&!o.g&&(!o.lcat||o.lcat==='all');
+function navSync(){if(NAVPOP)return;let o,k;try{o=navSnap();k=navKey(o)}catch(e){return}
+ const st={nav:o};
+ if(NAVK===null){try{history.replaceState(st,'')}catch(e){}NAVK=k;NAVST=[k];return}
+ if(k===NAVK){try{history.replaceState(st,'')}catch(e){}return}
+ const prev=NAVST.length>1?NAVST[NAVST.length-2]:null,po=NAVST.length?NAVST[NAVST.length-1]:null;
+ const grp=x=>x.startsWith('app')?'a':'x';
+ if(grp(k)!==grp(NAVK)){try{history.replaceState(st,'')}catch(e){}NAVST=[k]}
+ else if(prev===k){NAVSKIP++;NAVST.pop();try{history.back()}catch(e){NAVSKIP--}}
+ else if(navRoot(o)&&NAVLAST_ROOT&&o.tab!=='dict'){try{history.replaceState(st,'')}catch(e){}NAVST[NAVST.length-1]=k}
+ else{try{history.pushState(st,'')}catch(e){}NAVST.push(k)}
+ NAVK=k;NAVLAST_ROOT=navRoot(o)&&o.tab!=='dict'}
+let NAVLAST_ROOT=false;
+addEventListener('popstate',e=>{if(NAVSKIP>0){NAVSKIP--;return}
+ const o=e.state&&e.state.nav;if(!o)return;let n=Object.assign({},o);
+ if(user()){if(n.view!=='app')Object.assign(n,{view:'app',tab:'dict',sub:'',pf:null})}else if(n.view==='app')n.view='signin';
+ try{syncT();save()}catch(x){}
+ const k=navKey(n),i=NAVST.lastIndexOf(k);if(i>=0)NAVST.length=i+1;else NAVST.push(k);
+ NAVK=k;NAVLAST_ROOT=navRoot(n)&&n.tab!=='dict';
+ Object.assign(S,n,{cell:null,q:'',game:null,rep:null,cmd:'',err:''});delete S.g;
+ NAVPOP=true;try{render0()}finally{NAVPOP=false}
+ try{const m=$('#body');if(m)m.scrollTop=0;scrollTo(0,0)}catch(x){}});
+function render(){render0();navSync()}
+function body(){body0();navSync()}
+function render0(){
  applyCfg();const A=$('#app');if(S.view==='welcome')S.view='signin';A.className=['signin','signup','forgot'].includes(S.view)?'auth-pg':'';
  if(S.view==='welcome'){A.innerHTML=`<div class="snav">${logo(36)}<b>Marma Language</b></div>
  <section class="hero">${logo(110)}<h1>Marma Language</h1><p>${t('welcome')}</p><div class="cta"><button class="btn" data-act="go" data-v="signin">${t('signin')}</button><button class="btn ghost" data-act="go" data-v="signup">${t('signup')}</button></div><div class="seg" style="max-width:220px;margin:16px auto 0"><button class="${CFG.lang==='en'?'on':''}" data-act="lang" data-l="en">English</button><button class="${CFG.lang==='bn'?'on':''}" data-act="lang" data-l="bn">বাংলা</button></div></section>
@@ -483,7 +511,7 @@ function gStartGame(id){const src=S.gsrc||'words';
  GL=M?M[0]:'any';const g=M&&M[1]();if(!g){GL='any';alert(G('Not enough data for this game yet.','এই গেমের জন্য এখনো যথেষ্ট ডাটা নেই।'));return}
  g.id=id;g.gl=M[0];S.game=g;body();{const m=$('#body');if(m)m.scrollTop=0}scrollTo(0,0)}
 function gFinishQuiz(g){const id=g.id==='listen'?'listen':g.id;g.newBest=setBest(id,g.score)&&g.score>0}
-function body(){
+function body0(){
  const B=$('#body'),q=S.q.trim().toLowerCase();let h='';
  if(q){const parts=['dict','words','sentences'].map(c=>[c,DB[c].filter(i=>match(i,q))]).filter(p=>p[1].length);
   const ts=DB.tables.map(x=>[x,x.cap.toLowerCase().includes(q)?x.rows:x.rows.filter(r=>r.c.some(c=>ctext(c).includes(q)))]).filter(p=>p[1].length);
