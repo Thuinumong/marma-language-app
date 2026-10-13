@@ -1,6 +1,6 @@
 // Marma Language - offline-first service worker.
 // Bump VERSION whenever you upload a new index.html so phones pick up the update.
-const VERSION='marma-v8';
+const VERSION='marma-v9';
 const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
 const FONT_HOSTS=['fonts.googleapis.com','fonts.gstatic.com'];
 
