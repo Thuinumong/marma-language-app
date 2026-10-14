@@ -174,11 +174,7 @@ html.ml-scrolling::-webkit-scrollbar-thumb,body.ml-scrolling::-webkit-scrollbar-
 .tbar .sn{border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:8px;padding:4px 10px;font:inherit;font-size:.85rem;cursor:pointer}
 .tbar .sn.on,.tbar .mv.on{background:var(--pr);color:var(--pt);border-color:var(--pr)}
 .tbar .mv{border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:8px;padding:4px 10px;font:inherit;cursor:pointer}
-.trow{display:flex;gap:10px;align-items:flex-start;width:100%}
-.trow>.tblw{flex:1 1 0;min-width:0}
-.tblw.dragging{opacity:.88;outline:2px dashed var(--pr);position:relative;z-index:60;box-shadow:0 14px 34px #0006;cursor:grabbing}
-.tblw.dz-left{box-shadow:inset 7px 0 0 var(--pr)}.tblw.dz-right{box-shadow:inset -7px 0 0 var(--pr)}
-.tblw.dz-above{box-shadow:0 -7px 0 var(--pr)}.tblw.dz-below{box-shadow:0 7px 0 var(--pr)}
+.tblw.dragging{opacity:.9;outline:2px dashed var(--pr);position:relative;z-index:60;box-shadow:0 14px 34px #0006;cursor:grabbing}
 body.nosel{user-select:none;-webkit-user-select:none}
 .tblw .tbar{margin:4px 0 0}
 </style>
@@ -629,7 +625,7 @@ function body0(){
  else if(S.tab==='word'){const g={};DB.words.forEach(w=>(g[w.cat||'Others']=g[w.cat||'Others']||[]).push(w));
   h=bar('word',false)+(Object.keys(g).length?Object.keys(g).map(c=>`<details open><summary>${esc(c)} (${g[c].length})</summary><div class="wgrid">${g[c].map(i=>card('words',i,false)).join('')}</div></details>`).join(''):list('words'))}
   else if(S.tab==='sang'){const A=isAdmin(),x=A&&S.tid&&curT();
-   h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(x?tblEditor(x):'')+(layoutRows().map(r=>`<div class="trow">${r.map(x=>tblBlock(x,A)).join('')}</div>`).join('')||`<p class="note">${t('empty')}</p>`)}
+   h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(x?tblEditor(x):'')+(tabs().map(x=>tblBlock(x,A)).join('')||`<p class="note">${t('empty')}</p>`)}
  else if(S.tab==='game')h=gamePage();
  else if(S.tab==='sent')h=sentPage();
  else if(S.tab==='lit')h=litPage();
@@ -1090,25 +1086,28 @@ const ppHide=on=>document.body.classList.toggle('hidepp',on);
 document.addEventListener('visibilitychange',()=>ppHide(document.hidden));
 addEventListener('blur',()=>ppHide(true));addEventListener('focus',()=>ppHide(false));
 document.addEventListener('keyup',e=>{if(e.key==='PrintScreen'){ppHide(true);setTimeout(()=>ppHide(document.hidden),2500)}});
-function layoutRows(){const rows=[];let prev=null;tabs().forEach(x=>{if(x.row!==undefined&&prev!==null&&x.row===prev&&rows.length)rows[rows.length-1].push(x);else rows.push([x]);prev=x.row===undefined?null:x.row});return rows}
 function tblBlock(x,A){return `<div class="tblw" data-id="${x.id}">${A?`<div class="tbar"><span class="dh" data-drag="1" title="drag" aria-label="drag">⠿</span><button class="btn sm" data-act="edittbl" data-id="${x.id}">${t('edit')}</button><button class="btn sm dng" data-act="deltbl" data-id="${x.id}">${t('del')}</button></div>`:''}${tbl(x,x.rows)}</div>`}
-function applyTblLayout(rows){let n=0;rows.forEach((r,ri)=>r.forEach(id=>{const x=DB.tables.find(y=>y.id===id);if(x){x.row=ri+1;x.ord=(++n)*10}}));save();body()}
-(function(){let D=null;const DZ=['dz-left','dz-right','dz-above','dz-below'];
- const scr=()=>({y:scrollY,m:(($('#body')||{}).scrollTop)||0});
- document.addEventListener('pointerdown',e=>{const h=e.target.closest&&e.target.closest('[data-drag]');if(!h||!isAdmin())return;const w=h.closest('.tblw');if(!w)return;e.preventDefault();
-  D={w,id:w.dataset.id,x:e.clientX,y:e.clientY,s:scr(),T:null,R:[...document.querySelectorAll('#body .tblw')].filter(x=>x!==w)};
-  w.classList.add('dragging');document.body.classList.add('nosel');try{h.setPointerCapture(e.pointerId)}catch(x){}});
- document.addEventListener('pointermove',e=>{if(!D)return;e.preventDefault();const s=scr(),px=e.clientX,py=e.clientY;
-  D.w.style.transform=`translate(${px-D.x}px,${py-D.y+(s.y-D.s.y)+(s.m-D.s.m)}px)`;
-  D.R.forEach(el=>el.classList.remove(...DZ));D.T=null;
-  for(const el of D.R){const r=el.getBoundingClientRect();if(px>=r.left&&px<=r.right&&py>=r.top&&py<=r.bottom){const fx=(px-r.left)/r.width,fy=(py-r.top)/r.height,z=fx<.3?'left':fx>.7?'right':fy<.5?'above':'below';el.classList.add('dz-'+z);D.T={id:el.dataset.id,z,el};break}}
-  if(!D.T&&D.R.length){const f=D.R[0],l=D.R[D.R.length-1];if(py<f.getBoundingClientRect().top){f.classList.add('dz-above');D.T={id:f.dataset.id,z:'above',el:f}}else if(py>l.getBoundingClientRect().bottom){l.classList.add('dz-below');D.T={id:l.dataset.id,z:'below',el:l}}}
-  const m=$('#body');if(py<90){scrollBy(0,-14);if(m)m.scrollTop-=14}else if(py>innerHeight-90){scrollBy(0,14);if(m)m.scrollTop+=14}},{passive:false});
- const end=()=>{if(!D)return;const d=D;D=null;d.w.classList.remove('dragging');d.w.style.transform='';document.body.classList.remove('nosel');d.R.forEach(el=>el.classList.remove(...DZ));
-  if(!d.T)return;const before=layoutRows().map(r=>r.map(x=>x.id)),rows=before.map(r=>r.filter(i=>i!==d.id)).filter(r=>r.length);
-  const ri=rows.findIndex(r=>r.includes(d.T.id));if(ri<0)return;const ci=rows[ri].indexOf(d.T.id);
-  if(d.T.z==='left')rows[ri].splice(ci,0,d.id);else if(d.T.z==='right')rows[ri].splice(ci+1,0,d.id);else if(d.T.z==='above')rows.splice(ri,0,[d.id]);else rows.splice(ri+1,0,[d.id]);
-  if(JSON.stringify(rows)!==JSON.stringify(before))applyTblLayout(rows)};
+function applyTblOrder(ids){ids.forEach((id,i)=>{const x=DB.tables.find(y=>y.id===id);if(x){x.ord=(i+1)*10;if(x.row!==undefined)delete x.row}});save();body()}
+// Drag a table up/down: the other tables move out of the way live, so you drop it straight into the gap.
+(function(){let D=null;
+ const others=()=>[...document.querySelectorAll('#body .tblw')].filter(x=>x!==D.w);
+ const scale=el=>{const h=el.offsetHeight;return h?el.getBoundingClientRect().height/h||1:1};
+ function update(){if(!D)return;const w=D.w,py=D.py,h=w.getBoundingClientRect().height;
+  const center=py-D.off+h/2,list=others();let before=null;
+  for(const el of list){const r=el.getBoundingClientRect();if(center<r.top+r.height/2){before=el;break}}
+  const cur=w.nextElementSibling&&w.nextElementSibling.classList.contains('tblw')?w.nextElementSibling:null;
+  const same=before?(cur===before):(!cur||!list.length||w===[...document.querySelectorAll('#body .tblw')].pop());
+  if(!same){const tops=new Map(list.map(el=>[el,el.getBoundingClientRect().top]));
+   if(before)before.parentNode.insertBefore(w,before);else{const last=list[list.length-1];if(last)last.after(w)}
+   list.forEach(el=>{const d=tops.get(el)-el.getBoundingClientRect().top;if(Math.abs(d)>1){el.style.transition='none';el.style.transform=`translateY(${d/scale(el)}px)`;el.getBoundingClientRect();el.style.transition='transform .16s ease';el.style.transform=''}})}
+  w.style.transform='';const nat=w.getBoundingClientRect().top;w.style.transform=`translateY(${(py-D.off-nat)/scale(w)}px)`}
+ function loop(){if(!D)return;const py=D.py,m=$('#body');if(py<90){scrollBy(0,-12);if(m)m.scrollTop-=12;update()}else if(py>innerHeight-90){scrollBy(0,12);if(m)m.scrollTop+=12;update()}requestAnimationFrame(loop)}
+ document.addEventListener('pointerdown',e=>{const hd=e.target.closest&&e.target.closest('[data-drag]');if(!hd||!isAdmin())return;const w=hd.closest('.tblw');if(!w)return;e.preventDefault();
+  D={w,py:e.clientY,off:e.clientY-w.getBoundingClientRect().top};w.classList.add('dragging');document.body.classList.add('nosel');try{hd.setPointerCapture(e.pointerId)}catch(x){}requestAnimationFrame(loop)});
+ document.addEventListener('pointermove',e=>{if(!D)return;e.preventDefault();D.py=e.clientY;update()},{passive:false});
+ const end=()=>{if(!D)return;const d=D;D=null;d.w.classList.remove('dragging');d.w.style.transform='';document.body.classList.remove('nosel');
+  document.querySelectorAll('#body .tblw').forEach(el=>{el.style.transform='';el.style.transition=''});
+  const ids=[...document.querySelectorAll('#body .tblw')].map(x=>x.dataset.id);if(ids.join()!==tabs().map(x=>x.id).join())applyTblOrder(ids)};
  document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end);
  document.addEventListener('keydown',e=>{if(!(e.ctrlKey||e.metaKey)||e.altKey)return;const k=e.key.toLowerCase();if(k!=='z'&&k!=='y')return;const a=document.activeElement;if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))return;if(S.view!=='app')return;e.preventDefault();stepUndo(k==='y'||e.shiftKey)})})();
 try{resetUndo()}catch(e){}
