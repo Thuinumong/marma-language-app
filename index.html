@@ -149,6 +149,21 @@ body.hidepp .pp{visibility:hidden}
 .float-editor .resize-grip.ne{top:0;right:0;cursor:nesw-resize}.float-editor .resize-grip.nw{top:0;left:0;cursor:nwse-resize}
 .float-editor .resize-grip.se{bottom:0;right:0;cursor:nwse-resize}.float-editor .resize-grip.sw{bottom:0;left:0;cursor:nesw-resize}
 @media(max-width:520px){.float-editor{left:8px;top:90px;width:calc(100vw - 16px);max-height:calc(100vh - 16px)}}
+
+/* v5.1: transient scrollbars, invisible zoom shortcuts, admin table reordering */
+:root{--ml-user-zoom:1}
+body{zoom:var(--ml-user-zoom)}
+/* Scrollbars appear while an area is being scrolled and fade when idle. */
+html,body,.tabs,.tw,.tblw,main,#body{scrollbar-width:thin;scrollbar-color:transparent transparent}
+html.ml-scrolling,body.ml-scrolling,.ml-scrolling .tabs,.ml-scrolling .tw,.ml-scrolling .tblw,.ml-scrolling main,.ml-scrolling #body{scrollbar-color:var(--pr) transparent}
+html::-webkit-scrollbar,body::-webkit-scrollbar,.tabs::-webkit-scrollbar,.tw::-webkit-scrollbar,.tblw::-webkit-scrollbar,main::-webkit-scrollbar,#body::-webkit-scrollbar{width:5px;height:5px}
+html::-webkit-scrollbar-thumb,body::-webkit-scrollbar-thumb,.tabs::-webkit-scrollbar-thumb,.tw::-webkit-scrollbar-thumb,.tblw::-webkit-scrollbar-thumb,main::-webkit-scrollbar-thumb,#body::-webkit-scrollbar-thumb{background:transparent;border-radius:8px}
+html.ml-scrolling::-webkit-scrollbar-thumb,body.ml-scrolling::-webkit-scrollbar-thumb,.ml-scrolling .tabs::-webkit-scrollbar-thumb,.ml-scrolling .tw::-webkit-scrollbar-thumb,.ml-scrolling .tblw::-webkit-scrollbar-thumb,.ml-scrolling main::-webkit-scrollbar-thumb,.ml-scrolling #body::-webkit-scrollbar-thumb{background:var(--pr)}
+.tblw.ml-table-movable{touch-action:pan-y;position:relative;cursor:grab}
+.tblw.ml-table-movable.ml-dragging{opacity:.72;outline:2px dashed var(--pr);z-index:3;cursor:grabbing}
+.tblw.ml-table-movable.ml-drop-before{border-top:3px solid var(--pr)}
+.tblw .tw{transform-origin:top left}
+
 </style>
 </head>
 <body>
@@ -1031,5 +1046,50 @@ if(AUTH&&ME)setTimeout(sync,300);
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 </script>
+
+<script id="ml-v51-enhancements">
+(()=>{
+ const root=document.documentElement, body=document.body;
+ let z=1, idleTimer, lastScroll=0;
+ try{z=Math.max(.7,Math.min(1.6,Number(localStorage.getItem('ml_ui_zoom')||1)))}catch(_){}
+ const applyZoom=()=>{root.style.setProperty('--ml-user-zoom',String(z));try{localStorage.setItem('ml_ui_zoom',String(z))}catch(_){}};
+ applyZoom();
+ // Keyboard zoom: Ctrl/Cmd + +/-; reset with Ctrl/Cmd + 0. No visible zoom text/buttons.
+ document.addEventListener('keydown',e=>{
+  if(!(e.ctrlKey||e.metaKey))return;
+  if(['+','=','-','0'].includes(e.key)){
+   if(e.target&&/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+   if(e.key==='+'||e.key==='=')z=Math.min(1.6,Math.round((z+.1)*10)/10);
+   else if(e.key==='-')z=Math.max(.7,Math.round((z-.1)*10)/10);else z=1;
+   applyZoom();e.preventDefault();
+  }
+ },{passive:false});
+ // Ctrl+wheel zoom with mouse/trackpad. Ordinary wheel remains scroll.
+ document.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();z=Math.max(.7,Math.min(1.6,Math.round((z+(e.deltaY<0?.05:-.05))*100)/100));applyZoom()},{passive:false});
+ // Touch pinch zoom for users on phones/tablets; ordinary one-finger scrolling remains native.
+ let pinch0=0, zoom0=1;
+ document.addEventListener('touchstart',e=>{if(e.touches.length===2){pinch0=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);zoom0=z}},{passive:true});
+ document.addEventListener('touchmove',e=>{if(e.touches.length===2&&pinch0>0){const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);z=Math.max(.7,Math.min(1.6,Math.round(zoom0*d/pinch0*100)/100));applyZoom()}},{passive:true});
+ document.addEventListener('touchend',e=>{if(e.touches.length<2)pinch0=0},{passive:true});
+ // Show thin scrollbars only during active scrolling, then fade away.
+ const show=()=>{root.classList.add('ml-scrolling');body.classList.add('ml-scrolling');clearTimeout(idleTimer);idleTimer=setTimeout(()=>{root.classList.remove('ml-scrolling');body.classList.remove('ml-scrolling')},650)};
+ document.addEventListener('scroll',show,{capture:true,passive:true});
+ document.addEventListener('wheel',show,{passive:true});document.addEventListener('touchmove',show,{passive:true});
+ // Admin-only Sangbusa table ordering. Reorders the existing table data and saves through app's own save().
+ let drag=null;
+ const adminMode=()=>{try{return typeof isAdmin==='function'&&isAdmin()&&typeof S!=='undefined'&&S.tab==='sang'}catch(_){return false}};
+ function decorateTables(){
+  const host=document.querySelector('#body');if(!host||!adminMode())return;
+  const els=[...host.querySelectorAll('.tblw')];
+  els.forEach((el,i)=>{el.classList.add('ml-table-movable');el.draggable=true;el.dataset.mlTableIndex=i;el.setAttribute('aria-label','Sangbusa table; drag to reorder');});
+ }
+ const observer=new MutationObserver(()=>{decorateTables()});observer.observe(document.documentElement,{childList:true,subtree:true});
+ document.addEventListener('dragstart',e=>{const el=e.target.closest('.tblw.ml-table-movable');if(!el||!adminMode())return;drag=el;el.classList.add('ml-dragging');try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',el.dataset.mlTableIndex)}catch(_){} });
+ document.addEventListener('dragover',e=>{const target=e.target.closest('.tblw.ml-table-movable');if(!drag||!target||drag===target||!adminMode())return;e.preventDefault();const r=target.getBoundingClientRect();target.classList.toggle('ml-drop-before',e.clientY<r.top+r.height/2)});
+ document.addEventListener('drop',e=>{const target=e.target.closest('.tblw.ml-table-movable');if(!drag||!target||drag===target||!adminMode())return;e.preventDefault();const list=[...document.querySelectorAll('#body .tblw.ml-table-movable')],from=list.indexOf(drag),to=list.indexOf(target);if(from<0||to<0)return;const before=e.clientY<target.getBoundingClientRect().top+target.getBoundingClientRect().height/2;const newIndex=to+(before?0:1);const arr=DB.tables;const moving=arr.splice(from,1)[0];let dest=newIndex;if(from<newIndex)dest--;arr.splice(Math.max(0,Math.min(arr.length,dest)),0,moving);try{save();body()}catch(err){console.error(err)}});
+ document.addEventListener('dragend',()=>{document.querySelectorAll('.ml-dragging,.ml-drop-before').forEach(x=>x.classList.remove('ml-dragging','ml-drop-before'));drag=null});
+})();
+</script>
+
 </body>
 </html>
