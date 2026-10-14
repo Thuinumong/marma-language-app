@@ -159,11 +159,23 @@ html.ml-scrolling,body.ml-scrolling,.ml-scrolling .tabs,.ml-scrolling .tw,.ml-sc
 html::-webkit-scrollbar,body::-webkit-scrollbar,.tabs::-webkit-scrollbar,.tw::-webkit-scrollbar,.tblw::-webkit-scrollbar,main::-webkit-scrollbar,#body::-webkit-scrollbar{width:5px;height:5px}
 html::-webkit-scrollbar-thumb,body::-webkit-scrollbar-thumb,.tabs::-webkit-scrollbar-thumb,.tw::-webkit-scrollbar-thumb,.tblw::-webkit-scrollbar-thumb,main::-webkit-scrollbar-thumb,#body::-webkit-scrollbar-thumb{background:transparent;border-radius:8px}
 html.ml-scrolling::-webkit-scrollbar-thumb,body.ml-scrolling::-webkit-scrollbar-thumb,.ml-scrolling .tabs::-webkit-scrollbar-thumb,.ml-scrolling .tw::-webkit-scrollbar-thumb,.ml-scrolling .tblw::-webkit-scrollbar-thumb,.ml-scrolling main::-webkit-scrollbar-thumb,.ml-scrolling #body::-webkit-scrollbar-thumb{background:var(--pr)}
-.tblw.ml-table-movable{touch-action:pan-y;position:relative;cursor:grab}
-.tblw.ml-table-movable.ml-dragging{opacity:.72;outline:2px dashed var(--pr);z-index:3;cursor:grabbing}
-.tblw.ml-table-movable.ml-drop-before{border-top:3px solid var(--pr)}
 .tblw .tw{transform-origin:top left}
 
+
+/* v5.2: undo/redo, table tools, block */
+.ubtn{flex:0 0 auto;align-self:center;width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;color:var(--pr);cursor:pointer;padding:0;border-radius:10px}
+.ubtn:disabled{opacity:.3;cursor:default}
+@media(max-width:430px){.hact{gap:1px}.brand{gap:6px;font-size:1rem}.ubtn{width:27px}.nbtn{width:27px}.sbtn{width:32px}}
+.tzb{position:sticky;left:0;display:flex;align-items:center;gap:6px;margin:0 0 6px;font-size:.85rem;color:var(--mu)}
+.tzb button{border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:8px;min-width:30px;height:28px;font:inherit;cursor:pointer;padding:0 8px}
+.tzb button.pc{min-width:52px}
+.tbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:4px 0 0}
+.tbar .dh{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;font-size:1.1rem;padding:4px 10px;border-radius:8px;border:1.5px solid var(--bd);background:var(--sf);color:var(--pr)}
+.tbar .sn{border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:8px;padding:4px 10px;font:inherit;font-size:.85rem;cursor:pointer}
+.tbar .sn.on,.tbar .mv.on{background:var(--pr);color:var(--pt);border-color:var(--pr)}
+.tbar .mv{border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:8px;padding:4px 10px;font:inherit;cursor:pointer}
+.tblw.dragging{opacity:.75;outline:2px dashed var(--pr);position:relative;z-index:3}
+.tblw.swapsel{outline:2px solid var(--ac)}
 </style>
 </head>
 <body>
@@ -270,7 +282,10 @@ reply:['Reply','রিপ্লাই'],replyingTo:['Replying to','রিপ্�
 bio:['Bio','বায়ো'],bioPh:['Short bio (optional)','সংক্ষিপ্ত বায়ো (ঐচ্ছিক)'],profession:['Profession','পেশা'],professionPh:['Profession (optional)','পেশা (ঐচ্ছিক)'],hometownPh:['Hometown (optional)','নিজ এলাকা / হোমটাউন (ঐচ্ছিক)'],
 translator:['Translator','অনুবাদক'],cWa:['WhatsApp number (with country code)','WhatsApp নম্বর (কান্ট্রি কোড সহ)'],cEm:['Support email','সাপোর্ট ইমেইল'],cBad:['Please enter a valid WhatsApp number and email.','সঠিক WhatsApp নম্বর ও ইমেইল দিন।'],contact:['Contact Us','যোগাযোগ করুন'],helpSup:['Help & Support','সাহায্য ও সহায়তা'],faqTitle:['Frequently asked questions','প্রায়ই জিজ্ঞাসিত প্রশ্ন'],stillNeed:['Still need help?','আরও সাহায্য লাগবে?'],contactTxt:['Have a question, suggestion or found a mistake? Message us directly.','কোনো প্রশ্ন, পরামর্শ বা ভুল পেলে সরাসরি আমাদের জানান।'],chatWa:['Chat on WhatsApp','WhatsApp-এ মেসেজ করুন'],sendMail:['Send an Email','ইমেইল করুন'],upcoming:['Upcoming...','শীঘ্রই আসছে...'],
 notifyAuthor:['Notify the author','লেখককে জানান'],whyPh:['Message to the author (optional)','লেখককে বার্তা (ঐচ্ছিক)'],
-section:['Section','সেকশন'],vImg:['Small picture (optional)','ছোট ছবি (ঐচ্ছিক)'],saveImg:['Save photo','ছবি সেভ করুন'],noInfo:['No details added yet.','এখনো কোনো তথ্য দেওয়া হয়নি।']});
+section:['Section','সেকশন'],vImg:['Small picture (optional)','ছোট ছবি (ঐচ্ছিক)'],saveImg:['Save photo','ছবি সেভ করুন'],noInfo:['No details added yet.','এখনো কোনো তথ্য দেওয়া হয়নি।'],
+undo:['Undo','আগের অবস্থায়'],redo:['Redo','আবার করুন'],tzIn:['Zoom in','জুম ইন'],tzOut:['Zoom out','জুম আউট'],tzReset:['Reset zoom','জুম রিসেট'],
+tMoveTo:['Move to position (1 - ','কত নম্বরে নেবেন? (১ - '],tSwapPick:['Now tap ⇄ on the table to exchange with.','এখন যে টেবিলের সাথে বদল করবেন তার ⇄ চাপুন।'],tSwap:['Exchange','বদল'],tUp:['Move up','উপরে'],tDown:['Move down','নিচে'],
+block:['Block','ব্লক করুন'],unblock:['Unblock','আনব্লক করুন'],blockedUsers:['Blocked users','ব্লক করা ইউজার'],blockAsk:['Block this user? Neither of you will be able to see the other\'s profile.','এই ইউজারকে ব্লক করবেন? কেউ কারো প্রোফাইল দেখতে পারবে না।'],youBlocked:['You blocked this user.','আপনি এই ইউজারকে ব্লক করেছেন।'],profUnavail:['This profile is not available.','এই প্রোফাইলটি দেখা যাচ্ছে না।'],noBlocked:['You have not blocked anyone.','আপনি কাউকে ব্লক করেননি।']});
 const t=k=>(TX[k]||[k,k])[CFG.lang==='bn'?1:0];
 // ---- Audio (IndexedDB) ----
 const idb=new Promise(r=>{try{const q=indexedDB.open('ml_audio',1);q.onupgradeneeded=()=>q.result.createObjectStore('a');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}});
@@ -279,7 +294,7 @@ const aputLocal=async(k,b)=>{const d=await idb;if(!d)return false;return new Pro
 const aput=async(k,b)=>{const ok=await aputLocal(k,b);if(ok&&audioHook)audioHook(k);return ok};
 const agetLocal=async k=>{const d=await idb;if(!d)return null;return new Promise(r=>{const q=d.transaction('a').objectStore('a').get(k);q.onsuccess=()=>r(q.result||null);q.onerror=()=>r(null)})};
 const aget=async k=>{let b=await agetLocal(k);if(b||!audioFetch)return b;b=await audioFetch(k);if(b)aputLocal(k,b);return b};
-const adel=async k=>{if(!k)return;const d=await idb;if(d)d.transaction('a','readwrite').objectStore('a').delete(k);if(audioDel)audioDel(k)};
+const adel=k=>{if(!k)return;const g=store.get('ml_grave',[]);if(!g.some(x=>x.k===k)){g.push({k,ts:Date.now()});store.set('ml_grave',g)}};
 let cur;async function play(k){const b=await aget(k);if(!b){alert(t('noAudio'));return}if(cur)cur.pause();cur=new Audio(URL.createObjectURL(b));cur.play().catch(()=>{})}
 const au=k=>k?`<button class="play" data-act="play" data-k="${k}" aria-label="play">▶</button>`:'';
 // ---- Sample data: replace with your own via Admin Panel ----
@@ -309,7 +324,24 @@ if(!DB.tables){DB.tables=clone(SEED.tables);if(DB.phrases&&DB.phrases.length)DB.
 if(!DB.ssubs)DB.ssubs=[];if(!DB.lit)DB.lit=clone(SEED.lit);if(!DB.ratings)DB.ratings=[];if(!DB.dict)DB.dict=[];if(!DB.updates)DB.updates=[];if(!DB.vocab)DB.vocab=[];if(!DB.notifs)DB.notifs=[];
 const updSorted=()=>[...(DB.updates||[])].sort((a,b)=>vcmp(b.ver,a.ver));
 const hasNew=()=>{const u=updSorted()[0];return !!u&&vcmp(u.ver,APP_VER)>0};
-const save=()=>{store.set('ml_db',DB);if(cloudHook)cloudHook()};
+let UNDO=[],REDO=[],LASTF=null;
+const snapNow=()=>{const f=flat(),o={};for(const k in f)o[k]=JSON.stringify(f[k].data);return o};
+function resetUndo(){UNDO=[];REDO=[];try{LASTF=snapNow()}catch(e){LASTF=null}try{updUR()}catch(e){}}
+function recordUndo(){if(!LASTF){try{LASTF=snapNow()}catch(e){}return}
+ const cur=snapNow(),ch={};
+ for(const k in cur)if(LASTF[k]!==cur[k])ch[k]=[LASTF[k]===undefined?null:LASTF[k],cur[k]];
+ for(const k in LASTF)if(cur[k]===undefined)ch[k]=[LASTF[k],null];
+ LASTF=cur;if(Object.keys(ch).length){UNDO.push(ch);if(UNDO.length>60)UNDO.shift();REDO=[];updUR()}}
+function stepUndo(redo){const src=redo?REDO:UNDO,dst=redo?UNDO:REDO,e=src.pop();if(!e)return;
+ const items=Object.keys(e).map(k=>{const to=e[k][redo?1:0],from=e[k][redo?0:1],col=KCOL(k),id=KID(k);
+  return to===null?{col,id,deleted:true,data:JSON.parse(from)}:{col,id,deleted:false,data:JSON.parse(to)}});
+ items.sort((a,b)=>(PRI[a.col]??9)-(PRI[b.col]??9));items.forEach(applyRemote);
+ DB.lit.posts.sort((a,b)=>(b.ts||0)-(a.ts||0));dst.push(e);
+ store.set('ml_db',DB);try{LASTF=snapNow()}catch(x){}
+ if(cloudHook)cloudHook();updUR();S.cell=null;S.edit=null;S.vf=null;try{body()}catch(x){}}
+function updUR(){const u=$('#undoB'),r=$('#redoB');if(u)u.disabled=!UNDO.length;if(r)r.disabled=!REDO.length}
+const urBtns=()=>`<button class="ubtn" id="undoB" data-act="undo" ${UNDO.length?'':'disabled'} aria-label="${t('undo')}" title="${t('undo')} (Ctrl+Z)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button><button class="ubtn" id="redoB" data-act="redo" ${REDO.length?'':'disabled'} aria-label="${t('redo')}" title="${t('redo')} (Ctrl+Y)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>`;
+const save=()=>{store.set('ml_db',DB);try{recordUndo()}catch(e){}if(cloudHook)cloudHook()};
 let USERS=store.get('ml_users',[]),ME=store.get('ml_sess',null),CFG=store.get('ml_cfg',{theme:'auto',size:16,lang:'en'});
 if(!CFG.lang)CFG.lang='en';
 if(ME&&!store.get('ml_auth',null)){ME=null;store.set('ml_sess',null)} // old local-only accounts: log in again with the cloud account
@@ -362,7 +394,7 @@ function nPage(){const L=notifList(),seen=nSeen();S.nun=S.nun||new Set();
  return `<h2>${t('notif')}</h2>`+(L.map(n=>`<div class="card nt ${S.nun.has(n.id)?'un':''}" ${n.post?`data-act="nopen" data-p="${esc(n.post)}"`:''}><div>${nMsg(n)}</div>${n.pt?`<div class="en">“${esc(n.pt)}”</div>`:''}${n.text?`<div>${esc(n.text)}</div>`:''}<div class="en" style="font-size:.8rem">${fmt(n.ts)}</div></div>`).join('')||`<p class="note">${t('notifNone')}</p>`)}
 // ---- VisualVocab ----
 function vform(){const e=S.vf!=='new'?DB.vocab.find(x=>x.id===S.vf):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="v_${k}" placeholder="${t(p)}" value="${v(k)}">`;
- return `<div class="card ${e?'float-editor':''}" ${e?'id="vocabFloat"':''}>${e?`<div class="float-handle" id="vocabFloatHandle"><span>⠿ ${t('edit')}</span><small>Drag · Resize</small></div>`:`<b>${t('addNew')}</b>`}${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}<div class="en">🖼 ${t('vImg')}</div><input class="in" id="v_img" type="file" accept="image/*"><div class="verr" id="v_img_err"></div>${e&&e.img?`<button class="btn sm dng" data-act="vrmimg">${t('pImgRm')}</button>`:''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="v_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="vrmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="vsave">${e?t('update'):t('addBtn')}</button><button class="btn ghost" data-act="vcancel">${t('cancel')}</button></div>`}
+ return `<div class="card ${e?'float-editor':''}" ${e?'id="vocabFloat"':''}>${e?`<div class="float-handle" id="vocabFloatHandle"><span>⠿ ${t('edit')}</span><button type="button" class="x" style="color:inherit;font-size:1.1rem;line-height:1" data-act="vcancel" aria-label="${t('cancel')}" title="${t('cancel')}">✕</button></div>`:`<b>${t('addNew')}</b>`}${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}<div class="en">🖼 ${t('vImg')}</div><input class="in" id="v_img" type="file" accept="image/*"><div class="verr" id="v_img_err"></div>${e&&e.img?`<button class="btn sm dng" data-act="vrmimg">${t('pImgRm')}</button>`:''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="v_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="vrmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="vsave">${e?t('update'):t('addBtn')}</button><button class="btn ghost" data-act="vcancel">${t('cancel')}</button></div>`}
 const gimg=it=>it&&it.img?`<img class="gimg" data-ik="${esc(it.img)}" alt="">`:'';
 const vcard=it=>{const k='vocab:'+it.id,f=favs().includes(k),adm=isAdmin()?`<div><button class="btn sm" data-act="vedit" data-id="${it.id}">${t('edit')}</button><button class="btn sm dng" data-act="vdel" data-id="${it.id}">${t('del')}</button></div>`:'';
  return `<div class="card vc"><div style="display:flex;gap:12px;align-items:flex-start">${it.img?`<img class="vimg" data-ik="${esc(it.img)}" alt="">`:''}<div style="flex:1;min-width:0"><div class="top"><div><div class="mm">${esc(it.marma)}</div>${it.pron?`<div class="pr">${esc(it.pron)}</div>`:''}</div><div class="acts">${au(it.k)}<button class="star" data-act="fav" data-k="${esc(k)}" aria-label="favourite">${f?'★':'☆'}</button></div></div>${it.bn?`<div class="bn">${esc(it.bn)}</div>`:''}${it.en?`<div class="en">${esc(it.en)}</div>`:''}</div></div>${adm}</div>`};
@@ -382,7 +414,10 @@ function card(col,it,rev){
  return `<div class="card"><div class="top"><div>${head}</div><div class="acts">${au(it.k)}<button class="star" data-act="fav" data-k="${esc(k)}" aria-label="favourite">${f?'★':'☆'}</button></div></div>${body}${adm}</div>`}
 const cellH=c=>[c.m&&`<div class="mm">${esc(c.m)}</div>`,c.p&&`<div class="pr">${esc(c.p)}</div>`,c.b&&`<div class="bn">${esc(c.b)}</div>`,c.e&&`<div class="en">${esc(c.e)}</div>`].filter(Boolean).join('')+au(c.k);
 const ctext=c=>[c.m,c.p,c.b,c.e,c.t].join(' ').toLowerCase();
-const tbl=(x,rows)=>`<div class="card tw"><table>${x.cap?`<caption>${esc(x.cap)}</caption>`:''}<tbody>${rows.map(r=>`<tr>${r.c.map(c=>`<td class="bx">${cellH(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+const tabs=()=>DB.tables.map((x,i)=>[x,i]).sort((a,b)=>((a[0].ord??1e9)-(b[0].ord??1e9))||(a[1]-b[1])).map(p=>p[0]);
+const tzGet=id=>{const z=(CFG.tz||{})[id];return z>=.5&&z<=2.5?z:1};
+const tzBar=id=>{const z=tzGet(id);return `<div class="tzb"><button data-act="tzo" data-id="${id}" aria-label="${t('tzOut')}" title="${t('tzOut')}">−</button><button class="pc" data-act="tzr" data-id="${id}" title="${t('tzReset')}">${Math.round(z*100)}%</button><button data-act="tzi" data-id="${id}" aria-label="${t('tzIn')}" title="${t('tzIn')}">+</button></div>`};
+const tbl=(x,rows)=>`<div class="card tw">${tzBar(x.id)}<table style="zoom:${tzGet(x.id)}">${x.cap?`<caption>${esc(x.cap)}</caption>`:''}<tbody>${rows.map(r=>`<tr>${r.c.map(c=>`<td class="bx">${cellH(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 const TENSES=[['pres','Present Tense','বর্তমান কাল'],['past','Past Tense','অতীত কাল'],['fut','Future Tense','ভবিষ্যৎ কাল'],['presc','Present Continuous Tense','ঘটমান বর্তমান কাল'],['pastc','Past Continuous Tense','ঘটমান অতীত কাল'],['futc','Future Continuous Tense','ঘটমান ভবিষ্যৎ কাল'],['presp','Present Perfect Tense','পুরাঘটিত বর্তমান কাল'],['pastp','Past Perfect Tense','পুরাঘটিত অতীত কাল'],['futp','Future Perfect Tense','পুরাঘটিত ভবিষ্যৎ কাল'],['prespc','Present Perfect Continuous Tense','পুরাঘটিত ঘটমান বর্তমান কাল'],['pastpc','Past Perfect Continuous Tense','পুরাঘটিত ঘটমান অতীত কাল'],['futpc','Future Perfect Continuous Tense','পুরাঘটিত ঘটমান ভবিষ্যৎ কাল']];
 const tnm=k=>{const x=TENSES.find(y=>y[0]===k);return x?(CFG.lang==='bn'?x[2]:x[1]):''};
 const tAll=k=>{const x=TENSES.find(y=>y[0]===k);return x?x[1]+' '+x[2]+' '+x[0]:''};
@@ -456,7 +491,7 @@ function render0(){
   A.innerHTML=`<div class="auth">${logo(96)}<h1 style="margin:10px 0 0">Marma Language</h1><h2>${t('forgotT')}</h2>${inner}<button class="back" data-act="go" data-v="signin">← ${t('signin')}</button></div><footer>© 2026 Marma Language</footer>`;return}
  if(S.view==='signin'||S.view==='signup'){const up=S.view==='signup',F=S.f||{};
   A.innerHTML=`<div class="auth">${logo(96)}<h1 style="margin:10px 0 0">Marma Language</h1><p class="en">${t('welcome')}</p><h2>${t(up?'signup':'signin')}</h2>${up?`<input class="in" id="a_name" autocomplete="name" placeholder="${t('name')}" value="${esc(F.name)}">`:''}<input class="in" id="a_id" autocomplete="username" placeholder="${t('idPh2')}" value="${esc(F.id)}"><div class="pw"><input class="in" id="a_pass" type="password" autocomplete="${up?'new-password':'current-password'}" placeholder="${t('pass')}"><button type="button" class="eye" data-act="eye" aria-label="show password">👁</button></div><div class="err">${t(S.err||'x')==='x'?'':t(S.err)}</div><button class="btn" data-act="${up?'signup':'signin'}">${t(up?'create':'signin')}</button><div class="en" style="margin:10px 0 2px">— ${t('orWith')} —</div><button class="btn ghost" data-act="oauth" data-p="google"><b>G</b> &nbsp;${t('contG')}</button>${up?'':`<button class="back" data-act="go" data-v="forgot">${t('forgot')}</button>`}<button class="back" data-act="go" data-v="${up?'signin':'signup'}">${t(up?'have':'newq')}</button><button class="back" data-act="go" data-v="privacy">${t('privacy')}</button></div><footer>© 2026 Marma Language</footer>`;return}
- const _nv=A.querySelector('header nav.tabs'),_sl=_nv?_nv.scrollLeft:-1;A.className='shell';A.innerHTML=`<header><div class="hrow"><div class="brand">${logo(34)}<b>Marma Language</b></div><span class="sp"></span><div class="hact">${syncBtn()}${bellBtn()}${av(34)}</div></div><input id="q" class="search" placeholder="${t('search')}" value="${esc(S.q)}"><nav class="tabs">${TABS.map(k=>`<button class="tab ${S.tab===k?'on':''}" data-act="tab" data-t="${k}">${t(k)}</button>`).join('')}<button class="mbtn ${S.tab==='menu'?'on':''}" data-act="tab" data-t="menu" aria-label="${t('menu')}" title="${t('menu')}">${burger(22)}</button></nav></header><main id="body"></main>`;
+ const _nv=A.querySelector('header nav.tabs'),_sl=_nv?_nv.scrollLeft:-1;A.className='shell';A.innerHTML=`<header><div class="hrow"><div class="brand">${logo(34)}<b>Marma Language</b></div><span class="sp"></span><div class="hact">${urBtns()}${syncBtn()}${bellBtn()}${av(34)}</div></div><input id="q" class="search" placeholder="${t('search')}" value="${esc(S.q)}"><nav class="tabs">${TABS.map(k=>`<button class="tab ${S.tab===k?'on':''}" data-act="tab" data-t="${k}">${t(k)}</button>`).join('')}<button class="mbtn ${S.tab==='menu'?'on':''}" data-act="tab" data-t="menu" aria-label="${t('menu')}" title="${t('menu')}">${burger(22)}</button></nav></header><main id="body"></main>`;
  {const nv=A.querySelector('header nav.tabs');if(nv){if(_sl>=0)nv.scrollLeft=_sl;const on=nv.querySelector('.tab.on,.mbtn.on');if(on){const nr=nv.getBoundingClientRect(),or=on.getBoundingClientRect();if(or.left<nr.left)nv.scrollLeft+=or.left-nr.left-8;else if(or.right>nr.right)nv.scrollLeft+=or.right-nr.right+8}}}
  if(_headerWasHidden){const _h=A.querySelector('header');if(_h)_h.classList.add('hh')}
  body()}
@@ -589,7 +624,7 @@ function body0(){
  else if(S.tab==='word'){const g={};DB.words.forEach(w=>(g[w.cat||'Others']=g[w.cat||'Others']||[]).push(w));
   h=bar('word',false)+(Object.keys(g).length?Object.keys(g).map(c=>`<details open><summary>${esc(c)} (${g[c].length})</summary><div class="wgrid">${g[c].map(i=>card('words',i,false)).join('')}</div></details>`).join(''):list('words'))}
   else if(S.tab==='sang'){const A=isAdmin(),x=A&&S.tid&&curT();
-   h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(x?tblEditor(x):'')+(DB.tables.map(x=>`<div class="tblw">`+(A?`<div><button class="btn sm" data-act="edittbl" data-id="${x.id}">${t('edit')}</button><button class="btn sm dng" data-act="deltbl" data-id="${x.id}">${t('del')}</button></div>`:'')+tbl(x,x.rows)+`</div>`).join('')||`<p class="note">${t('empty')}</p>`)}
+   h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(x?tblEditor(x):'')+(tabs().map((x,i,all)=>`<div class="tblw${S.swap===x.id?' swapsel':''}" data-id="${x.id}">`+(A?`<div class="tbar"><span class="dh" data-drag="1" title="drag">⠿</span><button class="sn" data-act="tpos" data-id="${x.id}" title="#">#${i+1}</button><button class="mv" data-act="tup" data-id="${x.id}" aria-label="${t('tUp')}" title="${t('tUp')}">↑</button><button class="mv" data-act="tdown" data-id="${x.id}" aria-label="${t('tDown')}" title="${t('tDown')}">↓</button><button class="mv ${S.swap===x.id?'on':''}" data-act="tswap" data-id="${x.id}" aria-label="${t('tSwap')}" title="${t('tSwap')}">⇄</button><button class="btn sm" data-act="edittbl" data-id="${x.id}">${t('edit')}</button><button class="btn sm dng" data-act="deltbl" data-id="${x.id}">${t('del')}</button></div>`:'')+tbl(x,x.rows)+`</div>`).join('')||`<p class="note">${t('empty')}</p>`)}
  else if(S.tab==='game')h=gamePage();
  else if(S.tab==='sent')h=sentPage();
  else if(S.tab==='lit')h=litPage();
@@ -602,7 +637,7 @@ const IC={dict:'dict',word:'words',sent:'sentences'}[S.tab];
  if(hasNew()&&!S.updHide){const u=updSorted()[0];h=`<div class="card" style="border-color:var(--ac)"><div class="top"><div><b>🔔 ${t('newVer')}: ${esc(u.ver)}</b>${u.note?`<div class="en">${esc(u.note)}</div>`:''}</div><button class="x" data-act="updhide" aria-label="close">✕</button></div>${safeLink(u.link)?`<a class="btn sm" href="${esc(u.link)}" target="_blank" rel="noopener">⬇ ${t('download')}</a>`:''}</div>`+h}
  {const v=q?'grid':getView(S.tab);B.className=(v==='list'?'narrow':'grid')+(v==='compact'?' v-compact':'')}B.innerHTML=h;hydrate();try{updateBadge()}catch(e){}}
 function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button>`;
- if(S.sub==='profile')return `${back}<h2>${t('profile')}</h2><div class="card" style="text-align:center">${av(96)}<div style="margin-top:8px"><b>${esc(u.name)}</b></div><div class="en">${t('role_'+u.role)}</div>${u.profession?`<div style="margin-top:4px">💼 ${esc(u.profession)}</div>`:''}${u.bio?`<div class="pbody" style="margin:4px 0">${esc(u.bio)}</div>`:''}${u.hometown?`<div>📍 ${esc(u.hometown)}</div>`:''}<div style="margin-top:6px">${u.email?`<div>✉️ ${esc(u.email)}</div>`:''}${u.phone?`<div>📞 ${esc(u.phone)}</div>`:''}</div></div><button class="btn" data-act="sub" data-s="editprofile">✏️ ${t('editProfile')}</button>`;
+ if(S.sub==='profile')return `${back}<h2>${t('profile')}</h2><div class="card" style="text-align:center">${av(96)}<div style="margin-top:8px"><b>${esc(u.name)}</b></div><div class="en">${t('role_'+u.role)}</div>${u.profession?`<div style="margin-top:4px">💼 ${esc(u.profession)}</div>`:''}${u.bio?`<div class="pbody" style="margin:4px 0">${esc(u.bio)}</div>`:''}${u.hometown?`<div>📍 ${esc(u.hometown)}</div>`:''}<div style="margin-top:6px">${u.email?`<div>✉️ ${esc(u.email)}</div>`:''}${u.phone?`<div>📞 ${esc(u.phone)}</div>`:''}</div></div><button class="btn" data-act="sub" data-s="editprofile">✏️ ${t('editProfile')}</button><h3>${t('blockedUsers')}</h3>${(u.blocked||[]).map(id=>`<div class="card top"><div>${esc(nameOf(id))}</div><button class="btn sm" data-act="unblock" data-u="${esc(id)}">${t('unblock')}</button></div>`).join('')||`<p class="note">${t('noBlocked')}</p>`}`;
  if(S.sub==='editprofile')return `<button class="back" data-act="sub" data-s="profile">← ${t('profile')}</button><h2>${t('editProfile')}</h2><div class="card" style="text-align:center">${av(96)}<div><button class="btn sm" data-act="picpick">${t('changePic')}</button>${u.pic?`<button class="btn sm ghost" data-act="picrm">${t('rmPic')}</button>`:''}</div></div><div class="card"><b>${t('details')}</b><input class="in" id="p_name" autocomplete="name" placeholder="${t('name')}" value="${esc(u.name)}"><input class="in" id="p_email" type="email" autocomplete="email" placeholder="${t('emailOpt')}" value="${esc(u.email||'')}"><input class="in" id="p_phone" type="tel" autocomplete="tel" placeholder="${t('phoneOpt')}" value="${esc(u.phone||'')}"><input class="in" id="p_prof" maxlength="80" placeholder="${t('professionPh')}" value="${esc(u.profession||'')}"><input class="in" id="p_home" maxlength="80" placeholder="${t('hometownPh')}" value="${esc(u.hometown||'')}"><textarea class="in" id="p_bio" maxlength="300" rows="3" placeholder="${t('bioPh')}">${esc(u.bio||'')}</textarea><button class="btn" data-act="saveprofile">${t('saveChanges')}</button><div class="en" style="margin-top:4px;font-size:.85rem">${t('loginNote')}</div></div>${AUTH&&AUTH.provider&&AUTH.provider!=='email'?'':`<div class="card"><b>${t('changePw')}</b><input class="in" id="pw_cur" type="password" autocomplete="current-password" placeholder="${t('curPw')}"><input class="in" id="pw_new" type="password" autocomplete="new-password" placeholder="${t('newPw')}"><input class="in" id="pw_con" type="password" autocomplete="new-password" placeholder="${t('conPw')}"><button class="btn" data-act="savepw">${t('changePw')}</button></div>`}`;
  if(S.sub==='privacy')return `${back}<h2>${t('privacy')}</h2>${privHtml()}`;
  if(S.sub==='fav'){const items=favs().map(k=>{const[c,id]=k.split(':');const it=(DB[c]||[]).find(x=>x.id===id);return it?(c==='vocab'?vcard(it):card(c,it,false)):''}).join('');return `${back}<h2>${t('fav')}</h2>${items||`<p class="note">${t('favEmpty')}</p>`}`}
@@ -622,8 +657,9 @@ function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s=
    [G('I found a mistake or have a suggestion.','আমি ভুল পেয়েছি বা পরামর্শ দিতে চাই।'),G('Please message us using the buttons below.','নিচের বাটন দিয়ে আমাদের জানান।')]];
    return `${back}<h2>🛟 ${t('helpSup')}</h2><h3>${t('faqTitle')}</h3>${Q.map(q=>`<details class="card"><summary><b>${esc(q[0])}</b></summary><p>${esc(q[1])}</p></details>`).join('')}<h3>${t('stillNeed')}</h3>${contactCard()}`}
   if(S.sub==='translator')return `${back}<h2>🔤 ${t('translator')}</h2><div class="card" style="text-align:center;padding:30px 14px"><div style="font-size:2.4rem">🚧</div><b class="mm">${t('upcoming')}</b><div class="en">${G('We are working on it.','কাজ চলছে।')}</div></div>`;
-  if(S.sub==='uprof'){const o=otherUser(S.uid),adm=isAdmin(),sp=safePic(o.pic);
-   return `<button class="back" data-act="uback">← ${t('back')}</button><h2>${t('profile')}</h2><div class="card" style="text-align:center">${ppic(o,96)}<div style="margin-top:8px"><b>${esc(o.name)}</b></div>${o.profession?`<div>💼 ${esc(o.profession)}</div>`:''}${o.bio?`<div class="pbody" style="margin:4px 0">${esc(o.bio)}</div>`:''}${!o.profession&&!o.bio?`<div class="en">${t('noInfo')}</div>`:''}${adm?`<div class="en" style="margin-top:6px">${t('role_'+o.role)}</div>${o.hometown?`<div>📍 ${esc(o.hometown)}</div>`:''}${o.email?`<div>✉️ ${esc(o.email)}</div>`:''}${o.phone?`<div>📞 ${esc(o.phone)}</div>`:''}${sp?`<a class="btn sm" download="${esc(o.name)}.jpg" href="${sp}">⬇ ${t('saveImg')}</a>`:''}`:''}</div>`}
+  if(S.sub==='uprof'){const o=otherUser(S.uid),adm=isAdmin(),sp=safePic(o.pic),me=o.id===ME,iB=(u.blocked||[]).includes(o.id),theyB=!!(PUB[o.id]&&PUB[o.id].blocked_me);
+   if(!adm&&!me&&(iB||theyB))return `<button class="back" data-act="uback">← ${t('back')}</button><h2>${t('profile')}</h2><div class="card" style="text-align:center"><div style="font-size:2.4rem">🚫</div>${iB?`<div><b>${esc(o.name)}</b></div><div class="en">${t('youBlocked')}</div><button class="btn sm" data-act="unblock" data-u="${esc(o.id)}">${t('unblock')}</button>`:`<div class="en">${t('profUnavail')}</div>`}</div>`;
+   return `<button class="back" data-act="uback">← ${t('back')}</button><h2>${t('profile')}</h2><div class="card" style="text-align:center">${ppic(o,96)}<div style="margin-top:8px"><b>${esc(o.name)}</b></div>${o.profession?`<div>💼 ${esc(o.profession)}</div>`:''}${o.bio?`<div class="pbody" style="margin:4px 0">${esc(o.bio)}</div>`:''}${!o.profession&&!o.bio?`<div class="en">${t('noInfo')}</div>`:''}${adm?`<div class="en" style="margin-top:6px">${t('role_'+o.role)}</div>${o.hometown?`<div>📍 ${esc(o.hometown)}</div>`:''}${o.email?`<div>✉️ ${esc(o.email)}</div>`:''}${o.phone?`<div>📞 ${esc(o.phone)}</div>`:''}${sp?`<a class="btn sm" download="${esc(o.name)}.jpg" href="${sp}">⬇ ${t('saveImg')}</a>`:''}`:''}${me?'':(iB?`<button class="btn sm" data-act="unblock" data-u="${esc(o.id)}">✅ ${t('unblock')}</button>`:`<button class="btn sm dng" data-act="block" data-u="${esc(o.id)}">🚫 ${t('block')}</button>`)}</div>`}
  if(S.sub==='about')return `${back}<h2>${t('about')}</h2><div class="card">${logo(64)}<p><b>Marma Language</b></p><p>${t('aboutTxt')}</p><p class="en">Version ${APP_VER}</p></div>`;
  if(S.sub==='updates'){const ul=updSorted();return `${back}<h2>${t('upd')}</h2><div class="en">${t('curVer')}: ${APP_VER}</div>`+(ul.map(u=>`<div class="card"><b>${esc(u.ver)}</b> ${u.ver===APP_VER?`<span class="badge">${t('current')}</span>`:''}${u.note?`<div class="en">${esc(u.note)}</div>`:''}${safeLink(u.link)?`<a class="btn sm" href="${esc(u.link)}" target="_blank" rel="noopener">⬇ ${t('download')}</a>`:''}</div>`).join('')||`<p class="note">${t('noUpd')}</p>`)}
  if(S.sub==='language')return `${back}<h2>${t('language')}</h2><p class="en">${t('chooseLang')}</p><div class="seg"><button class="${CFG.lang==='en'?'on':''}" data-act="lang" data-l="en">English</button><button class="${CFG.lang==='bn'?'on':''}" data-act="lang" data-l="bn">বাংলা</button></div>`;
@@ -636,10 +672,10 @@ function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s=
 function dataTools(){return `<div class="note">${t('dataNote')}</div><textarea class="in" id="io" placeholder="${t('ioPh')}"></textarea><button class="btn sm" data-act="export">${t('exp')}</button><button class="btn sm" data-act="import">${t('imp')}</button><button class="btn sm dng" data-act="clear">${t('clearAll')}</button><button class="btn sm ghost" data-act="reset">${t('resetSeed')}</button>`}
 function tblEditor(x){
   const sc=S.cell&&x.rows[S.cell.r]&&x.rows[S.cell.r].c[S.cell.c],fv=k=>esc(sc?sc[k]||'':'');
-  const form=sc?`<div class="card float-editor" id="cellFloat"><div class="float-handle" id="cellFloatHandle"><span>⠿ ${t('edit')} (${S.cell.r+1}, ${S.cell.c+1})</span><small>Drag · Resize</small><button type="button" class="x" style="color:inherit" data-act="cellclose" aria-label="close editor">✕</button></div><input class="in" id="cf_m" placeholder="${t('marmaPh')}" value="${fv('m')}"><input class="in" id="cf_p" placeholder="${t('pronPh')}" value="${fv('p')}"><input class="in" id="cf_b" placeholder="${t('bnPh')}" value="${fv('b')}"><input class="in" id="cf_e" placeholder="${t('enPh')}" value="${fv('e')}"><div class="en">🎙 ${sc.k?t('audioHas'):t('audioLbl')}</div><button class="play" data-act="cellau" data-r="${S.cell.r}" data-c="${S.cell.c}" title="audio">${sc.k?'🔊':'🎙'}</button>${sc.k?au(sc.k)+`<button class="x" data-act="cellrm" data-r="${S.cell.r}" data-c="${S.cell.c}">⊘</button>`:''}<div><button class="btn sm" data-act="cellsave">💾 ${t('saved').replace(' ✔','')}</button><button class="btn sm" data-act="cellclose">✕</button></div></div>`:'';
-  return `<button class="back" data-act="backtbl">${t('allTbl')}</button><input class="in" id="t_cap" placeholder="${t('caption')}" value="${esc(x.cap)}"><div class="note">${t('tblNote')}</div>${form}<div class="card tw"><table><thead><tr>${x.cols.map((c,i)=>`<th style="text-align:center;padding:2px;background:none;border:0"><button class="x" data-act="delcol" data-i="${i}" aria-label="delete column">✕</button></th>`).join('')}<th></th></tr></thead><tbody>${x.rows.map((r,ri)=>`<tr>${r.c.map((y,ci)=>`<td class="bx ed${S.cell&&S.cell.r===ri&&S.cell.c===ci?' sel':''}" data-act="cellopen" data-r="${ri}" data-c="${ci}">${cellH(y)||'<span class="en">＋</span>'}</td>`).join('')}<td><button class="x" data-act="delrow" data-r="${ri}" aria-label="delete row">✕</button></td></tr>`).join('')}</tbody></table></div><button class="btn sm" data-act="addcol">${t('addCol')}</button><button class="btn sm" data-act="addrow">${t('addRow')}</button><button class="btn sm" data-act="savetbl">💾 ${t('saved').replace(' ✔','')}</button>`}
+  const form=sc?`<div class="card float-editor" id="cellFloat"><div class="float-handle" id="cellFloatHandle"><span>⠿ ${t('edit')} (${S.cell.r+1}, ${S.cell.c+1})</span><button type="button" class="x" style="color:inherit" data-act="cellclose" aria-label="close editor">✕</button></div><input class="in" id="cf_m" placeholder="${t('marmaPh')}" value="${fv('m')}"><input class="in" id="cf_p" placeholder="${t('pronPh')}" value="${fv('p')}"><input class="in" id="cf_b" placeholder="${t('bnPh')}" value="${fv('b')}"><input class="in" id="cf_e" placeholder="${t('enPh')}" value="${fv('e')}"><div class="en">🎙 ${sc.k?t('audioHas'):t('audioLbl')}</div><button class="play" data-act="cellau" data-r="${S.cell.r}" data-c="${S.cell.c}" title="audio">${sc.k?'🔊':'🎙'}</button>${sc.k?au(sc.k)+`<button class="x" data-act="cellrm" data-r="${S.cell.r}" data-c="${S.cell.c}">⊘</button>`:''}<div><button class="btn sm" data-act="cellsave">💾 ${t('saved').replace(' ✔','')}</button><button class="btn sm" data-act="cellclose">✕</button></div></div>`:'';
+  return `<button class="back" data-act="backtbl">${t('allTbl')}</button><input class="in" id="t_cap" placeholder="${t('caption')}" value="${esc(x.cap)}"><div class="note">${t('tblNote')}</div>${form}<div class="card tw">${tzBar(x.id)}<table style="zoom:${tzGet(x.id)}"><thead><tr>${x.cols.map((c,i)=>`<th style="text-align:center;padding:2px;background:none;border:0"><button class="x" data-act="delcol" data-i="${i}" aria-label="delete column">✕</button></th>`).join('')}<th></th></tr></thead><tbody>${x.rows.map((r,ri)=>`<tr>${r.c.map((y,ci)=>`<td class="bx ed${S.cell&&S.cell.r===ri&&S.cell.c===ci?' sel':''}" data-act="cellopen" data-r="${ri}" data-c="${ci}">${cellH(y)||'<span class="en">＋</span>'}</td>`).join('')}<td><button class="x" data-act="delrow" data-r="${ri}" aria-label="delete row">✕</button></td></tr>`).join('')}</tbody></table></div><button class="btn sm" data-act="addcol">${t('addCol')}</button><button class="btn sm" data-act="addrow">${t('addRow')}</button><button class="btn sm" data-act="savetbl">💾 ${t('saved').replace(' ✔','')}</button>`}
 
-function itemForm(c){const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;return `<div class="card ${e?'float-editor':''}" ${e?'id="itemFloat"':''}>${e?`<div class="float-handle" id="itemFloatHandle"><span>⠿ ${t('edit')}</span><small>Drag · Resize</small></div>`:`<b>${t('addNew')}</b>`}${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${c==='words'?f('cat','secPh'):''}${c==='sentences'?`<select class="in" id="f_tense"><option value="">${t('tensePh')}</option>${TENSES.map(x=>`<option value="${x[0]}" ${e&&e.tense===x[0]?'selected':''}>${CFG.lang==='bn'?x[2]:x[1]}</option>`).join('')}</select><select class="in" id="f_sub"><option value="">${t('subNone')}</option>${(DB.ssubs||[]).map(x=>`<option value="${x.id}" ${(e?e.sub:S.ssub)===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`:''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`}
+function itemForm(c){const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;return `<div class="card ${e?'float-editor':''}" ${e?'id="itemFloat"':''}>${e?`<div class="float-handle" id="itemFloatHandle"><span>⠿ ${t('edit')}</span><button type="button" class="x" style="color:inherit;font-size:1.1rem;line-height:1" data-act="canceledit" aria-label="${t('cancel')}" title="${t('cancel')}">✕</button></div>`:`<b>${t('addNew')}</b>`}${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${c==='words'?f('cat','secPh'):''}${c==='sentences'?`<select class="in" id="f_tense"><option value="">${t('tensePh')}</option>${TENSES.map(x=>`<option value="${x[0]}" ${e&&e.tense===x[0]?'selected':''}>${CFG.lang==='bn'?x[2]:x[1]}</option>`).join('')}</select><select class="in" id="f_sub"><option value="">${t('subNone')}</option>${(DB.ssubs||[]).map(x=>`<option value="${x.id}" ${(e?e.sub:S.ssub)===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`:''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`}
 function admin(){const c=S.ac==='updates'?'updates':'admins',M=isMain();
  const tabs=[['admins','aa'],['updates','upd']];
  const nav=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button><h2>${t('admin')}</h2><div class="seg">${tabs.map(x=>`<button class="${c===x[0]?'on':''}" data-act="col" data-c="${x[0]}">${t(x[1])}</button>`).join('')}</div>`;
@@ -716,7 +752,7 @@ function applyItems(items,force){
   if(it.deleted)delete SYNC.snap[k];else SYNC.snap[k]=rh;
   CHANGED=true}
  DB.lit.posts.sort((a,b)=>(b.ts||0)-(a.ts||0));
- store.set('ml_db',DB)}
+ store.set('ml_db',DB);if(force){UNDO=[];REDO=[]}try{LASTF=snapNow();updUR()}catch(e){}}
 async function pullItems(){
  let since=null;
  if(SYNC.init&&SYNC.last){const ms=Date.parse(SYNC.last);if(!isNaN(ms))since=new Date(ms-120000).toISOString()}
@@ -751,15 +787,19 @@ async function pushItems(){
 async function loadProfiles(){
  let list=await rest('/profiles?id=eq.'+encodeURIComponent(ME)+'&select=*')||[];
  if(list[0]&&list[0].role!=='user')list=await rest('/profiles?select=*&order=created_at.asc')||list;
- if(list.length){USERS=list.map(p=>{const o=USERS.find(x=>x.id===p.id)||{},g=k=>p[k]!==undefined?(p[k]||''):(o[k]||'');return {id:p.id,name:p.name||'',email:p.email||'',phone:p.phone||'',role:p.role,pic:p.pic||undefined,bio:g('bio'),profession:g('profession'),hometown:g('hometown')}});store.set('ml_users',USERS)}
+ if(list.length){USERS=list.map(p=>{const o=USERS.find(x=>x.id===p.id)||{},g=k=>p[k]!==undefined?(p[k]||''):(o[k]||'');return {id:p.id,name:p.name||'',email:p.email||'',phone:p.phone||'',role:p.role,pic:p.pic||undefined,bio:g('bio'),profession:g('profession'),hometown:g('hometown'),blocked:Array.isArray(p.blocked)?p.blocked:(o.blocked||[])}});store.set('ml_users',USERS)}
   try{const pb=await rest('/public_profiles?select=*');if(pb&&pb.length){PUB={};pb.forEach(x=>PUB[x.id]=x);store.set('ml_pub',PUB)}}catch(e){if(e.status===401||e.net)throw e}}
 async function pushProfile(){
  if(!AUTH||AUTH.dead||!SYNC.pdirty)return;const u=user();if(!u)return;
  const base={name:u.name,email:u.email||null,phone:u.phone||null,pic:u.pic||null},path='/profiles?id=eq.'+encodeURIComponent(ME);
-  try{try{await rest(path,{method:'PATCH',body:{...base,bio:u.bio||null,profession:u.profession||null,hometown:u.hometown||null}})}catch(e){if(e.net||e.status===401)throw e;await rest(path,{method:'PATCH',body:base})}SYNC.pdirty=false;saveSync()}catch(e){}}
+  const ext={...base,bio:u.bio||null,profession:u.profession||null,hometown:u.hometown||null};try{try{await rest(path,{method:'PATCH',body:{...ext,blocked:u.blocked||[]}})}catch(e){if(e.net||e.status===401)throw e;try{await rest(path,{method:'PATCH',body:ext})}catch(e2){if(e2.net||e2.status===401)throw e2;await rest(path,{method:'PATCH',body:base})}}SYNC.pdirty=false;saveSync()}catch(e){}}
 
 // ---- audio clips (Supabase Storage bucket "audio") ----
 const allAudioKeys=()=>{const s=new Set(),add=y=>{if(y&&y.k)s.add(y.k)};['dict','words','sentences'].forEach(c=>(DB[c]||[]).forEach(add));(DB.tables||[]).forEach(x=>x.rows.forEach(r=>r.c.forEach(add)));DB.lit.posts.forEach(p=>{add(p);if(p.img)s.add(p.img)});(DB.vocab||[]).forEach(y=>{add(y);if(y.img)s.add(y.img)});return [...s]};
+async function reapGrave(){const g=store.get('ml_grave',[]);if(!g.length)return;const live=new Set(allAudioKeys()),keep=[],un=JSON.stringify([UNDO,REDO]);
+ for(const x of g){if(live.has(x.k))continue;if(Date.now()-x.ts<600000||un.includes(x.k)){keep.push(x);continue}
+  const d=await idb;if(d){try{d.transaction('a','readwrite').objectStore('a').delete(x.k)}catch(e){}}if(audioDel)audioDel(x.k)}
+ store.set('ml_grave',keep)}
 async function pushAudio(){
  if(!user()||!SYNC.aq.length)return;
  for(const k of SYNC.aq.slice()){const b=await agetLocal(k);
@@ -801,7 +841,7 @@ async function sync(opt={}){
   if(!pulled&&opt.pull!==false){
    const items=await pullItems();if(items.length){applyItems(items);SYNC.last=items.reduce((m,x)=>x.updated_at>m?x.updated_at:m,SYNC.last||items[0].updated_at)}
    await loadProfiles()}
-  saveSync();await pushAudio();
+  saveSync();await pushAudio();try{await reapGrave()}catch(e){}
   status('syncOk')}
  catch(e){status(e.status===401?'syncAuth':'syncOff')}
  finally{busy=false;if(again){again=false;setTimeout(()=>sync(),500)}}
@@ -815,7 +855,7 @@ async function cloudAuth(I,pass,name){
  await adoptSession(j,email,{id:j.user.id,name:signup?name:((j.user.user_metadata&&j.user.user_metadata.name)||''),email:I.email||'',phone:I.phone||'',role:'user'})}
 async function adoptSession(j,login,prof){
  if(SYNC.uid&&SYNC.uid!==j.user.id){DB=emptyDB();store.set('ml_db',DB);SYNC={init:false,last:null,snap:{},uid:null,pdirty:false,aq:[]};saveSync()}
- setAuth(j,login);ME=j.user.id;store.set('ml_sess',ME);
+ setAuth(j,login);ME=j.user.id;store.set('ml_sess',ME);resetUndo();
  USERS=[prof];store.set('ml_users',USERS);
  try{await loadProfiles()}catch(e){}}
 
@@ -860,7 +900,7 @@ $('#pfile').addEventListener('change',e=>{const f=e.target.files[0];e.target.val
 $('#afile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';const x=curT();if(!f||!S.tgt||!x||!isAdmin())return;const y=x.rows[S.tgt.r].c[S.tgt.c];adel(y.k);const k=uid();if(await aput(k,f))y.k=k;else alert(t('audioFail'));save();body()});
 document.addEventListener('change',e=>{if(e.target.id==='l_img'||e.target.id==='v_img'){const f=e.target.files[0],er=$('#'+e.target.id+'_err');if(er)er.textContent='';if(f&&f.size>IMG_MAX)showImgErr(e.target.id);return}const el=e.target.closest('[data-sort]');if(!el)return;CFG.sorts=CFG.sorts||{};CFG.sorts[el.dataset.sort]=el.value;store.set('ml_cfg',CFG);body()});
 document.addEventListener('click',async e=>{
- const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,d=b.dataset,ADM=['saveitem','delitem','rmau','newtbl','edittbl','backtbl','deltbl','addcol','addrow','delcol','delrow','savetbl','cellau','cellrm','cellopen','cellsave','cellclose','addcat','iadd','iedit','ssadd','ssren','ssdel','cedit','csave','ccancel','vadd','vedit','vdel','vsave','vrmimg','vrmau','vcancel'];
+ const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,d=b.dataset,ADM=['saveitem','delitem','rmau','newtbl','edittbl','backtbl','deltbl','addcol','addrow','delcol','delrow','savetbl','cellau','cellrm','cellopen','cellsave','cellclose','addcat','iadd','iedit','ssadd','ssren','ssdel','tup','tdown','tpos','tswap','cedit','csave','ccancel','vadd','vedit','vdel','vsave','vrmimg','vrmau','vcancel'];
  if(ADM.includes(a)&&!isAdmin())return;
  if(a==='go'){S.view=d.v;S.err='';S.f=null;S.fp=null;render()}
  else if(a==='lang'){CFG.lang=d.l;store.set('ml_cfg',CFG);render()}
@@ -976,6 +1016,14 @@ document.addEventListener('click',async e=>{
   else if(a==='nopen'){Object.assign(S,{tab:'lit',lcat:'all',open:d.p,hl:d.p,sub:'',q:'',pf:null});render();setTimeout(()=>{const el=document.getElementById('post_'+d.p);if(el)el.scrollIntoView({block:'center'})},80)}
   else if(a==='uprof'){S.uret={tab:S.tab,sub:S.sub};Object.assign(S,{tab:'menu',sub:'uprof',uid:d.u,q:''});render();scrollTo(0,0)}
   else if(a==='uback'){const r=S.uret||{tab:'lit',sub:''};Object.assign(S,{tab:r.tab,sub:r.sub||''});render()}
+  else if(a==='undo'){stepUndo(false)}
+  else if(a==='redo'){stepUndo(true)}
+  else if(a==='tzi'||a==='tzo'||a==='tzr'){CFG.tz=CFG.tz||{};const z=tzGet(d.id);CFG.tz[d.id]=a==='tzr'?1:Math.max(.5,Math.min(2.5,Math.round((z+(a==='tzi'?.1:-.1))*10)/10));store.set('ml_cfg',CFG);body()}
+  else if(a==='tup'||a==='tdown'){const ids=tabs().map(x=>x.id),i=ids.indexOf(d.id),j=a==='tup'?i-1:i+1;if(i<0||j<0||j>=ids.length)return;[ids[i],ids[j]]=[ids[j],ids[i]];applyTblOrder(ids)}
+  else if(a==='tpos'){const ids=tabs().map(x=>x.id),i=ids.indexOf(d.id),n=parseInt(String(prompt(t('tMoveTo')+ids.length+')',i+1)||'').replace(/[০-৯]/g,c=>'০১২৩৪৫৬৭৮৯'.indexOf(c)),10);if(!n||n<1||n>ids.length||n-1===i)return;ids.splice(i,1);ids.splice(n-1,0,d.id);applyTblOrder(ids)}
+  else if(a==='tswap'){if(!S.swap){S.swap=d.id;body();return}if(S.swap===d.id){S.swap=null;body();return}const ids=tabs().map(x=>x.id),i=ids.indexOf(S.swap),j=ids.indexOf(d.id);S.swap=null;if(i<0||j<0){body();return}[ids[i],ids[j]]=[ids[j],ids[i]];applyTblOrder(ids)}
+  else if(a==='block'){if(!confirm(t('blockAsk')))return;const u=user();u.blocked=[...new Set([...(u.blocked||[]),d.u])];store.set('ml_users',USERS);SYNC.pdirty=true;saveSync();pushProfile();body()}
+  else if(a==='unblock'){const u=user();u.blocked=(u.blocked||[]).filter(x=>x!==d.u);store.set('ml_users',USERS);SYNC.pdirty=true;saveSync();pushProfile();body()}
   else if(a==='cedit'){S.cedit=true;body()}
   else if(a==='ccancel'){S.cedit=false;body()}
   else if(a==='csave'){let w=val('c_wa').replace(/[^\d]/g,''),em=val('c_em').trim();if(w.startsWith('0'))w='880'+w.slice(1);
@@ -1030,7 +1078,7 @@ else if(a==='delitem'){if(confirm(t('sure'))){const cc=d.c||S.col,x=DB[cc].find(
  else if(a==='cellsave'){syncT();S.cell=null;save();body()}
  else if(a==='cellclose'){S.cell=null;body()}
  else if(a==='export'&&isMain()){$('#io').value=JSON.stringify(DB,null,1)}
- else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];o.ssubs=o.ssubs||[];o.vocab=o.vocab||DB.vocab||[];o.notifs=o.notifs||DB.notifs||[];{const up=DB.updates||[];DB=o;DB.updates=up}DB.tables.forEach(normT);save();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
+ else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];o.ssubs=o.ssubs||[];o.vocab=o.vocab||DB.vocab||[];o.notifs=o.notifs||DB.notifs||[];{const up=DB.updates||[];DB=o;DB.updates=up}DB.tables.forEach(normT);save();resetUndo();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
  else if(a==='clear'&&isMain()){if(confirm(t('sureAll'))){DB={ssubs:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:DB.lit.cats,posts:[]},ratings:[],vocab:[],notifs:[],updates:DB.updates||[]};save();S.tid=null;body()}}
  else if(a==='reset'&&isMain()){if(confirm(t('sureReset'))){{const up=DB.updates||[];DB=clone(SEED);DB.updates=up}save();S.tid=null;body()}}
 });
@@ -1040,6 +1088,17 @@ const ppHide=on=>document.body.classList.toggle('hidepp',on);
 document.addEventListener('visibilitychange',()=>ppHide(document.hidden));
 addEventListener('blur',()=>ppHide(true));addEventListener('focus',()=>ppHide(false));
 document.addEventListener('keyup',e=>{if(e.key==='PrintScreen'){ppHide(true);setTimeout(()=>ppHide(document.hidden),2500)}});
+function applyTblOrder(ids){ids.forEach((id,i)=>{const x=DB.tables.find(y=>y.id===id);if(x)x.ord=(i+1)*10});S.swap=null;save();body()}
+(function(){let D=null;
+ document.addEventListener('pointerdown',e=>{const h=e.target.closest&&e.target.closest('[data-drag]');if(!h||!isAdmin())return;const w=h.closest('.tblw');if(!w)return;e.preventDefault();D={w};w.classList.add('dragging');try{h.setPointerCapture(e.pointerId)}catch(x){}});
+ document.addEventListener('pointermove',e=>{if(!D)return;e.preventDefault();const y=e.clientY,list=[...document.querySelectorAll('#body .tblw')].filter(x=>x!==D.w);let before=null;
+  for(const x of list){const r=x.getBoundingClientRect();if(y<r.top+r.height/2){before=x;break}}
+  if(before)before.parentNode.insertBefore(D.w,before);else if(list.length)list[list.length-1].after(D.w);
+  const m=$('#body');if(y<90){scrollBy(0,-14);if(m)m.scrollTop-=14}else if(y>innerHeight-90){scrollBy(0,14);if(m)m.scrollTop+=14}},{passive:false});
+ const end=()=>{if(!D)return;const ids=[...document.querySelectorAll('#body .tblw')].map(x=>x.dataset.id);D.w.classList.remove('dragging');D=null;const cur=tabs().map(x=>x.id);if(ids.join()!==cur.join())applyTblOrder(ids)};
+ document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end);
+ document.addEventListener('keydown',e=>{if(!(e.ctrlKey||e.metaKey)||e.altKey)return;const k=e.key.toLowerCase();if(k!=='z'&&k!=='y')return;const a=document.activeElement;if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))return;if(S.view!=='app')return;e.preventDefault();stepUndo(k==='y'||e.shiftKey)})})();
+try{resetUndo()}catch(e){}
 render();
 if(/[#&](access_token|error_description)=/.test(location.hash))handleAuthRedirect(location.href);
 if(AUTH&&ME)setTimeout(sync,300);
@@ -1075,19 +1134,6 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
  const show=()=>{root.classList.add('ml-scrolling');body.classList.add('ml-scrolling');clearTimeout(idleTimer);idleTimer=setTimeout(()=>{root.classList.remove('ml-scrolling');body.classList.remove('ml-scrolling')},650)};
  document.addEventListener('scroll',show,{capture:true,passive:true});
  document.addEventListener('wheel',show,{passive:true});document.addEventListener('touchmove',show,{passive:true});
- // Admin-only Sangbusa table ordering. Reorders the existing table data and saves through app's own save().
- let drag=null;
- const adminMode=()=>{try{return typeof isAdmin==='function'&&isAdmin()&&typeof S!=='undefined'&&S.tab==='sang'}catch(_){return false}};
- function decorateTables(){
-  const host=document.querySelector('#body');if(!host||!adminMode())return;
-  const els=[...host.querySelectorAll('.tblw')];
-  els.forEach((el,i)=>{el.classList.add('ml-table-movable');el.draggable=true;el.dataset.mlTableIndex=i;el.setAttribute('aria-label','Sangbusa table; drag to reorder');});
- }
- const observer=new MutationObserver(()=>{decorateTables()});observer.observe(document.documentElement,{childList:true,subtree:true});
- document.addEventListener('dragstart',e=>{const el=e.target.closest('.tblw.ml-table-movable');if(!el||!adminMode())return;drag=el;el.classList.add('ml-dragging');try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',el.dataset.mlTableIndex)}catch(_){} });
- document.addEventListener('dragover',e=>{const target=e.target.closest('.tblw.ml-table-movable');if(!drag||!target||drag===target||!adminMode())return;e.preventDefault();const r=target.getBoundingClientRect();target.classList.toggle('ml-drop-before',e.clientY<r.top+r.height/2)});
- document.addEventListener('drop',e=>{const target=e.target.closest('.tblw.ml-table-movable');if(!drag||!target||drag===target||!adminMode())return;e.preventDefault();const list=[...document.querySelectorAll('#body .tblw.ml-table-movable')],from=list.indexOf(drag),to=list.indexOf(target);if(from<0||to<0)return;const before=e.clientY<target.getBoundingClientRect().top+target.getBoundingClientRect().height/2;const newIndex=to+(before?0:1);const arr=DB.tables;const moving=arr.splice(from,1)[0];let dest=newIndex;if(from<newIndex)dest--;arr.splice(Math.max(0,Math.min(arr.length,dest)),0,moving);try{save();body()}catch(err){console.error(err)}});
- document.addEventListener('dragend',()=>{document.querySelectorAll('.ml-dragging,.ml-drop-before').forEach(x=>x.classList.remove('ml-dragging','ml-drop-before'));drag=null});
 })();
 </script>
 
