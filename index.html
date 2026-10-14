@@ -32,7 +32,7 @@ header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-i
 .tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 0;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
 .tab,.chip{flex:0 0 auto;padding:8px 16px;border-radius:999px;border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit;cursor:pointer}
 .tab.on,.seg .on,.chip.on{background:var(--pr);color:var(--pt);border-color:var(--pr)}
-.chip{padding:4px 12px;margin:4px 6px 0 0}
+.chip{padding:4px 12px;margin:4px 6px 0 0}.cw{display:inline-flex;align-items:center;margin:4px 6px 0 0;flex:0 0 auto}.cw .chip{margin:0}.cw .chip.hase{border-top-right-radius:0;border-bottom-right-radius:0;border-right-width:0}.cw .ced{padding:4px 9px;border:1.5px solid var(--bd);border-radius:0 999px 999px 0;background:var(--bg);color:var(--mu);font:inherit;cursor:pointer}.cw .chip.on+.ced{background:var(--pr);color:var(--pt);border-color:var(--pr)}
 main{padding:4px 14px 40px}
 header{transition:transform .25s ease;will-change:transform}
 @media(max-width:999px){header.hh{transform:translateY(calc(-100% - env(safe-area-inset-top,0px) - 6px))}}
@@ -239,12 +239,12 @@ aboutTxt:['Marma Language helps you learn and preserve Marma words, alphabet, sa
 theme:['Theme','থিম'],fsize:['Font size','অক্ষরের আকার'],small:['Small','ছোট'],medium:['Medium','মাঝারি'],large:['Large','বড়'],chooseLang:['Choose app language','অ্যাপের ভাষা বাছুন'],
 rateTitle:['Rate this app','অ্যাপটিকে রেটিং দিন'],avg:['Average','গড়'],votes:['ratings','টি রেটিং'],feedback:['Write your feedback (optional)','মতামত লিখুন (ঐচ্ছিক)'],submit:['Submit','জমা দিন'],thanks:['Thank you for rating!','রেটিং দেওয়ার জন্য ধন্যবাদ!'],allRatings:['All ratings','সব রেটিং'],
 shareTxt:['Learn the Marma language with the Marma Language app!','Marma Language অ্যাপে মারমা ভাষা শিখুন!'],copied:['Link copied ✔','লিংক কপি হয়েছে ✔'],
-all:['All','সব'],vGrid:['Grid','গ্রিড'],vList:['List','লিস্ট'],vComp:['Compact','কম্প্যাক্ট'],sortBy:['Sort','সাজান'],sNew:['Newest first','নতুন আগে'],sOld:['Oldest first','পুরনো আগে'],sMarma:['Marma A–Z','মারমা A–Z'],sBn:['Bangla A–Z','বাংলা A–Z'],sEn:['English A–Z','English A–Z'],tensePh:['Tense (optional)','টেন্স (ঐচ্ছিক)'],subAdd:['+ Subsection','+ সাব সেকশন'],subName:['Subsection name','সাব সেকশনের নাম'],subRen:['Rename','নাম বদলান'],subDel:['Delete subsection','সাব সেকশন মুছুন'],subSel:['Subsection','সাব সেকশন'],subNone:['No subsection','সাব সেকশন নেই'],subSure:['Delete this subsection? Its sentences stay under All.','এই সাব সেকশন মুছবেন? বাক্যগুলো "সব" এ থাকবে।'],pWrite:['Write here...','এখানে লিখুন...'],pImg:['Image (optional)','ছবি (ঐচ্ছিক)'],pAud:['Audio (optional)','অডিও (ঐচ্ছিক)'],pImgRm:['Remove image','ছবি সরান'],pAudRm:['Remove audio','অডিও সরান'],needText:['Write something first.','আগে কিছু লিখুন।'],write:['+ Write','+ লিখুন'],editPost:['Edit post','পোস্ট এডিট'],newPost:['New post','নতুন পোস্ট'],category:['Category','বিভাগ'],ptitle:['Title','শিরোনাম'],plang:['Written in','যে ভাষায় লেখা'],pbody:['Write here…','এখানে লিখুন…'],publish:['Publish','প্রকাশ করুন'],update:['Update','আপডেট'],cancel:['Cancel','বাতিল'],
+all:['All','সব'],vGrid:['Grid','গ্রিড'],vList:['List','লিস্ট'],vComp:['Compact','কম্প্যাক্ট'],sortBy:['Sort','সাজান'],sNew:['Newest first','নতুন আগে'],sOld:['Oldest first','পুরনো আগে'],sMarma:['Marma A–Z','মারমা A–Z'],sBn:['Bangla A–Z','বাংলা A–Z'],sEn:['English A–Z','English A–Z'],tensePh:['Tense (optional)','টেন্স (ঐচ্ছিক)'],subRen:['Rename','নাম বদলান'],catAdd:['+ Category','+ ক্যাটেগরি'],catName:['Category name','ক্যাটেগরির নাম'],catDel:['Delete category','ক্যাটেগরি মুছুন'],catNone:['No category','ক্যাটেগরি নেই'],catSure:['Delete this category? Its items stay under All.','এই ক্যাটেগরি মুছবেন? আইটেমগুলো "সব" এ থাকবে।'],catDup:['This category already exists.','এই ক্যাটেগরি আগে থেকেই আছে।'],sAz:['Title A–Z','শিরোনাম A–Z'],pWrite:['Write here...','এখানে লিখুন...'],pImg:['Image (optional)','ছবি (ঐচ্ছিক)'],pAud:['Audio (optional)','অডিও (ঐচ্ছিক)'],pImgRm:['Remove image','ছবি সরান'],pAudRm:['Remove audio','অডিও সরান'],needText:['Write something first.','আগে কিছু লিখুন।'],write:['+ Write','+ লিখুন'],editPost:['Edit post','পোস্ট এডিট'],newPost:['New post','নতুন পোস্ট'],category:['Category','বিভাগ'],ptitle:['Title','শিরোনাম'],plang:['Written in','যে ভাষায় লেখা'],pbody:['Write here…','এখানে লিখুন…'],publish:['Publish','প্রকাশ করুন'],update:['Update','আপডেট'],cancel:['Cancel','বাতিল'],
 edit:['Edit','এডিট'],del:['Delete','মুছুন'],sure:['Delete this?','মুছে ফেলবেন?'],noPosts:['No posts yet. Be the first to write!','এখনো কোনো লেখা নেই। প্রথম লেখাটি আপনার হোক!'],fillTB:['Please enter a title and some text.','শিরোনাম ও লেখা দিন।'],
 cmts:['Comments','মন্তব্য'],addCm:['Write a comment…','মন্তব্য লিখুন…'],send:['Send','পাঠান'],by:['by','লেখক'],
 L_marma:['Marma','মারমা'],L_bn:['Bangla','বাংলা'],L_en:['English','ইংরেজি'],
 aw:['Words','শব্দ'],as:['Sentences','বাক্য'],at:['Sangbusa Tables','সংবুসা টেবিল'],ac:['Categories','বিভাগ'],aa:['Admins','অ্যাডমিন'],ad:['Data','ডাটা'],
-addNew:['Add new','নতুন যোগ'],marmaPh:['Marma text','Marma লেখা'],pronPh:['Pronunciation in Bangla','বাংলায় উচ্চারণ'],bnPh:['Bangla','বাংলা'],enPh:['English','English'],secPh:['Section (e.g. Relative, Verb)','সেকশন (যেমন: আত্মীয়, ক্রিয়া)'],
+addNew:['Add new','নতুন যোগ'],marmaPh:['Marma text','Marma লেখা'],pronPh:['Pronunciation in Bangla','বাংলায় উচ্চারণ'],bnPh:['Bangla','বাংলা'],enPh:['English','English'],secPh:['Category (e.g. Relative, Verb)','ক্যাটেগরি (যেমন: আত্মীয়, ক্রিয়া)'],
 audioHas:['Audio ✔ (new file replaces it)','অডিও আছে ✔ (নতুন দিলে বদলাবে)'],audioLbl:['Audio','অডিও'],rmAudio:['Remove audio','অডিও মুছুন'],addBtn:['Add','যোগ করুন'],
 needOne:['Enter Marma text or pronunciation.','Marma বা উচ্চারণ অন্তত একটা দিন।'],audioFail:['Could not save audio','অডিও সেভ হয়নি'],
 newTbl:['+ New table','+ নতুন টেবিল'],caption:['Table caption','টেবিলের ক্যাপশন'],colPh:['Column','কলাম'],allTbl:['← All tables (saved)','← সব টেবিল (সেভ হবে)'],addCol:['+ Column','+ কলাম'],addRow:['+ Row','+ সারি'],saved:['Saved ✔','সেভ হয়েছে ✔'],oneCol:['At least one column is required','কমপক্ষে ১টি কলাম থাকতে হবে'],
@@ -322,7 +322,7 @@ const safeLink=l=>/^https?:\/\//i.test(l||'');
 const vcmp=(a,b)=>{const x=String(a).split('.').map(n=>parseInt(n)||0),y=String(b).split('.').map(n=>parseInt(n)||0);for(let i=0;i<Math.max(x.length,y.length);i++){const d=(x[i]||0)-(y[i]||0);if(d)return d}return 0};
 let DB=store.get('ml_db',null)||clone(SEED);
 if(!DB.tables){DB.tables=clone(SEED.tables);if(DB.phrases&&DB.phrases.length)DB.tables.unshift({id:uid(),cap:'Sangbusa',cols:['Marma','উচ্চারণ','বাংলা','English'],rows:DB.phrases.map(p=>({id:uid(),c:[{t:p.marma},{t:p.pron},{t:p.bn},{t:p.en}]}))});delete DB.phrases}DB.tables.forEach(normT);
-if(!DB.ssubs)DB.ssubs=[];if(!DB.lit)DB.lit=clone(SEED.lit);if(!DB.ratings)DB.ratings=[];if(!DB.dict)DB.dict=[];if(!DB.updates)DB.updates=[];if(!DB.vocab)DB.vocab=[];if(!DB.notifs)DB.notifs=[];
+if(!DB.ssubs)DB.ssubs=[];if(!DB.wcats)DB.wcats=[];if(!DB.vcats)DB.vcats=[];if(!DB.lit)DB.lit=clone(SEED.lit);if(!DB.ratings)DB.ratings=[];if(!DB.dict)DB.dict=[];if(!DB.updates)DB.updates=[];if(!DB.vocab)DB.vocab=[];if(!DB.notifs)DB.notifs=[];
 const updSorted=()=>[...(DB.updates||[])].sort((a,b)=>vcmp(b.ver,a.ver));
 const hasNew=()=>{const u=updSorted()[0];return !!u&&vcmp(u.ver,APP_VER)>0};
 let UNDO=[],REDO=[],LASTF=null;
@@ -395,12 +395,12 @@ function nPage(){const L=notifList(),seen=nSeen();S.nun=S.nun||new Set();
  return `<h2>${t('notif')}</h2>`+(L.map(n=>`<div class="card nt ${S.nun.has(n.id)?'un':''}" ${n.post?`data-act="nopen" data-p="${esc(n.post)}"`:''}><div>${nMsg(n)}</div>${n.pt?`<div class="en">“${esc(n.pt)}”</div>`:''}${n.text?`<div>${esc(n.text)}</div>`:''}<div class="en" style="font-size:.8rem">${fmt(n.ts)}</div></div>`).join('')||`<p class="note">${t('notifNone')}</p>`)}
 // ---- VisualVocab ----
 function vform(){const e=S.vf!=='new'?DB.vocab.find(x=>x.id===S.vf):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="v_${k}" placeholder="${t(p)}" value="${v(k)}">`;
- return `<div class="card ${e?'float-editor':''}" ${e?'id="vocabFloat"':''}>${e?`<div class="float-handle" id="vocabFloatHandle"><span>⠿ ${t('edit')}</span><button type="button" class="x" style="color:inherit;font-size:1.1rem;line-height:1" data-act="vcancel" aria-label="${t('cancel')}" title="${t('cancel')}">✕</button></div>`:`<b>${t('addNew')}</b>`}${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}<div class="en">🖼 ${t('vImg')}</div><input class="in" id="v_img" type="file" accept="image/*"><div class="verr" id="v_img_err"></div>${e&&e.img?`<button class="btn sm dng" data-act="vrmimg">${t('pImgRm')}</button>`:''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="v_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="vrmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="vsave">${e?t('update'):t('addBtn')}</button><button class="btn ghost" data-act="vcancel">${t('cancel')}</button></div>`}
+ return `<div class="card ${e?'float-editor':''}" ${e?'id="vocabFloat"':''}>${e?`<div class="float-handle" id="vocabFloatHandle"><span>⠿ ${t('edit')}</span><button type="button" class="x" style="color:inherit;font-size:1.1rem;line-height:1" data-act="vcancel" aria-label="${t('cancel')}" title="${t('cancel')}">✕</button></div>`:`<b>${t('addNew')}</b>`}${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}<input class="in" id="v_cat" list="dl_vcat" placeholder="${t('catName')}" value="${e?v('cat'):(catCur('vocab')!=='all'?esc(catCur('vocab')):'')}"><datalist id="dl_vcat">${catList('vocab').map(x=>`<option value="${esc(x.name)}">`).join('')}</datalist><div class="en">🖼 ${t('vImg')}</div><input class="in" id="v_img" type="file" accept="image/*"><div class="verr" id="v_img_err"></div>${e&&e.img?`<button class="btn sm dng" data-act="vrmimg">${t('pImgRm')}</button>`:''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="v_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="vrmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="vsave">${e?t('update'):t('addBtn')}</button><button class="btn ghost" data-act="vcancel">${t('cancel')}</button></div>`}
 const gimg=it=>it&&it.img?`<img class="gimg" data-ik="${esc(it.img)}" alt="">`:'';
 const vcard=it=>{const k='vocab:'+it.id,f=favs().includes(k),adm=isAdmin()?`<div><button class="btn sm" data-act="vedit" data-id="${it.id}">${t('edit')}</button><button class="btn sm dng" data-act="vdel" data-id="${it.id}">${t('del')}</button></div>`:'';
  return `<div class="card vc"><div style="display:flex;gap:12px;align-items:flex-start">${it.img?`<img class="vimg" data-ik="${esc(it.img)}" alt="">`:''}<div style="flex:1;min-width:0"><div class="top"><div><div class="mm">${esc(it.marma)}</div>${it.pron?`<div class="pr">${esc(it.pron)}</div>`:''}</div><div class="acts">${au(it.k)}<button class="star" data-act="fav" data-k="${esc(k)}" aria-label="favourite">${f?'★':'☆'}</button></div></div>${it.bn?`<div class="bn">${esc(it.bn)}</div>`:''}${it.en?`<div class="en">${esc(it.en)}</div>`:''}</div></div>${adm}</div>`};
-function vocabPage(){const adm=isAdmin(),L=sortItems(DB.vocab,getSort('vocab'));
- return `<h2>${t('vocab')}</h2>${bar('vocab',true)}`+(adm?`<button class="btn" data-act="vadd">＋ ${t('addNew')}</button>`:'')+(adm&&S.vf?vform():'')+(L.length?L.map(vcard).join(''):`<p class="note">${t('empty')}</p>`)}
+function vocabPage(){const adm=isAdmin(),L=sortItems(catFilter('vocab',DB.vocab),getSort('vocab'));
+ return `<h2>${t('vocab')}</h2>${bar('vocab',true)}${catBar('vocab')}`+(adm?`<button class="btn" data-act="vadd">＋ ${t('addNew')}</button>`:'')+(adm&&S.vf?vform():'')+(L.length?L.map(vcard).join(''):`<p class="note">${t('empty')}</p>`)}
 const TABS=['dict','word','sang','sent','vocab','lit','game'];
 const favKey=()=>'ml_fav_'+ME,favs=()=>store.get(favKey(),[]);
 const curT=()=>DB.tables.find(x=>x.id===S.tid);
@@ -442,10 +442,10 @@ function litPage(){
  if(S.pf){const e=S.pf!=='new'?DB.lit.posts.find(x=>x.id===S.pf):null,lock=!e&&S.pcat?DB.lit.cats.find(x=>x.id===S.pcat):null,notify=!!e&&e.by!==ME&&isAdmin();
   const catSel=lock?`<div class="note">${t('section')}: <b>${esc(catName(lock))}</b></div><input type="hidden" id="l_cat" value="${esc(lock.id)}">`:`<select class="in" id="l_cat">${DB.lit.cats.map(c=>`<option value="${c.id}" ${(e?e.cat:'')===c.id?'selected':''}>${esc(catName(c))}</option>`).join('')}</select>`;
   return `<button class="back" data-act="cancelpost">← ${t('back')}</button><h2>${e?t('editPost'):t('createPost')}</h2><div class="card">${catSel}<textarea class="in" id="l_body" rows="12" placeholder="${t('pWrite')}">${esc(e?((e.title?e.title+'\n\n':'')+e.body):'')}</textarea><div class="en">🖼 ${t('pImg')}</div><input class="in" id="l_img" type="file" accept="image/*"><div class="verr" id="l_img_err"></div>${e&&e.img?`<button class="btn sm dng" data-act="rmpimg">${t('pImgRm')}</button>`:''}<div class="en">🎙 ${t('pAud')}</div><input class="in" id="l_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmpau">${t('pAudRm')}</button>`:''}${notify?`<label style="display:flex;gap:8px;align-items:center;margin:10px 0 4px"><input type="checkbox" id="l_ntf" checked> ${t('notifyAuthor')}</label><input class="in" id="l_why" placeholder="${t('whyPh')}">`:''}<button class="btn" data-act="savepost">${e?t('update'):t('publish')}</button><button class="btn ghost" data-act="cancelpost">${t('cancel')}</button></div>`}
- const pn=pins(),ps=DB.lit.posts.filter(p=>S.lcat==='all'||p.cat===S.lcat).sort((a,b)=>(pn.includes(b.id)?1:0)-(pn.includes(a.id)?1:0));
- return `<h2>${t('lit')}</h2>${bar('lit',false)}<div><button class="chip ${S.lcat==='all'?'on':''}" data-act="lcat" data-c="all">${t('all')}</button>${DB.lit.cats.map(c=>`<button class="chip ${S.lcat===c.id?'on':''}" data-act="lcat" data-c="${c.id}">${esc(catName(c))}</button>`).join('')}</div>${isAdmin()?`<details><summary>⚙ ${t('ac')}</summary><div class="card" style="margin:0 0 10px">${DB.lit.cats.map(k=>`<div class="top" style="margin-top:8px"><div><b>${esc(k.en||'')}</b> · ${esc(k.bn||'')}</div>${isMain()?`<button class="btn sm dng" data-act="delcat" data-id="${k.id}">${t('del')}</button>`:''}</div>`).join('')}</div><div class="card"><input class="in" id="k_en" placeholder="${t('catEn')}"><input class="in" id="k_bn" placeholder="${t('catBn')}"><button class="btn" data-act="addcat">${t('addBtn')}</button></div></details>`:''}<button class="btn" data-act="newpost">＋ ${t('createPost')}</button>${ps.map(post).join('')||`<p class="note">${t('noPosts')}</p>`}`}
+ const pn=pins(),lm=getSort('lit'),pt=p=>(p.title||p.body||'').trim();let ps=DB.lit.posts.filter(p=>S.lcat==='all'||p.cat===S.lcat);if(lm==='old')ps=[...ps].reverse();else if(lm==='az')ps=[...ps].sort((a,b)=>pt(a).localeCompare(pt(b),'bn'));ps=ps.sort((a,b)=>(pn.includes(b.id)?1:0)-(pn.includes(a.id)?1:0));
+ return `<h2>${t('lit')}</h2>${bar('lit',true)}<div><button class="chip ${S.lcat==='all'?'on':''}" data-act="lcat" data-c="all">${t('all')}</button>${DB.lit.cats.map(c=>chipW(S.lcat===c.id,'lcat',`data-c="${c.id}"`,esc(catName(c)),'lit',c.id,isAdmin())).join('')}</div>${isAdmin()?(()=>{const eo=S.cedt&&S.cedt.k==='lit'?DB.lit.cats.find(x=>x.id===S.cedt.id):null;return (eo?`<div class="card"><b>✎ ${t('edit')}</b><input class="in" id="ke_en" placeholder="${t('catEn')}" value="${esc(eo.en||'')}"><input class="in" id="ke_bn" placeholder="${t('catBn')}" value="${esc(eo.bn||'')}"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" data-act="litsave" data-c="${eo.id}">${t('update')}</button>${isMain()?`<button class="btn sm dng" data-act="delcat" data-id="${eo.id}">${t('catDel')}</button>`:''}<button class="btn sm ghost" data-act="catcancel">${t('cancel')}</button></div></div>`:'')+`<div class="card"><input class="in" id="k_en" placeholder="${t('catEn')}"><input class="in" id="k_bn" placeholder="${t('catBn')}"><button class="btn" data-act="addcat">${t('catAdd')}</button></div>`})():''}<button class="btn" data-act="newpost">＋ ${t('createPost')}</button>${ps.map(post).join('')||`<p class="note">${t('noPosts')}</p>`}`}
 let NAVK=null,NAVST=[],NAVPOP=false,NAVSKIP=0;
-const NAVF=['view','tab','sub','pf','pcat','tid','edit','col','inl','open','lcat','ssub','vf','uid','uret','cedit','dir'];
+const NAVF=['view','tab','sub','pf','pcat','tid','edit','col','inl','open','lcat','ssub','wcat','vcat','vf','uid','uret','cedit','dir'];
 const navSnap=()=>{const o={};NAVF.forEach(k=>o[k]=S[k]===undefined?null:S[k]);o.g=!!S.game;return o};
 const navKey=o=>[o.view==='app'?'app':o.view,o.tab,o.sub,o.pf,o.tid,o.edit,o.vf,o.uid,o.lcat,o.cedit,o.g?1:0].join('|');
 const navRoot=o=>o.view==='app'&&!o.sub&&!o.pf&&!o.tid&&!o.edit&&!o.vf&&!o.g&&(!o.lcat||o.lcat==='all');
@@ -501,16 +501,37 @@ const getView=tab=>(CFG.views&&CFG.views[tab])||VDEF[tab]||'grid';
 const getSort=tab=>(CFG.sorts&&CFG.sorts[tab])||'new';
 function sortItems(L,mode,key=x=>x){if(mode==='new')return L;if(mode==='old')return [...L].reverse();const f={marma:['marma','my'],bn:['bn','bn'],en:['en','en']}[mode];if(!f)return L;
  return [...L].sort((a,b)=>{const x=(key(a)[f[0]]||'').trim(),y=(key(b)[f[0]]||'').trim();if(!x&&y)return 1;if(x&&!y)return -1;return x.localeCompare(y,f[1])})}
+const SORTOPT={lit:[['new','sNew'],['old','sOld'],['az','sAz']]};
 function bar(tab,sortable){const v=getView(tab),sm=getSort(tab);
- return `<div class="vbar"><div class="vseg" role="group" aria-label="${t('view')}">${[['grid','▦','vGrid'],['list','☰','vList'],['compact','≡','vComp']].map(x=>`<button class="${v===x[0]?'on':''}" data-act="view" data-v="${x[0]}" title="${t(x[2])}">${x[1]} <span>${t(x[2])}</span></button>`).join('')}</div>${sortable?`<label class="vsort">${t('sortBy')}: <select data-sort="${tab}">${[['new','sNew'],['old','sOld'],['marma','sMarma'],['bn','sBn'],['en','sEn']].map(x=>`<option value="${x[0]}" ${sm===x[0]?'selected':''}>${t(x[1])}</option>`).join('')}</select></label>`:''}</div>`}
+ return `<div class="vbar"><div class="vseg" role="group" aria-label="${t('view')}">${[['grid','▦','vGrid'],['list','☰','vList'],['compact','≡','vComp']].map(x=>`<button class="${v===x[0]?'on':''}" data-act="view" data-v="${x[0]}" title="${t(x[2])}">${x[1]} <span>${t(x[2])}</span></button>`).join('')}</div>${sortable?`<label class="vsort">${t('sortBy')}: <select data-sort="${tab}">${(SORTOPT[tab]||[['new','sNew'],['old','sOld'],['marma','sMarma'],['bn','sBn'],['en','sEn']]).map(x=>`<option value="${x[0]}" ${sm===x[0]?'selected':''}>${t(x[1])}</option>`).join('')}</select></label>`:''}</div>`}
 const dlist=rev=>{const L=sortItems([...DB.dict.map(i=>['dict',i]),...DB.words.map(i=>['words',i])],getSort('dict'),p=>p[1]);return L.length?L.map(p=>card(p[0],p[1],rev)).join(''):`<p class="note">${t('empty')}</p>`};
 const list=(c,rev)=>DB[c].length?DB[c].map(i=>card(c,i,rev)).join(''):`<p class="note">${t('empty')}</p>`;
+// ---- Categories (Word / Sentence / VisualVocab share one system) ----
+const CATS={
+ sent:{items:()=>DB.sentences,store:'ssubs',f:'sub',byId:true,sel:'ssub'},
+ word:{items:()=>DB.words,store:'wcats',f:'cat',byId:false,sel:'wcat',def:'Others'},
+ vocab:{items:()=>DB.vocab,store:'vcats',f:'cat',byId:false,sel:'vcat',def:''}};
+const catOf=(k,i)=>i[CATS[k].f]||CATS[k].def||'';
+function catList(k){const c=CATS[k],st=DB[c.store]||[];
+ if(c.byId)return st.map(x=>({id:x.id,name:x.name}));
+ const names=st.map(x=>x.name);c.items().forEach(i=>{const n=catOf(k,i);if(n&&!names.includes(n))names.push(n)});
+ return names.map(n=>({id:n,name:n}))}
+const catCur=k=>{const v=S[CATS[k].sel];return v&&catList(k).some(x=>x.id===v)?v:'all'};
+const catFilter=(k,L)=>{const cur=catCur(k);return cur==='all'?L:L.filter(i=>(CATS[k].byId?(i[CATS[k].f]||''):catOf(k,i))===cur)};
+const chipW=(on,act,extra,label,k,id,adm)=>`<span class="cw"><button class="chip ${on?'on':''} ${adm?'hase':''}" data-act="${act}" ${extra}>${label}</button>${adm?`<button class="ced" data-act="${k==='lit'?'litedit':'catedit'}" data-k="${k}" data-c="${esc(id)}" title="${t('edit')}" aria-label="${t('edit')}">✎</button>`:''}</span>`;
+function catBar(k){const L=catList(k),cur=catCur(k),adm=isAdmin(),ed=S.cedt&&S.cedt.k===k?S.cedt.id:null,eo=ed!=null?L.find(x=>x.id===ed):null;
+ const chips=`<div class="tabs" style="padding:4px 0"><button class="chip ${cur==='all'?'on':''}" data-act="cat" data-k="${k}" data-c="all">${t('all')}</button>${L.map(x=>chipW(cur===x.id,'cat',`data-k="${k}" data-c="${esc(x.id)}"`,esc(x.name),k,x.id,adm)).join('')}</div>`;
+ if(!adm)return chips;
+ const editor=eo?`<div class="card" style="grid-column:1/-1"><b>✎ ${t('edit')}</b><input class="in" id="ct_edit" placeholder="${t('catName')}" value="${esc(eo.name)}"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" data-act="catsave" data-k="${k}" data-c="${esc(eo.id)}">${t('update')}</button><button class="btn sm dng" data-act="catdel" data-k="${k}" data-c="${esc(eo.id)}">${t('catDel')}</button><button class="btn sm ghost" data-act="catcancel">${t('cancel')}</button></div></div>`:'';
+ const add=`<div class="card" style="grid-column:1/-1"><div style="display:flex;gap:8px;flex-wrap:wrap"><input class="in" id="ct_name" style="flex:1;min-width:160px;margin:0" placeholder="${t('catName')}"><button class="btn sm" data-act="catadd" data-k="${k}">${t('catAdd')}</button></div></div>`;
+ return chips+editor+add}
+const addBox=c=>isAdmin()?`<button class="btn" data-act="iadd" data-c="${c}">＋ ${t('addNew')}</button>${S.inl&&S.edit&&S.col===c?itemForm(c):''}`:'';
 function sentPage(){
- const subs=DB.ssubs||[],cur=subs.find(x=>x.id===S.ssub)?S.ssub:'all',adm=isAdmin();
- const chips=`<div class="tabs" style="padding:4px 0"><button class="chip ${cur==='all'?'on':''}" data-act="ssub" data-c="all">${t('all')}</button>${subs.map(x=>`<button class="chip ${cur===x.id?'on':''}" data-act="ssub" data-c="${x.id}">${esc(x.name)}</button>`).join('')}</div>`;
- const tools=adm?`<div class="card" style="grid-column:1/-1"><div style="display:flex;gap:8px;flex-wrap:wrap"><input class="in" id="ss_name" style="flex:1;min-width:160px;margin:0" placeholder="${t('subName')}" value="${cur!=='all'?esc(subs.find(x=>x.id===cur).name):''}"><button class="btn sm" data-act="ssadd">${t('subAdd')}</button>${cur!=='all'?`<button class="btn sm" data-act="ssren">${t('subRen')}</button><button class="btn sm dng" data-act="ssdel">${t('subDel')}</button>`:''}</div></div>`:'';
- const L=sortItems(DB.sentences.filter(i=>cur==='all'||i.sub===cur),getSort('sent'));
- return `<h2>${t('sent')}</h2>${bar('sent',true)}${chips}${tools}`+(L.length?L.map(i=>card('sentences',i,false)).join(''):`<p class="note">${t('empty')}</p>`)}
+ const L=sortItems(catFilter('sent',DB.sentences),getSort('sent'));
+ return `<h2>${t('sent')}</h2>${bar('sent',true)}${catBar('sent')}${addBox('sentences')}`+(L.length?L.map(i=>card('sentences',i,false)).join(''):`<p class="note">${t('empty')}</p>`)}
+function wordPage(){
+ const L=sortItems(catFilter('word',DB.words),getSort('word'));
+ return `<h2>${t('word')}</h2>${bar('word',true)}${catBar('word')}${addBox('words')}`+(L.length?`<div class="wgrid">${L.map(i=>card('words',i,false)).join('')}</div>`:`<p class="note">${t('empty')}</p>`)}
 // Floating editors: fixed to the viewport while scrolling, draggable and resizable from all 4 sides/corners.
 (function(){
  let action=null;
@@ -622,8 +643,7 @@ function body0(){
   const ls=DB.lit.posts.filter(p=>((p.title||'')+' '+p.body).toLowerCase().includes(q)),vs=(DB.vocab||[]).filter(i=>match(i,q));
   h=`<h3>${t('results')}</h3>`+parts.map(p=>`<h3>${t(p[0]==='sentences'?'sent':p[0]==='dict'?'dict':'word')}</h3>`+p[1].map(i=>card(p[0],i,false)).join('')).join('')+(ts.length?`<h3>${t('sang')}</h3>`+ts.map(p=>tbl(p[0],p[1])).join(''):'')+(vs.length?`<h3>${t('vocab')}</h3>`+vs.map(vcard).join(''):'')+(ls.length?`<h3>${t('lit')}</h3>`+ls.map(post).join(''):'')+(parts.length||ts.length||ls.length||vs.length?'':`<p class="note">${t('none')}</p>`)}
  else if(S.tab==='dict')h=bar('dict',true)+`<div class="seg"><button class="${S.dir==='m2b'?'on':''}" data-act="dir" data-d="m2b">${t('m2b')}</button><button class="${S.dir==='b2m'?'on':''}" data-act="dir" data-d="b2m">${t('b2m')}</button></div>`+dlist(S.dir==='b2m');
- else if(S.tab==='word'){const g={};DB.words.forEach(w=>(g[w.cat||'Others']=g[w.cat||'Others']||[]).push(w));
-  h=bar('word',false)+(Object.keys(g).length?Object.keys(g).map(c=>`<details open><summary>${esc(c)} (${g[c].length})</summary><div class="wgrid">${g[c].map(i=>card('words',i,false)).join('')}</div></details>`).join(''):list('words'))}
+ else if(S.tab==='word')h=wordPage();
   else if(S.tab==='sang'){const A=isAdmin(),x=A&&S.tid&&curT();
    h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(x?tblEditor(x):'')+(tabs().map(x=>tblBlock(x,A)).join('')||`<p class="note">${t('empty')}</p>`)}
  else if(S.tab==='game')h=gamePage();
@@ -634,7 +654,7 @@ function body0(){
   else h=menu();
 const IC={dict:'dict',word:'words',sent:'sentences'}[S.tab];
 
- if(!q&&IC&&isAdmin()){const m=S.tab==='dict'?['dict','words']:[IC];h=(S.tab==='dict'?h.replace(/<div class="seg">/,`<button class="btn" data-act="iadd" data-c="${IC}">＋ ${t('addNew')}</button>${S.inl&&S.edit&&m.includes(S.col)?itemForm(S.col):''}<div class="seg">`):`<h2>${t(S.tab==='word'?'word':'sent')}</h2>${bar(S.tab,false)}<button class="btn" data-act="iadd" data-c="${IC}">＋ ${t('addNew')}</button>${S.inl&&S.edit&&m.includes(S.col)?itemForm(S.col):''}`+ (S.tab==='word'?(()=>{const g={};DB.words.forEach(w=>(g[w.cat||'Others']=g[w.cat||'Others']||[]).push(w));return Object.keys(g).length?Object.keys(g).map(c=>`<details open><summary>${esc(c)} (${g[c].length})</summary><div class="wgrid">${g[c].map(i=>card('words',i,false)).join('')}</div></details>`).join(''):list('words')})():list('sentences')))}
+ if(!q&&S.tab==='dict'&&isAdmin()){const m=['dict','words'];h=h.replace(/<div class="seg">/,`<button class="btn" data-act="iadd" data-c="${IC}">＋ ${t('addNew')}</button>${S.inl&&S.edit&&m.includes(S.col)?itemForm(S.col):''}<div class="seg">`)}
  if(hasNew()&&!S.updHide){const u=updSorted()[0];h=`<div class="card" style="border-color:var(--ac)"><div class="top"><div><b>🔔 ${t('newVer')}: ${esc(u.ver)}</b>${u.note?`<div class="en">${esc(u.note)}</div>`:''}</div><button class="x" data-act="updhide" aria-label="close">✕</button></div>${safeLink(u.link)?`<a class="btn sm" href="${esc(u.link)}" target="_blank" rel="noopener">⬇ ${t('download')}</a>`:''}</div>`+h}
  {const v=q?'grid':getView(S.tab);B.className=(v==='list'?'narrow':'grid')+(v==='compact'?' v-compact':'')}B.innerHTML=h;hydrate();try{updateBadge()}catch(e){}}
 function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button>`;
@@ -676,7 +696,7 @@ function tblEditor(x){
   const form=sc?`<div class="card float-editor" id="cellFloat"><div class="float-handle" id="cellFloatHandle"><span>⠿ ${t('edit')} (${S.cell.r+1}, ${S.cell.c+1})</span><button type="button" class="x" style="color:inherit" data-act="cellclose" aria-label="close editor">✕</button></div><input class="in" id="cf_m" placeholder="${t('marmaPh')}" value="${fv('m')}"><input class="in" id="cf_p" placeholder="${t('pronPh')}" value="${fv('p')}"><input class="in" id="cf_b" placeholder="${t('bnPh')}" value="${fv('b')}"><input class="in" id="cf_e" placeholder="${t('enPh')}" value="${fv('e')}"><div class="en">🎙 ${sc.k?t('audioHas'):t('audioLbl')}</div><button class="play" data-act="cellau" data-r="${S.cell.r}" data-c="${S.cell.c}" title="audio">${sc.k?'🔊':'🎙'}</button>${sc.k?au(sc.k)+`<button class="x" data-act="cellrm" data-r="${S.cell.r}" data-c="${S.cell.c}">⊘</button>`:''}<div><button class="btn sm" data-act="cellsave">💾 ${t('saved').replace(' ✔','')}</button><button class="btn sm" data-act="cellclose">✕</button></div></div>`:'';
   return `<button class="back" data-act="backtbl">${t('allTbl')}</button><input class="in" id="t_cap" placeholder="${t('caption')}" value="${esc(x.cap)}"><div class="note">${t('tblNote')}</div>${form}<div class="card tw">${tzBar(x.id)}<table style="zoom:${tzGet(x.id)}"><thead><tr>${x.cols.map((c,i)=>`<th style="text-align:center;padding:2px;background:none;border:0"><button class="x" data-act="delcol" data-i="${i}" aria-label="delete column">✕</button></th>`).join('')}<th></th></tr></thead><tbody>${x.rows.map((r,ri)=>`<tr>${r.c.map((y,ci)=>`<td class="bx ed${S.cell&&S.cell.r===ri&&S.cell.c===ci?' sel':''}" data-act="cellopen" data-r="${ri}" data-c="${ci}">${cellH(y)||'<span class="en">＋</span>'}</td>`).join('')}<td><button class="x" data-act="delrow" data-r="${ri}" aria-label="delete row">✕</button></td></tr>`).join('')}</tbody></table></div><button class="btn sm" data-act="addcol">${t('addCol')}</button><button class="btn sm" data-act="addrow">${t('addRow')}</button><button class="btn sm" data-act="savetbl">💾 ${t('saved').replace(' ✔','')}</button>`}
 
-function itemForm(c){const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;return `<div class="card ${e?'float-editor':''}" ${e?'id="itemFloat"':''}>${e?`<div class="float-handle" id="itemFloatHandle"><span>⠿ ${t('edit')}</span><button type="button" class="x" style="color:inherit;font-size:1.1rem;line-height:1" data-act="canceledit" aria-label="${t('cancel')}" title="${t('cancel')}">✕</button></div>`:`<b>${t('addNew')}</b>`}${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${c==='words'?f('cat','secPh'):''}${c==='sentences'?`<select class="in" id="f_tense"><option value="">${t('tensePh')}</option>${TENSES.map(x=>`<option value="${x[0]}" ${e&&e.tense===x[0]?'selected':''}>${CFG.lang==='bn'?x[2]:x[1]}</option>`).join('')}</select><select class="in" id="f_sub"><option value="">${t('subNone')}</option>${(DB.ssubs||[]).map(x=>`<option value="${x.id}" ${(e?e.sub:S.ssub)===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`:''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`}
+function itemForm(c){const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;return `<div class="card ${e?'float-editor':''}" ${e?'id="itemFloat"':''}>${e?`<div class="float-handle" id="itemFloatHandle"><span>⠿ ${t('edit')}</span><button type="button" class="x" style="color:inherit;font-size:1.1rem;line-height:1" data-act="canceledit" aria-label="${t('cancel')}" title="${t('cancel')}">✕</button></div>`:`<b>${t('addNew')}</b>`}${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${c==='words'?`<input class="in" id="f_cat" list="dl_wcat" placeholder="${t('secPh')}" value="${e?esc(e.cat||''):(catCur('word')!=='all'?esc(catCur('word')):'')}"><datalist id="dl_wcat">${catList('word').map(x=>`<option value="${esc(x.name)}">`).join('')}</datalist>`:''}${c==='sentences'?`<select class="in" id="f_tense"><option value="">${t('tensePh')}</option>${TENSES.map(x=>`<option value="${x[0]}" ${e&&e.tense===x[0]?'selected':''}>${CFG.lang==='bn'?x[2]:x[1]}</option>`).join('')}</select><select class="in" id="f_sub"><option value="">${t('catNone')}</option>${(DB.ssubs||[]).map(x=>`<option value="${x.id}" ${(e?e.sub:S.ssub)===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`:''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`}
 function admin(){const c=S.ac==='updates'?'updates':'admins',M=isMain();
  const tabs=[['admins','aa'],['updates','upd']];
  const nav=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button><h2>${t('admin')}</h2><div class="seg">${tabs.map(x=>`<button class="${c===x[0]?'on':''}" data-act="col" data-c="${x[0]}">${t(x[1])}</button>`).join('')}</div>`;
@@ -691,7 +711,7 @@ const PHONE_DOMAIN='thuinumong.github.io'; // phone-number accounts use <phone>@
 let AUTH=store.get('ml_auth',null);
 let SYNC=store.get('ml_sync',null)||{init:false,last:null,snap:{},uid:null,pdirty:false,aq:[]};
 const saveSync=()=>store.set('ml_sync',SYNC),saveAuth=()=>store.set('ml_auth',AUTH);
-const emptyDB=()=>({ssubs:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:[],posts:[]},ratings:[],vocab:[],notifs:[]});
+const emptyDB=()=>({ssubs:[],wcats:[],vcats:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:[],posts:[]},ratings:[],vocab:[],notifs:[]});
 const hsh=s=>{let x=5381;for(let i=0;i<s.length;i++)x=((x<<5)+x+s.charCodeAt(i))|0;return x+':'+s.length};
 const canon=v=>v===null||typeof v!=='object'?JSON.stringify(v):Array.isArray(v)?'['+v.map(x=>canon(x===undefined?null:x)).join(',')+']':'{'+Object.keys(v).filter(k=>v[k]!==undefined).sort().map(k=>JSON.stringify(k)+':'+canon(v[k])).join(',')+'}';
 const KCOL=k=>k.slice(0,k.indexOf('|')),KID=k=>k.slice(k.indexOf('|')+1);
@@ -717,14 +737,14 @@ function flat(){const m={},add=(col,id,data)=>{m[col+'|'+id]={col,id:String(id),
  (DB.tables||[]).forEach(x=>add('tables',x.id,x));
  (DB.updates||[]).forEach(x=>add('updates',x.id,x));
   (DB.vocab||[]).forEach(x=>add('vocab',x.id,x));(DB.notifs||[]).forEach(x=>add('notifs',x.id,x));
- (DB.ssubs||[]).forEach(x=>add('ssubs',x.id,x));
+ (DB.ssubs||[]).forEach(x=>add('ssubs',x.id,x));(DB.wcats||[]).forEach(x=>add('wcats',x.id,x));(DB.vcats||[]).forEach(x=>add('vcats',x.id,x));
  DB.lit.cats.forEach(x=>add('cats',x.id,x));
  DB.lit.posts.forEach(p=>{const {cm,rx,rxt,...rest}=p;add('posts',p.id,rest);
   (cm||[]).forEach(c=>add('comments',c.id,{...c,post:p.id}));
   Object.entries(rx||{}).forEach(([e,L])=>(L||[]).forEach(u=>add('reactions',p.id+'|'+e+'|'+u,{post:p.id,e,by:u,ts:(p.rxt||{})[e+'|'+u]})))});
  (DB.ratings||[]).forEach(r=>add('ratings',r.by,r));
  return m}
-const PRI={vocab:1,notifs:7,ssubs:0,cats:0,dict:1,words:1,sentences:1,tables:2,updates:1,posts:3,comments:4,reactions:5,ratings:6};
+const PRI={vocab:1,notifs:7,ssubs:0,wcats:0,vcats:0,cats:0,dict:1,words:1,sentences:1,tables:2,updates:1,posts:3,comments:4,reactions:5,ratings:6};
 function applyRemote(it){
  const {col,id,deleted}=it,d=it.data||{},same=(a,b)=>String(a)===String(b);
  const put=(arr,front)=>{const i=arr.findIndex(y=>same(y.id,id));if(deleted){if(i>=0)arr.splice(i,1);return}if(i>=0)arr[i]=d;else front?arr.unshift(d):arr.push(d)};
@@ -734,6 +754,8 @@ function applyRemote(it){
   else if(col==='updates'){DB.updates=DB.updates||[];put(DB.updates,true)}
  else if(col==='cats')put(DB.lit.cats,false);
  else if(col==='ssubs'){DB.ssubs=DB.ssubs||[];put(DB.ssubs,false)}
+ else if(col==='wcats'){DB.wcats=DB.wcats||[];put(DB.wcats,false)}
+ else if(col==='vcats'){DB.vcats=DB.vcats||[];put(DB.vcats,false)}
  else if(col==='ratings'){const i=DB.ratings.findIndex(r=>same(r.by,id));if(deleted){if(i>=0)DB.ratings.splice(i,1)}else if(i>=0)DB.ratings[i]=d;else DB.ratings.push(d)}
  else if(col==='posts'){const P=DB.lit.posts,i=P.findIndex(p=>same(p.id,id));if(deleted){if(i>=0)P.splice(i,1)}else{const old=i>=0?P[i]:{},x={...d,cm:old.cm||[],rx:old.rx||{},rxt:old.rxt||{}};if(i>=0)P[i]=x;else P.push(x)}}
  else if(col==='comments'){const p=d.post!==undefined?DB.lit.posts.find(q=>same(q.id,d.post)):DB.lit.posts.find(q=>(q.cm||[]).some(c=>same(c.id,id)));if(!p)return;p.cm=p.cm||[];const i=p.cm.findIndex(c=>same(c.id,id));if(deleted){if(i>=0)p.cm.splice(i,1)}else if(i>=0)p.cm[i]=d;else p.cm.push(d)}
@@ -901,7 +923,7 @@ $('#pfile').addEventListener('change',e=>{const f=e.target.files[0];e.target.val
 $('#afile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';const x=curT();if(!f||!S.tgt||!x||!isAdmin())return;const y=x.rows[S.tgt.r].c[S.tgt.c];adel(y.k);const k=uid();if(await aput(k,f))y.k=k;else alert(t('audioFail'));save();body()});
 document.addEventListener('change',e=>{if(e.target.id==='l_img'||e.target.id==='v_img'){const f=e.target.files[0],er=$('#'+e.target.id+'_err');if(er)er.textContent='';if(f&&f.size>IMG_MAX)showImgErr(e.target.id);return}const el=e.target.closest('[data-sort]');if(!el)return;CFG.sorts=CFG.sorts||{};CFG.sorts[el.dataset.sort]=el.value;store.set('ml_cfg',CFG);body()});
 document.addEventListener('click',async e=>{
- const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,d=b.dataset,ADM=['saveitem','delitem','rmau','newtbl','edittbl','backtbl','deltbl','addcol','addrow','delcol','delrow','savetbl','cellau','cellrm','cellopen','cellsave','cellclose','addcat','iadd','iedit','ssadd','ssren','ssdel','cedit','csave','ccancel','vadd','vedit','vdel','vsave','vrmimg','vrmau','vcancel'];
+ const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,d=b.dataset,ADM=['saveitem','delitem','rmau','newtbl','edittbl','backtbl','deltbl','addcol','addrow','delcol','delrow','savetbl','cellau','cellrm','cellopen','cellsave','cellclose','addcat','iadd','iedit','catadd','catsave','catdel','litsave','catedit','litedit','catcancel','cedit','csave','ccancel','vadd','vedit','vdel','vsave','vrmimg','vrmau','vcancel'];
  if(ADM.includes(a)&&!isAdmin())return;
  if(a==='go'){S.view=d.v;S.err='';S.f=null;S.fp=null;render()}
  else if(a==='lang'){CFG.lang=d.l;store.set('ml_cfg',CFG);render()}
@@ -1000,10 +1022,24 @@ document.addEventListener('click',async e=>{
  else if(a==='gflip'){S.game.flip=!S.game.flip;body()}
  else if(a==='gknow'){const g=S.game;if(d.v==='1')g.known++;else g.again.push(g.deck[g.i]);g.i++;g.flip=false;body()}
  else if(a==='gretry'){const g=S.game,n=mkFlash(g.src,g.again,g.pic);if(n){n.id=g.id;n.gl=g.gl;S.game=n;body()}}
- else if(a==='ssub'){S.ssub=d.c;body()}
- else if(a==='ssadd'){const n=val('ss_name');if(!n)return;const x={id:uid(),name:n};DB.ssubs.push(x);S.ssub=x.id;save();body()}
- else if(a==='ssren'){const n=val('ss_name'),x=DB.ssubs.find(y=>y.id===S.ssub);if(!n||!x)return;x.name=n;save();body()}
- else if(a==='ssdel'){const x=DB.ssubs.find(y=>y.id===S.ssub);if(x&&confirm(t('subSure'))){DB.sentences.forEach(z=>{if(z.sub===x.id)z.sub=''});DB.ssubs=DB.ssubs.filter(y=>y!==x);S.ssub='all';save();body()}}
+ else if(a==='cat'){S[CATS[d.k].sel]=d.c;body()}
+ else if(a==='catadd'){const k=d.k,c=CATS[k],n=val('ct_name');if(!n)return;DB[c.store]=DB[c.store]||[];
+  if(c.byId){const x={id:uid(),name:n};DB[c.store].push(x);S[c.sel]=x.id}
+  else{if(!catList(k).some(x=>x.name===n))DB[c.store].push({id:uid(),name:n});S[c.sel]=n}
+  save();body()}
+ else if(a==='catedit'||a==='litedit'){S.cedt={k:d.k,id:d.c};body()}
+ else if(a==='catcancel'){S.cedt=null;body()}
+ else if(a==='litsave'){const x=DB.lit.cats.find(y=>y.id===d.c),en=val('ke_en'),bn=val('ke_bn');if(!x||(!en&&!bn))return;x.en=en;x.bn=bn;S.cedt=null;save();body()}
+ else if(a==='catsave'){const k=d.k,c=CATS[k],n=val('ct_edit'),cur=d.c;if(!n)return;
+  if(c.byId){const x=DB[c.store].find(y=>y.id===cur);if(!x)return;x.name=n}
+  else{if(n!==cur&&catList(k).some(x=>x.name===n)){alert(t('catDup'));return}
+   const st=DB[c.store].find(y=>y.name===cur);if(st)st.name=n;else DB[c.store].push({id:uid(),name:n});
+   c.items().forEach(i=>{if(catOf(k,i)===cur)i[c.f]=n});if(S[c.sel]===cur)S[c.sel]=n}
+  S.cedt=null;save();body()}
+ else if(a==='catdel'){const k=d.k,c=CATS[k],cur=d.c;if(!cur||!confirm(t('catSure')))return;
+  if(c.byId){c.items().forEach(z=>{if(z[c.f]===cur)z[c.f]=''});DB[c.store]=DB[c.store].filter(y=>y.id!==cur)}
+  else{c.items().forEach(z=>{if(catOf(k,z)===cur)z[c.f]=c.def});DB[c.store]=DB[c.store].filter(y=>y.name!==cur)}
+  S[c.sel]='all';S.cedt=null;save();body()}
  else if(a==='delpost'){const p=DB.lit.posts.find(x=>x.id===d.id);if(p&&canEdit(p)&&confirm(t('sure'))){let nt=null;if(isAdmin()&&p.by!==ME&&confirm(t('notifyAuthor')+'?')){const why=prompt(t('whyPh'))||'';nt={id:uid(),to:p.by,from:ME,fn:user().name,act:'del',post:p.id,pt:snip(p.title||p.body),why,ts:Date.now()}}adel(p.k);adel(p.img);DB.lit.posts=DB.lit.posts.filter(x=>x!==p);if(nt)DB.notifs.push(nt);save();body()}}
  else if(a==='react'){const p=DB.lit.posts.find(x=>x.id===d.id);p.rx=p.rx||{};const L=p.rx[d.e]||[];p.rxt=p.rxt||{};const rk=d.e+'|'+ME;if(L.includes(ME)){p.rx[d.e]=L.filter(x=>x!==ME);delete p.rxt[rk]}else{p.rx[d.e]=[...L,ME];p.rxt[rk]=Date.now()}save();body()}
  else if(a==='cm'){S.open=S.open===d.id?null:d.id;body()}
@@ -1034,7 +1070,7 @@ document.addEventListener('click',async e=>{
   else if(a==='vrmimg'){const x=DB.vocab.find(y=>y.id===S.vf);if(x){adel(x.img);x.img=null;save();body()}}
   else if(a==='vrmau'){const x=DB.vocab.find(y=>y.id===S.vf);if(x){adel(x.k);x.k=null;save();body()}}
   else if(a==='vdel'){const x=DB.vocab.find(y=>y.id===d.id);if(x&&confirm(t('sure'))){adel(x.k);adel(x.img);DB.vocab=DB.vocab.filter(y=>y!==x);save();body()}}
-  else if(a==='vsave'){const it={marma:val('v_marma'),pron:val('v_pron'),bn:val('v_bn'),en:val('v_en')};if(!it.marma&&!it.pron){alert(t('needOne'));return}
+  else if(a==='vsave'){const it={marma:val('v_marma'),pron:val('v_pron'),bn:val('v_bn'),en:val('v_en'),cat:val('v_cat')};if(!it.marma&&!it.pron){alert(t('needOne'));return}
    const fi=$('#v_img')?.files[0],fa=$('#v_au')?.files[0];if(fi&&fi.size>IMG_MAX){showImgErr('v_img');return}
    const ex=S.vf&&S.vf!=='new'?DB.vocab.find(x=>x.id===S.vf):null;let x=ex;
    if(ex)Object.assign(ex,it);else{x={id:uid(),...it,ts:Date.now()};DB.vocab.unshift(x)}
@@ -1045,7 +1081,7 @@ document.addEventListener('click',async e=>{
  else if(a==='setrole'){if(!isMain())return;const u=USERS.find(x=>x.id===d.e);if(!u||u.role==='main')return;
   try{const r=await rest('/profiles?id=eq.'+encodeURIComponent(u.id),{method:'PATCH',body:{role:d.r},headers:{Prefer:'return=representation'}});if(!r||!r.length)throw 0;u.role=d.r;store.set('ml_users',USERS);body()}catch(e){alert(t(e&&e.net?'e_net':'e_srv'))}}
  else if(a==='addcat'){const en=val('k_en'),bn=val('k_bn');if(!en&&!bn)return;DB.lit.cats.push({id:uid(),en,bn});save();body()}
- else if(a==='delcat'){if(isMain()&&confirm(t('sure'))){DB.lit.cats=DB.lit.cats.filter(x=>x.id!==d.id);save();body()}}
+ else if(a==='delcat'){if(isMain()&&confirm(t('sure'))){DB.lit.cats=DB.lit.cats.filter(x=>x.id!==d.id);S.cedt=null;if(S.lcat===d.id)S.lcat='all';save();body()}}
  else if(a==='addupd'){if(!isMain())return;const ver=val('u_ver'),link=val('u_link'),note=val('u_note');if(!/^\d+(\.\d+)*$/.test(ver)){alert(t('verBad'));return}if(!safeLink(link)){alert(t('linkBad'));return}DB.updates=(DB.updates||[]).filter(x=>x.ver!==ver);DB.updates.push({id:uid(),ver,link,note,ts:Date.now()});save();body()}
  else if(a==='delupd'){if(isMain()&&confirm(t('sure'))){DB.updates=(DB.updates||[]).filter(x=>x.id!==d.id);save();body()}}
  else if(a==='updhide'){S.updHide=true;body()}
@@ -1076,8 +1112,8 @@ else if(a==='delitem'){if(confirm(t('sure'))){const cc=d.c||S.col,x=DB[cc].find(
  else if(a==='cellsave'){syncT();S.cell=null;save();body()}
  else if(a==='cellclose'){S.cell=null;body()}
  else if(a==='export'&&isMain()){$('#io').value=JSON.stringify(DB,null,1)}
- else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];o.ssubs=o.ssubs||[];o.vocab=o.vocab||DB.vocab||[];o.notifs=o.notifs||DB.notifs||[];{const up=DB.updates||[];DB=o;DB.updates=up}DB.tables.forEach(normT);save();resetUndo();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
- else if(a==='clear'&&isMain()){if(confirm(t('sureAll'))){DB={ssubs:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:DB.lit.cats,posts:[]},ratings:[],vocab:[],notifs:[],updates:DB.updates||[]};save();S.tid=null;body()}}
+ else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];o.ssubs=o.ssubs||[];o.wcats=o.wcats||[];o.vcats=o.vcats||[];o.vocab=o.vocab||DB.vocab||[];o.notifs=o.notifs||DB.notifs||[];{const up=DB.updates||[];DB=o;DB.updates=up}DB.tables.forEach(normT);save();resetUndo();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
+ else if(a==='clear'&&isMain()){if(confirm(t('sureAll'))){DB={ssubs:[],wcats:[],vcats:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:DB.lit.cats,posts:[]},ratings:[],vocab:[],notifs:[],updates:DB.updates||[]};save();S.tid=null;body()}}
  else if(a==='reset'&&isMain()){if(confirm(t('sureReset'))){{const up=DB.updates||[];DB=clone(SEED);DB.updates=up}save();S.tid=null;body()}}
 });
 document.addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('.pp'))e.preventDefault()});
