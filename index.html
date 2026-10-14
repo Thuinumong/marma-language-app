@@ -164,7 +164,7 @@ html.ml-scrolling::-webkit-scrollbar-thumb,body.ml-scrolling::-webkit-scrollbar-
 
 /* v5.2: undo/redo, table tools, block */
 .ubtn{flex:0 0 auto;align-self:center;width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;color:var(--pr);cursor:pointer;padding:0;border-radius:10px}
-.ubtn:disabled{opacity:.3;cursor:default}
+.ubtn:disabled{opacity:.3;cursor:default}#urw{display:inline-flex;align-items:center}#urw[hidden]{display:none}
 @media(max-width:430px){.hact{gap:1px}.brand{gap:6px;font-size:1rem}.ubtn{width:27px}.nbtn{width:27px}.sbtn{width:32px}}
 .tzb{position:sticky;left:0;display:flex;align-items:center;gap:6px;margin:0 0 6px;font-size:.85rem;color:var(--mu)}
 .tzb button{border:1.5px solid var(--bd);background:var(--sf);color:var(--tx);border-radius:8px;min-width:30px;height:28px;font:inherit;cursor:pointer;padding:0 8px}
@@ -325,23 +325,25 @@ if(!DB.tables){DB.tables=clone(SEED.tables);if(DB.phrases&&DB.phrases.length)DB.
 if(!DB.ssubs)DB.ssubs=[];if(!DB.wcats)DB.wcats=[];if(!DB.vcats)DB.vcats=[];if(!DB.lit)DB.lit=clone(SEED.lit);if(!DB.ratings)DB.ratings=[];if(!DB.dict)DB.dict=[];if(!DB.updates)DB.updates=[];if(!DB.vocab)DB.vocab=[];if(!DB.notifs)DB.notifs=[];
 const updSorted=()=>[...(DB.updates||[])].sort((a,b)=>vcmp(b.ver,a.ver));
 const hasNew=()=>{const u=updSorted()[0];return !!u&&vcmp(u.ver,APP_VER)>0};
-let UNDO=[],REDO=[],LASTF=null;
+let UNDO=[],REDO=[],LASTF=null,URSHOW=false,URT=null;
+function applyUR(){const w=document.getElementById('urw');if(w)w.hidden=!URSHOW}
+function urShow(){URSHOW=true;clearTimeout(URT);URT=setTimeout(()=>{URSHOW=false;applyUR()},10000);applyUR()}
 const snapNow=()=>{const f=flat(),o={};for(const k in f)o[k]=JSON.stringify(f[k].data);return o};
-function resetUndo(){UNDO=[];REDO=[];try{LASTF=snapNow()}catch(e){LASTF=null}try{updUR()}catch(e){}}
+function resetUndo(){UNDO=[];REDO=[];URSHOW=false;clearTimeout(URT);try{LASTF=snapNow()}catch(e){LASTF=null}try{updUR()}catch(e){}}
 function recordUndo(){if(!LASTF){try{LASTF=snapNow()}catch(e){}return}
  const cur=snapNow(),ch={};
  for(const k in cur)if(LASTF[k]!==cur[k])ch[k]=[LASTF[k]===undefined?null:LASTF[k],cur[k]];
  for(const k in LASTF)if(cur[k]===undefined)ch[k]=[LASTF[k],null];
- LASTF=cur;if(Object.keys(ch).length){UNDO.push(ch);if(UNDO.length>60)UNDO.shift();REDO=[];updUR()}}
+ LASTF=cur;if(Object.keys(ch).length){UNDO.push(ch);if(UNDO.length>60)UNDO.shift();REDO=[];updUR();urShow()}}
 function stepUndo(redo){const src=redo?REDO:UNDO,dst=redo?UNDO:REDO,e=src.pop();if(!e)return;
  const items=Object.keys(e).map(k=>{const to=e[k][redo?1:0],from=e[k][redo?0:1],col=KCOL(k),id=KID(k);
   return to===null?{col,id,deleted:true,data:JSON.parse(from)}:{col,id,deleted:false,data:JSON.parse(to)}});
  items.sort((a,b)=>(PRI[a.col]??9)-(PRI[b.col]??9));items.forEach(applyRemote);
  DB.lit.posts.sort((a,b)=>(b.ts||0)-(a.ts||0));dst.push(e);
  store.set('ml_db',DB);try{LASTF=snapNow()}catch(x){}
- if(cloudHook)cloudHook();updUR();S.cell=null;S.edit=null;S.vf=null;try{body()}catch(x){}}
+ if(cloudHook)cloudHook();updUR();urShow();S.cell=null;S.edit=null;S.vf=null;try{body()}catch(x){}}
 function updUR(){const u=$('#undoB'),r=$('#redoB');if(u)u.disabled=!UNDO.length;if(r)r.disabled=!REDO.length}
-const urBtns=()=>`<button class="ubtn" id="undoB" data-act="undo" ${UNDO.length?'':'disabled'} aria-label="${t('undo')}" title="${t('undo')} (Ctrl+Z)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button><button class="ubtn" id="redoB" data-act="redo" ${REDO.length?'':'disabled'} aria-label="${t('redo')}" title="${t('redo')} (Ctrl+Y)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>`;
+const urBtns=()=>`<span id="urw" ${URSHOW?'':'hidden'}><button class="ubtn" id="undoB" data-act="undo" ${UNDO.length?'':'disabled'} aria-label="${t('undo')}" title="${t('undo')} (Ctrl+Z)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button><button class="ubtn" id="redoB" data-act="redo" ${REDO.length?'':'disabled'} aria-label="${t('redo')}" title="${t('redo')} (Ctrl+Y)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button></span>`;
 const save=()=>{store.set('ml_db',DB);try{recordUndo()}catch(e){}if(cloudHook)cloudHook()};
 let USERS=store.get('ml_users',[]),ME=store.get('ml_sess',null),CFG=store.get('ml_cfg',{theme:'auto',size:16,lang:'en'});
 if(!CFG.lang)CFG.lang='en';
