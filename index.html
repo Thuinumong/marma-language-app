@@ -52,7 +52,7 @@ h2{margin:12px 0 4px}h3{margin:16px 0 0;color:var(--mu);font-size:.9rem;text-tra
 .back{background:none;border:0;color:var(--pr);font:inherit;cursor:pointer;padding:8px 0}
 .err{color:var(--rd);font-size:.9rem}.note{background:var(--sf);border-left:4px solid var(--ac);padding:8px 12px;border-radius:8px;font-size:.9rem;margin:8px 0}
 .menu .row{display:flex;justify-content:space-between;align-items:center;width:100%;padding:14px;margin:8px 0;border-radius:14px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit;cursor:pointer}
-.tw{overflow-x:auto}table{border-collapse:collapse;width:100%}caption{font-weight:600;text-align:left;padding:2px 0 8px;color:var(--pr);font-size:1.05rem}
+.tw{display:block;width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x pan-y}.tw table{border-collapse:collapse;width:max-content;min-width:100%;table-layout:auto}table{border-collapse:collapse;width:100%}caption{font-weight:600;text-align:left;padding:2px 0 8px;color:var(--pr);font-size:1.05rem}
 th,td{border:1px solid var(--bd);padding:7px 9px;text-align:left;vertical-align:middle}th{background:var(--bg);color:var(--mu);font-size:.85rem}
 td.bx{min-width:110px;vertical-align:top}td.ed{cursor:pointer}td.ed.sel{outline:2px solid var(--pr);outline-offset:-2px}td.bx .play{margin:4px 4px 0 0}a.btn{text-decoration:none;display:inline-block}
 td .in,th .in{min-width:120px;margin:0}.x{border:0;background:none;color:var(--rd);cursor:pointer;font-size:1rem}
@@ -155,12 +155,18 @@ body.hidepp .pp{visibility:hidden}
 .post-block-row{border-top:1px solid var(--bd);margin-top:10px;padding-top:7px;text-align:right}
 .post-shared-note{font-size:.82em;color:var(--mu);margin:0 0 6px}
 /* Sangbusa stability: keep table geometry and scroll position steady during cell editing. */
-.tw,.tblw{overscroll-behavior:contain;}
-.tw table,.tblw table{table-layout:fixed;}
-.tw td,.tw th,.tblw td,.tblw th{overflow-wrap:anywhere;}
+.tw,.tblw{overscroll-behavior:contain;min-width:0;max-width:100%;}
+.tw table{width:max-content;min-width:100%;table-layout:auto;}
+.tblw table{width:max-content;min-width:100%;table-layout:auto;}
+.tw td,.tw th,.tblw td,.tblw th{overflow-wrap:anywhere;word-break:normal;}
+.tw td.bx,.tblw td.bx{min-width:130px;max-width:260px;}
 .tw tr,.tblw tr{scroll-margin:0;}
-#cellFloat{}
-#cellFloat input,#cellFloat textarea{}
+.tw{scrollbar-width:thin;}
+.tw::-webkit-scrollbar{height:8px;}
+.tw::-webkit-scrollbar-thumb{background:var(--bd);border-radius:8px;}
+#cellFloat{position:fixed!important;left:12px;top:88px;width:min(420px,calc(100vw - 24px));max-height:calc(100dvh - 104px);overflow:auto;z-index:1000;overscroll-behavior:contain;box-sizing:border-box}
+#cellFloat input,#cellFloat textarea{width:100%;box-sizing:border-box}
+@media(max-width:520px){#cellFloat{left:8px;top:76px;width:calc(100vw - 16px);max-height:calc(100dvh - 88px)}}
 /* Keep the Sangbusa editor anchored while its inputs are updated. */
 .float-editor{position:fixed!important;inset-inline-start:clamp(8px,3vw,18px);overscroll-behavior:contain;touch-action:pan-y;will-change:left,top,width,height}
 .float-editor .float-handle{touch-action:none!important;cursor:move}
@@ -217,6 +223,35 @@ html.ml-scrolling::-webkit-scrollbar-thumb,body.ml-scrolling::-webkit-scrollbar-
 .tblw.dragging{opacity:.9;outline:2px dashed var(--pr);position:relative;z-index:60;box-shadow:0 14px 34px #0006;cursor:grabbing}
 body.nosel{user-select:none;-webkit-user-select:none}
 .tblw .tbar{margin:4px 0 0}
+
+
+/* iOS Safari + Android: keep Sangbusa tables horizontally/vertically scrollable without snapping to the first cell. */
+.tw, .tblw {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  min-width: 0;
+  max-width: 100%;
+}
+.tw {
+  overflow-x: auto !important;
+  overflow-y: auto;
+  touch-action: pan-x pan-y;
+  -webkit-transform: translateZ(0);
+}
+.tw table, .tblw table {
+  width: max-content;
+  min-width: 100%;
+}
+.tw td, .tw th, .tblw td, .tblw th {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+.float-editor {
+  max-width: calc(100vw - 16px);
+  max-height: calc(100dvh - 16px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 </style>
 </head>
@@ -752,7 +787,10 @@ function gStartGame(id){const src=S.gsrc||'words';
  g.id=id;g.gl=M[0];S.game=g;body()}
 function gFinishQuiz(g){const id=g.id==='listen'?'listen':g.id;g.newBest=setBest(id,g.score)&&g.score>0}
 function body0(){
- const B=$('#body'),q=S.q.trim().toLowerCase();let h='';
+ const B=$('#body');
+ // Preserve the current Sangbusa viewport and each table's horizontal scroll while cell editors rerender.
+ const _sangScroll={body:B?B.scrollTop:0,win:window.scrollY||0,wraps:B?[...B.querySelectorAll('.tw,.tblw')].map((el,i)=>({i,cls:el.classList.contains('tw')?'tw':'tblw',left:el.scrollLeft,top:el.scrollTop,id:el.closest('.tblw')?.dataset.id||''})):[]};
+ const q=S.q.trim().toLowerCase();let h='';
  if(q){const parts=['dict','words','sentences'].map(c=>[c,DB[c].filter(i=>match(i,q))]).filter(p=>p[1].length);
   const ts=DB.tables.map(x=>[x,x.cap.toLowerCase().includes(q)?x.rows:x.rows.filter(r=>r.c.some(c=>ctext(c).includes(q)))]).filter(p=>p[1].length);
   const ls=DB.lit.posts.filter(p=>((p.title||'')+' '+p.body).toLowerCase().includes(q)),vs=(DB.vocab||[]).filter(i=>match(i,q));
@@ -771,7 +809,23 @@ const IC={dict:'dict',word:'words',sent:'sentences'}[S.tab];
 
  if(!q&&S.tab==='dict'&&isAdmin()){const m=['dict','words'];h=h.replace(/<div class="seg">/,`<button class="btn" data-act="iadd" data-c="${IC}">＋ ${t('addNew')}</button>${S.inl&&S.edit&&m.includes(S.col)?itemForm(S.col):''}<div class="seg">`)}
  if(hasNew()&&!S.updHide){const u=updSorted()[0];h=`<div class="card" style="border-color:var(--ac)"><div class="top"><div><b>🔔 ${t('newVer')}: ${esc(u.ver)}</b>${u.note?`<div class="en">${esc(u.note)}</div>`:''}</div><button class="x" data-act="updhide" aria-label="close">✕</button></div>${safeLink(u.link)?`<a class="btn sm" href="${esc(u.link)}" target="_blank" rel="noopener">⬇ ${t('download')}</a>`:''}</div>`+h}
- {const v=q?'grid':getView(S.tab);B.className=(v==='list'?'narrow':'grid')+(v==='compact'?' v-compact':'')}B.innerHTML=h;hydrate();try{updateBadge()}catch(e){}}
+ {const v=q?'grid':getView(S.tab);B.className=(v==='list'?'narrow':'grid')+(v==='compact'?' v-compact':'')}B.innerHTML=h;
+ // Restore scroll after redraw; never jump the Sangbusa table back to its first cell.
+ if(S.tab==='sang'&&_sangScroll){
+  const restoreSangScroll=()=>{
+   if(B)B.scrollTop=_sangScroll.body;
+   window.scrollTo(0,_sangScroll.win);
+   const nw=[...B.querySelectorAll('.tw,.tblw')];
+   _sangScroll.wraps.forEach(st=>{
+    let el=st.id?nw.find(n=>n.closest('.tblw')?.dataset.id===st.id):nw[st.i];
+    if(!el)el=nw[st.i];
+    if(el){el.scrollLeft=st.left;el.scrollTop=st.top;}
+   });
+  };
+  restoreSangScroll();
+  requestAnimationFrame(()=>{restoreSangScroll();requestAnimationFrame(restoreSangScroll)});
+ }
+ hydrate();try{updateBadge()}catch(e){}}
 function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button>`;
  if(S.sub==='profile')return `${back}<h2>${t('profile')}</h2><div class="card" style="text-align:center">${av(96)}<div style="margin-top:8px"><b>${esc(u.name)}</b></div><div class="en">${t('role_'+u.role)}</div>${u.bio?`<div class="pbody" style="margin:4px 0">${esc(u.bio)}</div>`:''}${u.profession?`<div style="margin-top:4px">💼 ${esc(u.profession)}</div>`:''}${u.hometown?`<div>📍 ${esc(u.hometown)}</div>`:''}<div style="margin-top:6px">${u.email?`<div>✉️ ${esc(u.email)}</div>`:''}${u.phone?`<div>📞 ${esc(u.phone)}</div>`:''}</div></div><button class="btn" data-act="sub" data-s="editprofile">✏️ ${t('editProfile')}</button><div class="seg" style="margin-top:12px"><button class="on" type="button">Timeline</button></div><div class="timeline-posts">${(()=>{const shares=store.get('ml_post_shares_'+ME,[]),own=DB.lit.posts.filter(p=>String(p.by)===String(ME)),shared=shares.map(x=>({x,p:DB.lit.posts.find(p=>String(p.id)===String(x.id))})).filter(z=>z.p);const seen=new Set();const oh=own.map(p=>{seen.add(String(p.id));return post(p)}).join('');const sh=shared.filter(z=>!seen.has(String(z.p.id))).map(z=>post(z.p,{shared:true,sharedName:u.name})).join('');return oh+sh||`<p class="note">${t('noPosts')}</p>`})()}</div><h3>${t('blockedUsers')}</h3>${(u.blocked||[]).map(id=>`<div class="card top"><div>${esc(nameOf(id))}</div><button class="btn sm" data-act="unblock" data-u="${esc(id)}">${t('unblock')}</button></div>`).join('')||`<p class="note">${t('noBlocked')}</p>`}`;
  if(S.sub==='editprofile')return `<button class="back" data-act="sub" data-s="profile">← ${t('profile')}</button><h2>${t('editProfile')}</h2><div class="card" style="text-align:center">${av(96)}<div><button class="btn sm" data-act="picpick">${t('changePic')}</button>${u.pic?`<button class="btn sm ghost" data-act="picrm">${t('rmPic')}</button>`:''}</div></div><div class="card"><b>${t('details')}</b><input class="in" id="p_name" autocomplete="name" placeholder="${t('name')}" value="${esc(u.name)}"><input class="in" id="p_email" type="email" autocomplete="email" placeholder="${t('emailOpt')}" value="${esc(u.email||'')}"><input class="in" id="p_phone" type="tel" autocomplete="tel" placeholder="${t('phoneOpt')}" value="${esc(u.phone||'')}"><input class="in" id="p_prof" maxlength="80" placeholder="${t('professionPh')}" value="${esc(u.profession||'')}"><input class="in" id="p_home" maxlength="80" placeholder="${t('hometownPh')}" value="${esc(u.hometown||'')}"><textarea class="in" id="p_bio" maxlength="300" rows="3" placeholder="${t('bioPh')}">${esc(u.bio||'')}</textarea><button class="btn" data-act="saveprofile">${t('saveChanges')}</button><div class="en" style="margin-top:4px;font-size:.85rem">${t('loginNote')}</div></div>${AUTH&&AUTH.provider&&AUTH.provider!=='email'?'':`<div class="card"><b>${t('changePw')}</b><input class="in" id="pw_cur" type="password" autocomplete="current-password" placeholder="${t('curPw')}"><input class="in" id="pw_new" type="password" autocomplete="new-password" placeholder="${t('newPw')}"><input class="in" id="pw_con" type="password" autocomplete="new-password" placeholder="${t('conPw')}"><button class="btn" data-act="savepw">${t('changePw')}</button></div>`}`;
