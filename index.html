@@ -54,7 +54,7 @@ h2{margin:12px 0 4px}h3{margin:16px 0 0;color:var(--mu);font-size:.9rem;text-tra
 .menu .row{display:flex;justify-content:space-between;align-items:center;width:100%;padding:14px;margin:8px 0;border-radius:14px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);font:inherit;cursor:pointer}
 .tw{display:block;width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x pan-y}.tw table{border-collapse:collapse;width:100%;min-width:560px;table-layout:fixed}table{border-collapse:collapse;width:100%}caption{font-weight:600;text-align:left;padding:2px 0 8px;color:var(--pr);font-size:1.05rem}
 th,td{border:1px solid var(--bd);padding:8px;text-align:left;vertical-align:middle}th{background:var(--bg);color:var(--mu);font-size:.85rem}
-td.bx{width:25%;min-width:0;vertical-align:top;line-height:1.62;overflow-wrap:anywhere;word-break:normal;padding:8px} .tw td.bx{height:auto} .tw td.bx .mm,.tw td.bx .pr,.tw td.bx .bn,.tw td.bx .en{line-height:1.62;margin-top:2px;margin-bottom:2px} .tw table td:last-child:has(button[data-act="delrow"]){width:38px;min-width:38px;padding:4px;text-align:center}td.ed{cursor:pointer}td.ed.sel{outline:2px solid var(--pr);outline-offset:-2px}td.bx .play{margin:4px 4px 0 0}a.btn{text-decoration:none;display:inline-block}
+td.bx{width:25%;min-width:0;vertical-align:middle;text-align:center;line-height:1.62;overflow-wrap:anywhere;word-break:normal;padding:8px} .tw td.bx{height:auto} .tw td.bx .mm,.tw td.bx .pr,.tw td.bx .bn,.tw td.bx .en{line-height:1.62;margin-top:2px;margin-bottom:2px;text-align:center} .tw table td:last-child:has(button[data-act="delrow"]){width:38px;min-width:38px;padding:4px;text-align:center}td.ed{cursor:pointer}td.ed.sel{outline:2px solid var(--pr);outline-offset:-2px}td.bx .play{margin:4px 4px 0 0}a.btn{text-decoration:none;display:inline-block}
 td .in,th .in{min-width:120px;margin:0}.x{border:0;background:none;color:var(--rd);cursor:pointer;font-size:1rem}
 .av{border-radius:50%;object-fit:cover;background:var(--pr);color:var(--pt);display:inline-flex;align-items:center;justify-content:center;font-weight:600;cursor:pointer}
 .pw{position:relative}.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;font-size:1.2rem;cursor:pointer}
@@ -283,6 +283,11 @@ body.nosel{user-select:none;-webkit-user-select:none}
   .tblw .tw td, .tblw .tw th, .tblw td, .tblw th { padding: 5px; font-size: .88rem; }
   .tblw .tw td.bx, .tblw td.bx { max-width: 200px; }
 }
+
+/* Sangbusa: center every cell's text horizontally and vertically. */
+.tw td.bx, .tblw td.bx { text-align: center; vertical-align: middle; }
+.tw td.bx .mm, .tw td.bx .pr, .tw td.bx .bn, .tw td.bx .en,
+.tblw td.bx .mm, .tblw td.bx .pr, .tblw td.bx .bn, .tblw td.bx .en { text-align: center; }
 </style>
 </head>
 <body>
