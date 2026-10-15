@@ -142,7 +142,7 @@ body.hidepp .pp{visibility:hidden}
 .float-editor .float-handle{cursor:move;touch-action:none;user-select:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;margin:-2px -2px 8px;background:var(--pr);color:var(--pt);border-radius:10px;font-weight:600;position:sticky;top:0;z-index:2}
 .float-editor .float-handle small{font-weight:400;opacity:.85}.float-editor .in{background:var(--bg)}
 .post-meta{display:flex;flex-direction:column;align-items:flex-start;gap:2px}.post-meta .unm{font-weight:700;text-decoration:none}.post-submeta{display:flex;align-items:center;gap:8px;font-size:.82em;opacity:.82}.post-submeta span+span:before{content:"·";margin-right:8px}
-.post-author-row{display:flex;align-items:flex-start;gap:10px;margin:4px 0 10px}.post-author-row .pp,.post-author-row .av{flex:0 0 auto}.post-author-info{min-width:0;display:flex;flex-direction:column;gap:2px}.post-author-name .unm{font-size:1.12em;font-weight:800;line-height:1.25;padding:0;border:0;background:transparent;color:var(--tx);cursor:pointer}.post-submeta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:.82em;opacity:.82}.post-submeta span+span:before{content:'·';margin-right:7px}
+.post-author-row{display:flex;align-items:flex-start;gap:10px;margin:4px 0 10px}.post-author-row .pp,.post-author-row .av{flex:0 0 auto}.post-author-info{min-width:0;display:flex;flex-direction:column;gap:2px}.post-author-name .unm{font-size:1.12em;font-weight:800;line-height:1.25;padding:0;border:0;background:transparent;color:var(--pr);cursor:pointer}.post-submeta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:.82em;color:#B7791F;opacity:1}.post-submeta span+span:before{content:'·';margin-right:7px}
 /* Sangbusa stability: keep table geometry and scroll position steady during cell editing. */
 .tw,.tblw{overscroll-behavior:contain;}
 .tw table,.tblw table{table-layout:fixed;}
@@ -192,12 +192,6 @@ html.ml-scrolling::-webkit-scrollbar-thumb,body.ml-scrolling::-webkit-scrollbar-
 body.nosel{user-select:none;-webkit-user-select:none}
 .tblw .tbar{margin:4px 0 0}
 
-/* Long-press Move/Paste menu */
-.ml-move-menu{position:fixed;z-index:100000;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,380px);max-height:82vh;overflow:auto;background:var(--card,var(--bg));color:var(--tx);border:1px solid var(--bd);border-radius:16px;padding:16px;box-shadow:0 12px 40px #0005}
-.ml-move-menu .ml-move-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.ml-move-menu .ml-move-actions button{flex:1;min-width:110px}
-.ml-move-backdrop{position:fixed;inset:0;background:#0005;z-index:99999}
-.ml-movable{touch-action:pan-y}
 </style>
 </head>
 <body>
@@ -338,7 +332,7 @@ lit:{cats:[{id:'c1',en:'Story',bn:'গল্প'},{id:'c2',en:'Poem',bn:'কব�
 const E=()=>({m:'',p:'',b:'',e:'',k:null});
 function HK(h){h=(h||'').toLowerCase();return /pron|উচ্চারণ/.test(h)?'p':/বাংলা|bangla|bengali/.test(h)?'b':/english|ইংরেজি/.test(h)?'e':'m'}
 function normT(x){if(!x||!Array.isArray(x.rows))return x;x.cols=x.cols||[];x.rows.forEach(r=>{r.c=(r.c||[]).map((y,ci)=>{if(y&&('t' in y)){const n=E();n[HK(x.cols[ci])]=y.t||'';n.k=y.k||null;return n}return y||E()})});return x}
-const APP_VER='5.0';
+const APP_VER='6.0';
 const safeLink=l=>/^https?:\/\//i.test(l||'');
 const vcmp=(a,b)=>{const x=String(a).split('.').map(n=>parseInt(n)||0),y=String(b).split('.').map(n=>parseInt(n)||0);for(let i=0;i<Math.max(x.length,y.length);i++){const d=(x[i]||0)-(y[i]||0);if(d)return d}return 0};
 let DB=store.get('ml_db',null)||clone(SEED);
@@ -721,7 +715,7 @@ function tblEditor(x){
   const form=sc?`<div class="card float-editor" id="cellFloat"><div class="float-handle" id="cellFloatHandle"><span>⠿ ${t('edit')} (${S.cell.r+1}, ${S.cell.c+1})</span><button type="button" class="x" style="color:inherit" data-act="cellclose" aria-label="close editor">✕</button></div><input class="in" id="cf_m" placeholder="${t('marmaPh')}" value="${fv('m')}"><input class="in" id="cf_p" placeholder="${t('pronPh')}" value="${fv('p')}"><input class="in" id="cf_b" placeholder="${t('bnPh')}" value="${fv('b')}"><input class="in" id="cf_e" placeholder="${t('enPh')}" value="${fv('e')}"><div class="en">🎙 ${sc.k?t('audioHas'):t('audioLbl')}</div><button class="play" data-act="cellau" data-r="${S.cell.r}" data-c="${S.cell.c}" title="audio">${sc.k?'🔊':'🎙'}</button>${sc.k?au(sc.k)+`<button class="x" data-act="cellrm" data-r="${S.cell.r}" data-c="${S.cell.c}">⊘</button>`:''}<div><button class="btn sm" data-act="cellsave">💾 ${t('saved').replace(' ✔','')}</button><button class="btn sm" data-act="cellclose">✕</button></div></div>`:'';
   return `<button class="back" data-act="backtbl">${t('allTbl')}</button><input class="in" id="t_cap" placeholder="${t('caption')}" value="${esc(x.cap)}"><div class="note">${t('tblNote')}</div>${form}<div class="card tw">${tzBar(x.id)}<table style="zoom:${tzGet(x.id)}"><thead><tr>${x.cols.map((c,i)=>`<th style="text-align:center;padding:2px;background:none;border:0"><button class="x" data-act="delcol" data-i="${i}" aria-label="delete column">✕</button></th>`).join('')}<th></th></tr></thead><tbody>${x.rows.map((r,ri)=>`<tr>${r.c.map((y,ci)=>`<td class="bx ed${S.cell&&S.cell.r===ri&&S.cell.c===ci?' sel':''}" data-act="cellopen" data-r="${ri}" data-c="${ci}">${cellH(y)||'<span class="en">＋</span>'}</td>`).join('')}<td><button class="x" data-act="delrow" data-r="${ri}" aria-label="delete row">✕</button></td></tr>`).join('')}</tbody></table></div><button class="btn sm" data-act="addcol">${t('addCol')}</button><button class="btn sm" data-act="addrow">${t('addRow')}</button><button class="btn sm" data-act="savetbl">💾 ${t('saved').replace(' ✔','')}</button>`}
 
-function itemForm(c){const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;return `<div class="card ${e?'float-editor':''}" ${e?'id="itemFloat"':''}>${e?`<div class="float-handle" id="itemFloatHandle"><span>⠿ ${t('edit')}</span><button type="button" class="x" style="color:inherit;font-size:1.1rem;line-height:1" data-act="canceledit" aria-label="${t('cancel')}" title="${t('cancel')}">✕</button></div>`:`<b>${t('addNew')}</b>`}${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${(c==='words'||c==='dict')?`<input class="in" id="f_cat" list="dl_wcat" placeholder="${c==='dict'?'Category (optional) — links to Word category':t('secPh')}" value="${e?esc(e.cat||''):(c==='words'&&catCur('word')!=='all'?esc(catCur('word')):'')}"><datalist id="dl_wcat">${catList('word').map(x=>`<option value="${esc(x.name)}">`).join('')}</datalist>${c==='dict'?`<div class="en">Optional: selecting a category also adds/links this entry under the same category in Word.</div>`:''}`:''}${c==='sentences'?`<select class="in" id="f_tense"><option value="">${t('tensePh')}</option>${TENSES.map(x=>`<option value="${x[0]}" ${e&&e.tense===x[0]?'selected':''}>${CFG.lang==='bn'?x[2]:x[1]}</option>`).join('')}</select><select class="in" id="f_sub"><option value="">${t('catNone')}</option>${(DB.ssubs||[]).map(x=>`<option value="${x.id}" ${(e?e.sub:S.ssub)===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`:''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`}
+function itemForm(c){const e=S.edit&&S.edit!=='new'?DB[c].find(x=>x.id===S.edit):null,v=k=>esc(e?e[k]||'':''),f=(k,p)=>`<input class="in" id="f_${k}" placeholder="${t(p)}" value="${v(k)}">`;return `<div class="card ${e?'float-editor':''}" ${e?'id="itemFloat"':''}>${e?`<div class="float-handle" id="itemFloatHandle"><span>⠿ ${t('edit')}</span><button type="button" class="x" style="color:inherit;font-size:1.1rem;line-height:1" data-act="canceledit" aria-label="${t('cancel')}" title="${t('cancel')}">✕</button></div>`:`<b>${t('addNew')}</b>`}${f('marma','marmaPh')}${f('pron','pronPh')}${f('bn','bnPh')}${f('en','enPh')}${c==='dict'?`<input class="in" id="f_cat" list="dl_wcat" placeholder="Word Category (optional)" value="${e?esc(e.cat||''):''}"><datalist id="dl_wcat">${catList('word').map(x=>`<option value="${esc(x.name)}">`).join('')}</datalist><div class="en">This is the Word category for this dictionary entry. Optional: choose an existing Word category.</div>`:''}${c==='sentences'?`<select class="in" id="f_tense"><option value="">${t('tensePh')}</option>${TENSES.map(x=>`<option value="${x[0]}" ${e&&e.tense===x[0]?'selected':''}>${CFG.lang==='bn'?x[2]:x[1]}</option>`).join('')}</select><select class="in" id="f_sub"><option value="">${t('catNone')}</option>${(DB.ssubs||[]).map(x=>`<option value="${x.id}" ${(e?e.sub:S.ssub)===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`:''}<div class="en">🎙 ${e&&e.k?t('audioHas'):t('audioLbl')}</div><input class="in" id="f_au" type="file" accept="audio/*">${e&&e.k?`<button class="btn sm dng" data-act="rmau">${t('rmAudio')}</button>`:''}<button class="btn" data-act="saveitem">${e?t('update'):t('addBtn')}</button>${e?`<button class="btn ghost" data-act="canceledit">${t('cancel')}</button>`:''}</div>`}
 function admin(){const c=S.ac==='updates'?'updates':'admins',M=isMain();
  const tabs=[['admins','aa'],['updates','upd']];
  const nav=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button><h2>${t('admin')}</h2><div class="seg">${tabs.map(x=>`<button class="${c===x[0]?'on':''}" data-act="col" data-c="${x[0]}">${t(x[1])}</button>`).join('')}</div>`;
@@ -1116,11 +1110,11 @@ else if(a==='canceledit'){S.edit=null;S.inl=false;body()}
  else if(a==='iadd'){S.col=d.c;S.edit='new';S.inl=true;body();scrollTo(0,0);{const m=$('#body');if(m)m.scrollTop=0}}
  else if(a==='iedit'){S.col=d.c;S.edit=d.id;S.inl=true;body();scrollTo(0,0);{const m=$('#body');if(m)m.scrollTop=0}}
  else if(a==='rmau'){const x=DB[S.col].find(x=>x.id===S.edit);if(x){adel(x.k);x.k=null;save();body()}}
- else if(a==='saveitem'){const it={marma:val('f_marma'),pron:val('f_pron'),bn:val('f_bn'),en:val('f_en')};if(S.col==='words')it.cat=val('f_cat')||'Others';if(S.col==='dict')it.cat=val('f_cat').trim();if(S.col==='sentences')it.sub=$('#f_sub')?.value||'';it.tense=$('#f_tense')?.value||'';
+ else if(a==='saveitem'){const it={marma:val('f_marma'),pron:val('f_pron'),bn:val('f_bn'),en:val('f_en')};if(S.col==='words'){const oldWord=S.edit&&S.edit!=='new'?DB.words.find(y=>y.id===S.edit):null;it.cat=oldWord?.cat||'Others'}const dictWordCategory=S.col==='dict'?val('f_cat').trim():'';if(S.col==='dict')delete it.cat;if(S.col==='sentences')it.sub=$('#f_sub')?.value||'';it.tense=$('#f_tense')?.value||'';
   if(!it.marma&&!it.pron){alert(t('needOne'));return}
   const ex=S.edit&&S.edit!=='new'?DB[S.col].find(x=>x.id===S.edit):null,f=$('#f_au')?.files[0];let x=ex;
   if(ex)Object.assign(ex,it);else{x={id:uid(),...it};DB[S.col].unshift(x)}
-  if(S.col==='dict'){const linked=DB.words.find(w=>w.id===x.id);if(it.cat){const wx={id:x.id,marma:x.marma,pron:x.pron,bn:x.bn,en:x.en,cat:it.cat,tense:x.tense||''};if(linked)Object.assign(linked,wx);else DB.words.unshift(wx)}else if(linked){DB.words=DB.words.filter(w=>w.id!==x.id)}}
+  if(S.col==='dict'){delete x.cat;const linked=DB.words.find(w=>w.id===x.id);if(dictWordCategory){DB.wcats=DB.wcats||[];if(!DB.wcats.some(c=>String(c.name||'').trim().toLowerCase()===dictWordCategory.toLowerCase()))DB.wcats.push({id:dictWordCategory,name:dictWordCategory});const wx={id:x.id,marma:x.marma,pron:x.pron,bn:x.bn,en:x.en,cat:dictWordCategory,tense:x.tense||''};if(linked)Object.assign(linked,wx);else DB.words.unshift(wx)}else if(linked){DB.words=DB.words.filter(w=>w.id!==x.id)}}
   if(f){adel(x.k);const k=uid();if(await aput(k,f))x.k=k;else alert(t('audioFail'))}
   S.edit=null;save();body()}
 else if(a==='delitem'){if(confirm(t('sure'))){const cc=d.c||S.col,x=DB[cc].find(x=>x.id===d.id);adel(x&&x.k);DB[cc]=DB[cc].filter(x=>x.id!==d.id);save();body()}}
@@ -1143,63 +1137,6 @@ else if(a==='delitem'){if(confirm(t('sure'))){const cc=d.c||S.col,x=DB[cc].find(
  else if(a==='clear'&&isMain()){if(confirm(t('sureAll'))){DB={ssubs:[],wcats:[],vcats:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:DB.lit.cats,posts:[]},ratings:[],vocab:[],notifs:[],updates:DB.updates||[]};save();S.tid=null;body()}}
  else if(a==='reset'&&isMain()){if(confirm(t('sureReset'))){{const up=DB.updates||[];DB=clone(SEED);DB.updates=up}save();S.tid=null;body()}}
 });
-
-// Long-press Move/Paste menu for Dictionary, Word, VisualVocab and Literature.
-(function(){
- const eligible=['dict','word','vocab','lit'];
- const labels={dict:'Dictionary',word:'Word',vocab:'VisualVocab',lit:'Literature'};
- let timer=null,start=null,chosen=null,mode='move',suppressUntil=0;
- function removeMenu(){document.querySelector('.ml-move-backdrop')?.remove();document.querySelector('.ml-move-menu')?.remove();}
- function locate(e){const el=e.target.closest('.ml-movable[data-move-kind][data-move-id]');if(!el)return null;const kind=el.dataset.moveKind;return eligible.includes(kind)?{kind,id:el.dataset.moveId}:null}
- function showMenu(item){
-  chosen=item;mode='move';removeMenu();
-  const back=document.createElement('div');back.className='ml-move-backdrop';back.onclick=removeMenu;
-  const box=document.createElement('div');box.className='ml-move-menu';
-  box.innerHTML=`<b>Move / Paste</b><div class="en" style="margin-top:5px">Select action and destination</div><div class="ml-move-actions"><button class="btn sm on" data-mode="move">Move</button><button class="btn sm ghost" data-mode="copy">Paste / Copy</button></div><div class="ml-move-actions">${eligible.filter(k=>k!==item.kind).map(k=>`<button class="btn sm" data-dest="${k}">${labels[k]}</button>`).join('')}</div><div class="ml-move-actions"><button class="btn sm ghost" data-close>Cancel</button></div>`;
-  box.addEventListener('click',e=>{
-   const m=e.target.closest('[data-mode]');if(m){mode=m.dataset.mode;box.querySelectorAll('[data-mode]').forEach(b=>{b.classList.toggle('on',b===m);b.classList.toggle('ghost',b!==m)});return}
-   if(e.target.closest('[data-close]')){removeMenu();return}
-   const dest=e.target.closest('[data-dest]')?.dataset.dest;if(!dest||!chosen)return;
-   const src=chosen.kind,id=chosen.id;
-   let item=src==='dict'?DB.dict.find(x=>x.id===id):src==='word'?DB.words.find(x=>x.id===id):src==='vocab'?DB.vocab.find(x=>x.id===id):DB.lit.posts.find(x=>x.id===id);
-   if(!item){removeMenu();return}
-   if(src==='lit'&&dest!=='lit'){alert('Literature post-কে word category-তে স্বয়ংক্রিয়ভাবে রূপান্তর করা যাবে না।');return}
-   if(src!=='lit'&&dest==='lit'&&(!item.marma&&!item.bn&&!item.en)){alert('এই item-এ Literature post বানানোর মতো text নেই।');return}
-   const x=JSON.parse(JSON.stringify(item));x.id=uid();
-   if(dest==='dict'||dest==='word'){
-    if(dest==='dict'){delete x.cat;DB.dict.unshift(x)}else{x.cat=x.cat||'Others';DB.words.unshift(x)}
-   }else if(dest==='vocab'){
-    x.cat=x.cat||'';DB.vocab.unshift(x)
-   }else if(dest==='lit'){
-    if(src==='lit'){DB.lit.posts.unshift(x)}
-    else{
-     x.title=item.marma||item.bn||'';
-     x.body=[item.marma,item.pron,item.bn,item.en].filter(Boolean).join('\n');
-     x.cat=DB.lit.cats[0]?.id||'';x.by=ME||'';x.an=user().name||'';x.ts=Date.now();x.rx={};x.cm=[];
-     delete x.marma;delete x.pron;delete x.bn;delete x.en;delete x.tense;
-     DB.lit.posts.unshift(x);
-    }
-   }
-   if(mode==='move'){
-    if(src==='dict')DB.dict=DB.dict.filter(y=>y.id!==id);
-    else if(src==='word')DB.words=DB.words.filter(y=>y.id!==id);
-    else if(src==='vocab')DB.vocab=DB.vocab.filter(y=>y.id!==id);
-    else if(src==='lit')DB.lit.posts=DB.lit.posts.filter(y=>y.id!==id);
-   }
-   save();removeMenu();body();
-  });
-  document.body.append(back,box);
- }
- document.addEventListener('pointerdown',e=>{
-  if(e.pointerType==='mouse'&&e.button!==0)return;
-  const item=locate(e);if(!item)return;
-  start={x:e.clientX,y:e.clientY,item};
-  clearTimeout(timer);timer=setTimeout(()=>{suppressUntil=Date.now()+650;showMenu(item)},650);
- },{passive:true});
- document.addEventListener('pointermove',e=>{if(start&&Math.hypot(e.clientX-start.x,e.clientY-start.y)>12){clearTimeout(timer);timer=null;start=null}},{passive:true});
- ['pointerup','pointercancel'].forEach(ev=>document.addEventListener(ev,()=>{clearTimeout(timer);timer=null;start=null},{passive:true}));
- document.addEventListener('click',e=>{if(Date.now()<suppressUntil&&e.target.closest('.ml-movable')){e.preventDefault();e.stopImmediatePropagation()}},true);
-})();
 
 document.addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('.pp'))e.preventDefault()});
 document.addEventListener('dragstart',e=>{if(e.target.closest&&e.target.closest('.pp'))e.preventDefault()});
