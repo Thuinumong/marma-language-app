@@ -163,6 +163,10 @@ body.hidepp .pp{visibility:hidden}
 #cellFloat input,#cellFloat textarea{}
 /* Keep the Sangbusa editor anchored while its inputs are updated. */
 .float-editor{position:fixed!important;inset-inline-start:clamp(8px,3vw,18px);overscroll-behavior:contain;touch-action:pan-y;will-change:left,top,width,height}
+.float-editor .float-handle{touch-action:none!important;cursor:move}
+.float-editor .resize-grip{display:block!important;opacity:0!important}
+.float-editor .float-handle,.float-editor .resize-grip{touch-action:none!important;-webkit-user-select:none;user-select:none}
+.float-editor .resize-grip{pointer-events:auto}
 .float-editor input,.float-editor textarea,.float-editor select{scroll-margin-top:54px;overflow-anchor:none}
 html{overflow-anchor:none}
 .float-editor .resize-grip{position:absolute;z-index:25;touch-action:none!important;background:transparent;font-size:0;color:transparent;overflow:hidden}
@@ -590,8 +594,8 @@ function wordPage(){
 (function(){
  let action=null, pinch=null;
  const grips=['n','s','e','w','ne','nw','se','sw'];
- const allowedIds=new Set(['itemFloat','vocabFloat','cellFloat']);
- const isAllowed=el=>!!el&&allowedIds.has(el.id);
+ // Apply the same invisible drag/resize/zoom controls to every floating editor, including dynamically-created editors on every page.
+ const isAllowed=el=>!!el&&el.classList&&el.classList.contains('float-editor');
  function addGrips(el){
   if(!isAllowed(el)||el.querySelector('.resize-grip'))return;
   grips.forEach(dir=>{const g=document.createElement('div');g.className='resize-grip '+dir;g.dataset.resize=dir;g.setAttribute('aria-label','');g.setAttribute('title','');el.appendChild(g)});
@@ -636,6 +640,25 @@ function wordPage(){
  },{passive:false});
  const finish=()=>{if(action)remember(action.el);action=null;};
  document.addEventListener('pointerup',finish);document.addEventListener('pointercancel',finish);
+ // Android fallback: explicitly handle touch gestures for drag/resize when pointer capture is unreliable.
+ let touchAction=null;
+ document.addEventListener('touchstart',e=>{
+  const target=e.target,grip=target.closest&&target.closest('.resize-grip');
+  if(grip){const el=grip.closest('.float-editor');if(!isAllowed(el))return;const t=e.touches[0],r=el.getBoundingClientRect();touchAction={type:'resize',el,dir:grip.dataset.resize,x:t.clientX,y:t.clientY,left:r.left,top:r.top,width:r.width,height:r.height};e.preventDefault();return;}
+  const h=target.closest&&target.closest('.float-handle');
+  if(!h||target.closest('button,input,textarea,select,a'))return;
+  const el=h.closest('.float-editor');if(!isAllowed(el))return;const t=e.touches[0],r=el.getBoundingClientRect();touchAction={type:'drag',el,x:t.clientX,y:t.clientY,left:r.left,top:r.top,width:r.width,height:r.height};e.preventDefault();
+ },{passive:false});
+ document.addEventListener('touchmove',e=>{
+  if(!touchAction||e.touches.length!==1)return;const a=touchAction,t=e.touches[0],dx=t.clientX-a.x,dy=t.clientY-a.y,el=a.el;
+  if(a.type==='drag'){el.style.left=Math.max(0,Math.min(innerWidth-el.offsetWidth,a.left+dx))+'px';el.style.top=Math.max(0,Math.min(innerHeight-60,a.top+dy))+'px';el.style.right='auto';}
+  else{let l=a.left,top=a.top,w=a.width,h=a.height;const d=a.dir,minW=220,minH=150;
+   if(d.includes('e'))w=Math.max(minW,Math.min(innerWidth-l,a.width+dx));if(d.includes('s'))h=Math.max(minH,Math.min(innerHeight-top,a.height+dy));
+   if(d.includes('w')){w=Math.max(minW,Math.min(a.width+a.left,a.width-dx));l=a.left+(a.width-w)}if(d.includes('n')){h=Math.max(minH,Math.min(a.height+a.top,a.height-dy));top=a.top+(a.height-h)}
+   el.style.left=Math.max(0,l)+'px';el.style.top=Math.max(0,top)+'px';el.style.width=w+'px';el.style.height=h+'px';el.style.right='auto';
+  }e.preventDefault();
+ },{passive:false});
+ const touchFinish=()=>{if(touchAction)remember(touchAction.el);touchAction=null};document.addEventListener('touchend',touchFinish,{passive:true});document.addEventListener('touchcancel',touchFinish,{passive:true});
  // Two-finger pinch on the floating editor changes its content zoom; one-finger scrolling remains available.
  document.addEventListener('touchstart',e=>{
   const el=e.target.closest&&e.target.closest('.float-editor');
@@ -651,6 +674,7 @@ function wordPage(){
  },{passive:true});
  document.addEventListener('touchend',e=>{if(pinch&&e.touches.length<2){remember(pinch.el);pinch=null}},{passive:true});
  const obs=new MutationObserver(()=>document.querySelectorAll('.float-editor').forEach(el=>{if(isAllowed(el)){addGrips(el);restore(el)}}));
+ document.querySelectorAll('.float-editor').forEach(el=>{addGrips(el);restore(el)});
  obs.observe(document.documentElement,{childList:true,subtree:true});
  window.addEventListener('resize',()=>document.querySelectorAll('.float-editor').forEach(el=>{if(!isAllowed(el))return;el.style.left=Math.max(0,Math.min(innerWidth-el.offsetWidth,parseFloat(el.style.left)||0))+'px';el.style.top=Math.max(0,Math.min(innerHeight-60,parseFloat(el.style.top)||0))+'px'}));
 })();
