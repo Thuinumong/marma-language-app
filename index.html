@@ -1162,7 +1162,12 @@ else if(a==='canceledit'){if(S.edit==='new'){S.addDraft=S.addDraft||{};delete S.
 else if(a==='delitem'){if(confirm(t('sure'))){const cc=d.c||S.col,x=DB[cc].find(x=>x.id===d.id);adel(x&&x.k);DB[cc]=DB[cc].filter(x=>x.id!==d.id);save();body()}}
  else if(a==='newtbl'){const box=$('#newTableBox');if(S.newTblDraftId&&S.tid===S.newTblDraftId&&box){S.tblBoxHidden=box.style.display!=='none';box.style.display=S.tblBoxHidden?'none':'';return}const x={id:uid(),cap:'New table',cols:['',''],rows:[{id:uid(),c:[E(),E()]}]};DB.tables.push(x);S.tid=x.id;S.newTblDraftId=x.id;S.tblBoxHidden=false;S.cell=null;save();body()}
  else if(a==='canceltbl'){if(S.newTblDraftId){const x=DB.tables.find(y=>String(y.id)===String(S.newTblDraftId));if(x){x.rows.forEach(r=>r.c.forEach(y=>adel(y.k)));DB.tables=DB.tables.filter(y=>y!==x)}S.tid=null;S.cell=null;S.newTblDraftId=null;S.tblBoxHidden=false;save();body()}}
- else if(a==='edittbl'){S.tid=d.id;S.cell=null;body()}
+ else if(a==='edittbl'){
+  // Preserve the current table's unfinished caption/cell edits before switching to another table.
+  syncT();
+  if(S.tid) save();
+  S.tid=d.id; S.cell=null; S.tblBoxHidden=false; body();
+ }
  else if(a==='backtbl'){if(S.newTblDraftId){const x=DB.tables.find(y=>String(y.id)===String(S.newTblDraftId));if(x){x.rows.forEach(r=>r.c.forEach(y=>adel(y.k)));DB.tables=DB.tables.filter(y=>y!==x)}S.newTblDraftId=null}else{syncT();save()}S.tid=null;S.cell=null;S.tblBoxHidden=false;body()}
  else if(a==='deltbl'){if(confirm(t('sure'))){const x=DB.tables.find(x=>x.id===d.id);x.rows.forEach(r=>r.c.forEach(y=>adel(y.k)));DB.tables=DB.tables.filter(y=>y!==x);save();body()}}
  else if(a==='addcol'){syncT();const x=curT();x.cols.push('');x.rows.forEach(r=>r.c.push(E()));save();body()}
