@@ -254,35 +254,31 @@ body.nosel{user-select:none;-webkit-user-select:none}
 }
 
 
-/* Compact, content-adaptive Sangbusa boxes: reduce excess whitespace while allowing longer words to wrap. */
+/* Sangbusa box dimensions restored to Version 5.0 sizing; keep newer scroll and centered-text behavior. */
 .tblw .tw table, .tblw table {
   table-layout: auto !important;
   width: max-content;
-  min-width: 0;
+  min-width: 100%;
   max-width: none;
   border-spacing: 0;
 }
 .tblw .tw td, .tblw .tw th, .tblw td, .tblw th {
   box-sizing: border-box;
-  padding: 6px;
-  line-height: 1.42;
-  font-size: .92rem;
+  padding: 7px 9px;
+  line-height: 1.5;
+  font-size: .9rem;
   vertical-align: middle;
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: normal;
 }
 .tblw .tw td.bx, .tblw td.bx {
-  min-width: 0 !important;
-  max-width: 260px;
+  min-width: 110px !important;
+  max-width: none;
   width: auto;
 }
 .tblw .tw td .play, .tblw td .play { width: 24px; height: 24px; }
-.tblw .tw caption, .tblw caption { padding: 2px 0 5px; font-size: 1rem; }
-@media (max-width: 600px) {
-  .tblw .tw td, .tblw .tw th, .tblw td, .tblw th { padding: 5px; font-size: .88rem; }
-  .tblw .tw td.bx, .tblw td.bx { max-width: 200px; }
-}
+.tblw .tw caption, .tblw caption { padding: 2px 0 8px; font-size: 1.05rem; }
 
 /* Sangbusa: center every cell's text horizontally and vertically. */
 .tw td.bx, .tblw td.bx { text-align: center; vertical-align: middle; }
