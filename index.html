@@ -273,7 +273,7 @@ body.nosel{user-select:none;-webkit-user-select:none}
 }
 .tblw .tw td, .tblw .tw th, .tblw td, .tblw th {
   box-sizing: border-box;
-  padding: 7px 9px;
+  padding: 3px 5px;
   line-height: 1.5;
   font-size: .9rem;
   vertical-align: middle;
@@ -282,15 +282,15 @@ body.nosel{user-select:none;-webkit-user-select:none}
   word-break: normal;
 }
 .tblw .tw td.bx, .tblw td.bx {
-  min-width: 130px !important;
-  max-width: 260px;
+  min-width: 88px !important;
+  max-width: 220px;
   width: auto;
 }
 .tblw .tw td .play, .tblw td .play { width: 24px; height: 24px; }
 .tblw .tw caption, .tblw caption { padding: 2px 0 8px; font-size: 1.05rem; }
 
 /* Sangbusa: center every cell's text horizontally and vertically. */
-.tw td.bx, .tblw td.bx { text-align: center; vertical-align: middle; min-width:130px; max-width:260px; }
+.tw td.bx, .tblw td.bx { text-align: center; vertical-align: middle; min-width:88px; max-width:220px; }
 .tw td.bx .mm, .tw td.bx .pr, .tw td.bx .bn, .tw td.bx .en,
 .tblw td.bx .mm, .tblw td.bx .pr, .tblw td.bx .bn, .tblw td.bx .en { text-align: center; }
 
@@ -482,7 +482,7 @@ function stepUndo(redo){const src=redo?REDO:UNDO,dst=redo?UNDO:REDO,e=src.pop();
 function updUR(){const u=$('#undoB'),r=$('#redoB');if(u)u.disabled=!UNDO.length;if(r)r.disabled=!REDO.length}
 const urBtns=()=>`<span id="urw" ${URSHOW?'':'hidden'}><button class="ubtn" id="undoB" data-act="undo" ${UNDO.length?'':'disabled'} aria-label="${t('undo')}" title="${t('undo')} (Ctrl+Z)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button><button class="ubtn" id="redoB" data-act="redo" ${REDO.length?'':'disabled'} aria-label="${t('redo')}" title="${t('redo')} (Ctrl+Y)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button></span>`;
 const save=()=>{store.set('ml_db',DB);try{recordUndo()}catch(e){}if(cloudHook)cloudHook()};
-let USERS=store.get('ml_users',[]),ME=store.get('ml_sess',null),CFG=store.get('ml_cfg',{theme:'auto',size:16,lang:'en'});
+let USERS=store.get('ml_users',[]),ME=store.get('ml_sess',null),CFG=store.get('ml_cfg',{theme:'dark',size:16,lang:'en'});
 if(!CFG.lang)CFG.lang='en';
 if(ME&&!store.get('ml_auth',null)){ME=null;store.set('ml_sess',null)} // old local-only accounts: log in again with the cloud account
 USERS.forEach(u=>{if(!u.role)u.role=u.admin?'main':'user';if(!u.id)u.id=u.email});
@@ -1563,3 +1563,15 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
 
 </body>
 </html>
+
+<style id="ml-sangbusa-compact-cells-page-scroll-fix">
+/* Compact whitespace without changing the existing font size. Auto table layout sizes each column/row from its largest cell content. */
+.tblw .tw table, .tblw table, .tw table { table-layout:auto !important; width:max-content; min-width:100%; }
+.tblw .tw td, .tblw .tw th, .tblw td, .tblw th, .tw td, .tw th { padding:3px 5px !important; box-sizing:border-box; vertical-align:middle; }
+.tblw .tw td.bx, .tblw td.bx, .tw td.bx { min-width:88px !important; max-width:220px !important; width:auto !important; }
+.tw { overflow-x:auto !important; overflow-y:visible !important; touch-action:pan-x pan-y !important; overscroll-behavior-y:auto !important; -webkit-overflow-scrolling:touch; }
+@media (hover:none) and (pointer:coarse) {
+  #app.shell main#body { touch-action:pan-y !important; }
+  #app.shell main#body .tw { overflow-x:auto !important; overflow-y:visible !important; touch-action:pan-y pan-x !important; overscroll-behavior: auto !important; }
+}
+</style>
