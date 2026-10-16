@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Marma Language</title>
 <meta name="theme-color" content="#02555B">
-<meta name="app-revision" content="6.0-table-anywhere-two-axis-scroll-keyboard-arrows">
+<meta name="app-revision" content="6.0-sangbusa-v5-logic-global-keyboard-nav">
 <meta name="description" content="Learn and preserve the Marma language - works online and offline.">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
@@ -228,15 +228,13 @@ body.nosel{user-select:none;-webkit-user-select:none}
 /* iOS Safari + Android: keep Sangbusa tables horizontally/vertically scrollable without snapping to the first cell. */
 .tw, .tblw {
   -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
   overscroll-behavior: contain;
   min-width: 0;
   max-width: 100%;
 }
 .tw {
   overflow-x: auto !important;
-  /* Sangbusa vertical gestures scroll the whole page; table wrappers scroll horizontally only. */
-  overflow-y: hidden !important;
+  overflow-y: auto;
   touch-action: pan-x pan-y;
   -webkit-transform: translateZ(0);
 }
@@ -256,7 +254,12 @@ body.nosel{user-select:none;-webkit-user-select:none}
 }
 
 
-/* Sangbusa box dimensions restored to Version 5.0 sizing; keep newer scroll and centered-text behavior. */
+/* Sangbusa editor stays fixed while typing; restore Version 5.0 table cell sizing. */
+#cellFloat{position:fixed!important;left:12px;top:88px;width:min(420px,calc(100vw - 24px));max-height:calc(100dvh - 104px);overflow:auto;z-index:1000;overscroll-behavior:contain;box-sizing:border-box;overflow-anchor:none}
+#cellFloat input,#cellFloat textarea{width:100%;box-sizing:border-box;overflow-anchor:none}
+#cellFloat .float-handle{position:sticky;top:0;z-index:3}
+@media(max-width:520px){#cellFloat{left:8px;top:76px;width:calc(100vw - 16px);max-height:calc(100dvh - 88px)}}
+/* Version 5.0 table dimensions, while preserving the newer page and keyboard features. */
 .tblw .tw table, .tblw table {
   table-layout: auto !important;
   width: max-content;
@@ -275,15 +278,15 @@ body.nosel{user-select:none;-webkit-user-select:none}
   word-break: normal;
 }
 .tblw .tw td.bx, .tblw td.bx {
-  min-width: 110px !important;
-  max-width: none;
+  min-width: 130px !important;
+  max-width: 260px;
   width: auto;
 }
 .tblw .tw td .play, .tblw td .play { width: 24px; height: 24px; }
 .tblw .tw caption, .tblw caption { padding: 2px 0 8px; font-size: 1.05rem; }
 
 /* Sangbusa: center every cell's text horizontally and vertically. */
-.tw td.bx, .tblw td.bx { text-align: center; vertical-align: middle; }
+.tw td.bx, .tblw td.bx { text-align: center; vertical-align: middle; min-width:130px; max-width:260px; }
 .tw td.bx .mm, .tw td.bx .pr, .tw td.bx .bn, .tw td.bx .en,
 .tblw td.bx .mm, .tblw td.bx .pr, .tblw td.bx .bn, .tblw td.bx .en { text-align: center; }
 
@@ -1460,42 +1463,6 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
   // Preserve deliberate typing, editor movement, resizing and button activation.
   if(interactive(e)){active=false;scroller=null;verticalTarget=null;}
  },{passive:true,capture:true});
- document.addEventListener('touchmove',e=>{
-  if(!active||e.touches.length!==1)return;
-  const t=e.touches[0],dx=t.clientX-sx,dy=t.clientY-sy;
-  if(!axis){if(Math.max(Math.abs(dx),Math.abs(dy))<7)return;axis=Math.abs(dx)>Math.abs(dy)*1.15?'x':'y';}
-  if(axis==='x'){
-   // Explicitly route horizontal drags from ANY point inside a table to its own scroller.
-   // This works even when the table has no vertical scrollbar/overflow.
-   if(scroller){
-    const max=Math.max(0,scroller.scrollWidth-scroller.clientWidth);
-    const delta=lastX-t.clientX;
-    if(max>1 && ((delta>0&&scroller.scrollLeft<max)||(delta<0&&scroller.scrollLeft>0))){
-     scroller.scrollLeft=Math.max(0,Math.min(max,scroller.scrollLeft+delta));
-     if(e.cancelable)e.preventDefault();
-    }
-   }
-   lastX=t.clientX;lastY=t.clientY;
-   return;
-  }
-  // Route vertical drags that begin on a table cell to the nearest scrollable table/page container.
-  // If the table itself has no vertical overflow, scroll the page/document instead.
-  if(verticalTarget){
-   let target=verticalTarget,delta=lastY-t.clientY,max=maxScrollY(target);
-   if((delta>0&&target.scrollTop>=max-1)||(delta<0&&target.scrollTop<=1)){
-    const doc=document.scrollingElement||document.documentElement;
-    const m=main();
-    if(target!==doc&&m&&maxScrollY(m)>1&&((delta>0&&m.scrollTop<maxScrollY(m)-1)||(delta<0&&m.scrollTop>1)))target=m;
-    else if(target!==doc&&((delta>0&&doc.scrollTop<maxScrollY(doc)-1)||(delta<0&&doc.scrollTop>1)))target=doc;
-    max=maxScrollY(target);
-   }
-   if(max>1&&((delta>0&&target.scrollTop<max)||(delta<0&&target.scrollTop>0))){
-    target.scrollTop=Math.max(0,Math.min(max,target.scrollTop+delta));
-    if(e.cancelable)e.preventDefault();
-   }
-  }
-  lastY=t.clientY;lastX=t.clientX;
- },{passive:false,capture:true});
  document.addEventListener('touchend',e=>{
   if(!active||e.changedTouches.length!==1){active=false;return;}
   const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy,duration=Date.now()-t0;active=false;
