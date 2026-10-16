@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Marma Language</title>
 <meta name="theme-color" content="#02555B">
-<meta name="app-revision" content="6.0-sangbusa-v5-logic-global-keyboard-nav">
+<meta name="app-revision" content="6.0-sangbusa-restored-v5-behavior">
 <meta name="description" content="Learn and preserve the Marma language - works online and offline.">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
@@ -234,10 +234,14 @@ body.nosel{user-select:none;-webkit-user-select:none}
 }
 .tw {
   overflow-x: auto !important;
-  overflow-y: auto;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none;
   touch-action: pan-x pan-y;
   -webkit-transform: translateZ(0);
 }
+/* Keep horizontal table scrolling available, but hide the scrollbar itself. */
+.tw::-webkit-scrollbar { width: 0 !important; height: 0 !important; display: none !important; }
 .tw table, .tblw table {
   width: max-content;
   min-width: 100%;
@@ -300,6 +304,16 @@ body.nosel{user-select:none;-webkit-user-select:none}
   #app.shell main#body .float-editor .float-handle,
   #app.shell main#body .float-editor .resize-grip { touch-action: none !important; }
 }
+
+/* Sangbusa rollback: restore Version 5.0 behavior; keep the rest of Version 6.0 unchanged. */
+.tw { overflow-x:auto !important; overflow-y:auto !important; scrollbar-width:thin !important; -ms-overflow-style:auto !important; touch-action:pan-x pan-y; }
+.tw::-webkit-scrollbar { width:5px !important; height:5px !important; display:block !important; }
+.tw::-webkit-scrollbar-thumb { background:transparent; border-radius:8px; }
+html.ml-scrolling .tw::-webkit-scrollbar-thumb, body.ml-scrolling .tw::-webkit-scrollbar-thumb, .ml-scrolling .tw::-webkit-scrollbar-thumb { background:var(--pr); }
+.float-editor { left:18px !important; top:110px !important; width:min(430px,calc(100vw - 36px)) !important; max-width:calc(100vw - 20px) !important; height:auto !important; max-height:calc(100vh - 24px) !important; overflow:auto !important; resize:none; }
+.float-editor .resize-grip { opacity:1 !important; }
+@media(max-width:520px){ .float-editor { left:8px !important; top:90px !important; width:calc(100vw - 16px) !important; max-height:calc(100vh - 16px) !important; } }
+
 </style>
 </head>
 <body>
@@ -835,8 +849,6 @@ function gStartGame(id){const src=S.gsrc||'words';
 function gFinishQuiz(g){const id=g.id==='listen'?'listen':g.id;g.newBest=setBest(id,g.score)&&g.score>0}
 function body0(){
  const B=$('#body');
- // Preserve the current Sangbusa viewport and each table's horizontal scroll while cell editors rerender.
- const _sangScroll={body:B?B.scrollTop:0,win:window.scrollY||0,wraps:B?[...B.querySelectorAll('.tw,.tblw')].map((el,i)=>({i,cls:el.classList.contains('tw')?'tw':'tblw',left:el.scrollLeft,top:el.scrollTop,id:el.closest('.tblw')?.dataset.id||''})):[]};
  const q=S.q.trim().toLowerCase();let h='';
  if(q){const parts=['dict','words','sentences'].map(c=>[c,DB[c].filter(i=>match(i,q))]).filter(p=>p[1].length);
   const ts=DB.tables.map(x=>[x,x.cap.toLowerCase().includes(q)?x.rows:x.rows.filter(r=>r.c.some(c=>ctext(c).includes(q)))]).filter(p=>p[1].length);
@@ -857,21 +869,6 @@ const IC={dict:'dict',word:'words',sent:'sentences'}[S.tab];
  if(!q&&S.tab==='dict'&&isAdmin()){const m=['dict','words'];h=h.replace(/<div class="seg">/,`<button class="btn" data-act="iadd" data-c="${IC}">＋ ${t('addNew')}</button>${S.inl&&S.edit&&m.includes(S.col)?itemForm(S.col):''}<div class="seg">`)}
  if(hasNew()&&!S.updHide){const u=updSorted()[0];h=`<div class="card" style="border-color:var(--ac)"><div class="top"><div><b>🔔 ${t('newVer')}: ${esc(u.ver)}</b>${u.note?`<div class="en">${esc(u.note)}</div>`:''}</div><button class="x" data-act="updhide" aria-label="close">✕</button></div>${safeLink(u.link)?`<a class="btn sm" href="${esc(u.link)}" target="_blank" rel="noopener">⬇ ${t('download')}</a>`:''}</div>`+h}
  {const v=q?'grid':getView(S.tab);B.className=(v==='list'?'narrow':'grid')+(v==='compact'?' v-compact':'')}B.innerHTML=h;
- // Restore scroll after redraw; never jump the Sangbusa table back to its first cell.
- if(S.tab==='sang'&&_sangScroll){
-  const restoreSangScroll=()=>{
-   if(B)B.scrollTop=_sangScroll.body;
-   window.scrollTo(0,_sangScroll.win);
-   const nw=[...B.querySelectorAll('.tw,.tblw')];
-   _sangScroll.wraps.forEach(st=>{
-    let el=st.id?nw.find(n=>n.closest('.tblw')?.dataset.id===st.id):nw[st.i];
-    if(!el)el=nw[st.i];
-    if(el){el.scrollLeft=st.left;el.scrollTop=st.top;}
-   });
-  };
-  restoreSangScroll();
-  requestAnimationFrame(()=>{restoreSangScroll();requestAnimationFrame(restoreSangScroll)});
- }
  hydrate();try{updateBadge()}catch(e){}}
 function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button>`;
  if(S.sub==='profile')return `${back}<h2>${t('profile')}</h2><div class="card" style="text-align:center">${av(96)}<div style="margin-top:8px"><b>${esc(u.name)}</b></div><div class="en">${t('role_'+u.role)}</div>${u.bio?`<div class="pbody" style="margin:4px 0">${esc(u.bio)}</div>`:''}${u.profession?`<div style="margin-top:4px">💼 ${esc(u.profession)}</div>`:''}${u.hometown?`<div>📍 ${esc(u.hometown)}</div>`:''}<div style="margin-top:6px">${u.email?`<div>✉️ ${esc(u.email)}</div>`:''}${u.phone?`<div>📞 ${esc(u.phone)}</div>`:''}</div></div><button class="btn" data-act="sub" data-s="editprofile">✏️ ${t('editProfile')}</button><div class="seg" style="margin-top:12px"><button class="on" type="button">Timeline</button></div><div class="timeline-posts">${(()=>{const shares=store.get('ml_post_shares_'+ME,[]),own=DB.lit.posts.filter(p=>String(p.by)===String(ME)),shared=shares.map(x=>({x,p:DB.lit.posts.find(p=>String(p.id)===String(x.id))})).filter(z=>z.p);const seen=new Set();const oh=own.map(p=>{seen.add(String(p.id));return post(p)}).join('');const sh=shared.filter(z=>!seen.has(String(z.p.id))).map(z=>post(z.p,{shared:true,sharedName:u.name})).join('');return oh+sh||`<p class="note">${t('noPosts')}</p>`})()}</div><h3>${t('blockedUsers')}</h3>${(u.blocked||[]).map(id=>`<div class="card top"><div>${esc(nameOf(id))}</div><button class="btn sm" data-act="unblock" data-u="${esc(id)}">${t('unblock')}</button></div>`).join('')||`<p class="note">${t('noBlocked')}</p>`}`;
@@ -1597,11 +1594,6 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
  document.addEventListener('keydown',e=>{
   if(e.altKey||e.ctrlKey||e.metaKey||e.shiftKey||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;
   const el=document.activeElement;if(!isField(el))return;
-  // Sangbusa language inputs keep spreadsheet-like navigation between cells.
-  if(cellFields.includes(el.id)){
-   const shouldMove=e.key==='ArrowUp'||e.key==='ArrowDown'||((e.key==='ArrowLeft'||e.key==='ArrowRight')&&activeAtEdge(el,e.key));
-   if(shouldMove&&moveTableCell(el,e.key)){e.preventDefault();return;}
-  }
   // Across all app pages, arrows move focus among visible inputs when appropriate.
   // Left/right preserve normal caret editing until the caret reaches the text edge.
   if((e.key==='ArrowLeft'||e.key==='ArrowRight')&&!activeAtEdge(el,e.key))return;
