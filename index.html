@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Marma Language</title>
 <meta name="theme-color" content="#02555B">
-<meta name="app-revision" content="5.5-sangbusa-anywhere-vertical-scroll-page-swipe">
+<meta name="app-revision" content="6.0-table-anywhere-two-axis-scroll-keyboard-arrows">
 <meta name="description" content="Learn and preserve the Marma language - works online and offline.">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
@@ -235,7 +235,8 @@ body.nosel{user-select:none;-webkit-user-select:none}
 }
 .tw {
   overflow-x: auto !important;
-  overflow-y: auto;
+  /* Sangbusa vertical gestures scroll the whole page; table wrappers scroll horizontally only. */
+  overflow-y: hidden !important;
   touch-action: pan-x pan-y;
   -webkit-transform: translateZ(0);
 }
@@ -1440,10 +1441,22 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
   return null;
  };
  const maxScrollY=el=>Math.max(0,el.scrollHeight-el.clientHeight);
+ const findVerticalScroller=e=>{
+  // Never treat a Sangbusa table wrapper as the vertical scroller.
+  // Vertical movement from any table cell should scroll the whole page.
+  for(const n of pathElements(e)){
+   if(!n.matches||n.matches('.tw,.tblw'))continue;
+   const st=getComputedStyle(n);
+   if((st.overflowY==='auto'||st.overflowY==='scroll')&&n.scrollHeight>n.clientHeight+3)return n;
+  }
+  const m=main(),doc=document.scrollingElement||document.documentElement;
+  if(m&&maxScrollY(m)>1)return m;
+  return maxScrollY(doc)>1?doc:(m||doc);
+ };
  document.addEventListener('touchstart',e=>{
   if(e.touches.length!==1){active=false;return;}
   const t=e.touches[0],m=main();sx=lastX=t.clientX;sy=lastY=t.clientY;t0=Date.now();axis='';active=true;
-  scroller=findHorizontalScroller(e);verticalTarget=m;
+  scroller=findHorizontalScroller(e);verticalTarget=findVerticalScroller(e);
   // Preserve deliberate typing, editor movement, resizing and button activation.
   if(interactive(e)){active=false;scroller=null;verticalTarget=null;}
  },{passive:true,capture:true});
@@ -1452,20 +1465,35 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
   const t=e.touches[0],dx=t.clientX-sx,dy=t.clientY-sy;
   if(!axis){if(Math.max(Math.abs(dx),Math.abs(dy))<7)return;axis=Math.abs(dx)>Math.abs(dy)*1.15?'x':'y';}
   if(axis==='x'){
-   // Let the browser pan a horizontally scrollable table. Do not hijack it while it can move.
-   if(scroller){const max=Math.max(0,scroller.scrollWidth-scroller.clientWidth),left=scroller.scrollLeft;
-    if((dx<0&&left<max-2)||(dx>0&&left>2))return;
+   // Explicitly route horizontal drags from ANY point inside a table to its own scroller.
+   // This works even when the table has no vertical scrollbar/overflow.
+   if(scroller){
+    const max=Math.max(0,scroller.scrollWidth-scroller.clientWidth);
+    const delta=lastX-t.clientX;
+    if(max>1 && ((delta>0&&scroller.scrollLeft<max)||(delta<0&&scroller.scrollLeft>0))){
+     scroller.scrollLeft=Math.max(0,Math.min(max,scroller.scrollLeft+delta));
+     if(e.cancelable)e.preventDefault();
+    }
    }
+   lastX=t.clientX;lastY=t.clientY;
    return;
   }
-  // Vertical movement is native by default; when nested wrappers intercept it, move the page container.
-  if(verticalTarget){const max=maxScrollY(verticalTarget);if(max>1){
-   const delta=lastY-t.clientY;
-   if((delta>0&&verticalTarget.scrollTop<max)||(delta<0&&verticalTarget.scrollTop>0)){
-    verticalTarget.scrollTop=Math.max(0,Math.min(max,verticalTarget.scrollTop+delta));
+  // Route vertical drags that begin on a table cell to the nearest scrollable table/page container.
+  // If the table itself has no vertical overflow, scroll the page/document instead.
+  if(verticalTarget){
+   let target=verticalTarget,delta=lastY-t.clientY,max=maxScrollY(target);
+   if((delta>0&&target.scrollTop>=max-1)||(delta<0&&target.scrollTop<=1)){
+    const doc=document.scrollingElement||document.documentElement;
+    const m=main();
+    if(target!==doc&&m&&maxScrollY(m)>1&&((delta>0&&m.scrollTop<maxScrollY(m)-1)||(delta<0&&m.scrollTop>1)))target=m;
+    else if(target!==doc&&((delta>0&&doc.scrollTop<maxScrollY(doc)-1)||(delta<0&&doc.scrollTop>1)))target=doc;
+    max=maxScrollY(target);
+   }
+   if(max>1&&((delta>0&&target.scrollTop<max)||(delta<0&&target.scrollTop>0))){
+    target.scrollTop=Math.max(0,Math.min(max,target.scrollTop+delta));
     if(e.cancelable)e.preventDefault();
    }
-  }}
+  }
   lastY=t.clientY;lastX=t.clientX;
  },{passive:false,capture:true});
  document.addEventListener('touchend',e=>{
@@ -1484,6 +1512,137 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
  // Keep scrolling smooth across every page and every table wrapper, including iOS Safari.
  document.documentElement.style.webkitOverflowScrolling='touch';
  document.addEventListener('DOMContentLoaded',()=>{const m=main();if(m)m.style.webkitOverflowScrolling='touch';},{once:true});
+})();
+</script>
+
+
+<style id="ml-transient-draggable-page-scrollbar">
+/* Custom right-edge scrollbar: hidden while idle, visible only during scrolling; thumb is draggable. */
+#ml-page-scrollbar{position:fixed;z-index:2147483000;right:2px;top:calc(env(safe-area-inset-top,0px) + 8px);bottom:calc(env(safe-area-inset-bottom,0px) + 8px);width:18px;display:block;opacity:0;pointer-events:none;transition:opacity .18s ease;touch-action:none}
+#ml-page-scrollbar.ml-visible{opacity:1;pointer-events:auto}
+#ml-page-scrollbar .ml-track{position:absolute;right:6px;top:0;bottom:0;width:6px;border-radius:8px;background:rgba(100,110,110,.13)}
+#ml-page-scrollbar .ml-thumb{position:absolute;left:0;top:0;width:6px;min-height:32px;border-radius:8px;background:var(--pr,#0F5C5A);box-shadow:0 0 0 1px rgba(255,255,255,.22);touch-action:none}
+@media(prefers-reduced-motion:reduce){#ml-page-scrollbar{transition:none}}
+</style>
+<div id="ml-page-scrollbar" aria-label="Page vertical scrollbar" role="scrollbar" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="ml-track"><div class="ml-thumb"></div></div></div>
+<script id="ml-transient-draggable-page-scrollbar-js">
+(()=>{
+ const bar=document.getElementById('ml-page-scrollbar'); if(!bar)return;
+ const thumb=bar.querySelector('.ml-thumb'),track=bar.querySelector('.ml-track');
+ let timer=0,drag=false,startY=0,startScroll=0,dragTarget=null;
+ const candidates=()=>{
+  const main=document.querySelector('#app.shell main#body')||document.querySelector('#app.shell main')||document.querySelector('#body');
+  return [main,document.scrollingElement,document.documentElement,document.body].filter((x,i,a)=>x&&a.indexOf(x)===i);
+ };
+ const getTarget=()=>{
+  const list=candidates();
+  return list.find(el=>el.scrollHeight>el.clientHeight+3 && (el.scrollTop>0 || el===document.scrollingElement)) || list.find(el=>el.scrollHeight>el.clientHeight+3) || document.scrollingElement;
+ };
+ const maxY=el=>Math.max(0,el.scrollHeight-el.clientHeight);
+ function update(){
+  const el=dragTarget||getTarget(),max=maxY(el),h=track.clientHeight;
+  if(!h||max<=0){bar.style.display='none';return;}
+  bar.style.display='block';const th=Math.max(32,Math.min(h,h*(el.clientHeight/el.scrollHeight)));
+  const top=(h-th)*(el.scrollTop/max);
+  thumb.style.height=th+'px';thumb.style.transform='translateY('+Math.max(0,Math.min(h-th,top))+'px)';
+  bar.setAttribute('aria-valuenow',String(Math.round(100*el.scrollTop/max)));
+ }
+ function show(){update();bar.classList.add('ml-visible');clearTimeout(timer);if(!drag)timer=setTimeout(()=>bar.classList.remove('ml-visible'),850);}
+ document.addEventListener('scroll',show,{capture:true,passive:true});
+ document.addEventListener('touchmove',show,{capture:true,passive:true});
+ document.addEventListener('wheel',show,{passive:true});
+ window.addEventListener('resize',update,{passive:true});
+ // A tap or drag on the thumb/track scrolls the current page vertically.
+ function pointerStart(e){
+  if(e.button!==undefined&&e.button!==0)return;
+  dragTarget=getTarget();if(maxY(dragTarget)<=0)return;
+  drag=true;startY=e.clientY;startScroll=dragTarget.scrollTop;bar.classList.add('ml-visible');clearTimeout(timer);
+  try{bar.setPointerCapture(e.pointerId)}catch(_){}
+  if(e.cancelable)e.preventDefault();
+  if(e.target===track){const r=track.getBoundingClientRect(),h=track.clientHeight,th=thumb.offsetHeight;const ratio=Math.max(0,Math.min(1,(e.clientY-r.top-th/2)/(h-th)));dragTarget.scrollTop=ratio*maxY(dragTarget);startScroll=dragTarget.scrollTop;startY=e.clientY;update();}
+ }
+ function pointerMove(e){if(!drag||!dragTarget)return;const h=track.clientHeight,th=thumb.offsetHeight,range=Math.max(1,h-th),max=maxY(dragTarget);dragTarget.scrollTop=startScroll+(e.clientY-startY)*max/range;update();}
+ function pointerEnd(){if(!drag)return;drag=false;dragTarget=null;show();}
+ bar.addEventListener('pointerdown',pointerStart);bar.addEventListener('pointermove',pointerMove);bar.addEventListener('pointerup',pointerEnd);bar.addEventListener('pointercancel',pointerEnd);bar.addEventListener('lostpointercapture',pointerEnd);
+ // Touch fallback for older iOS WebViews.
+ bar.addEventListener('touchstart',e=>{if(!e.touches.length)return;pointerStart({button:0,clientY:e.touches[0].clientY,pointerId:1,target:e.target,cancelable:e.cancelable,preventDefault:()=>e.preventDefault()})},{passive:false});
+ bar.addEventListener('touchmove',e=>{if(e.touches.length)pointerMove({clientY:e.touches[0].clientY})},{passive:false});
+ bar.addEventListener('touchend',pointerEnd,{passive:true});
+ update();setTimeout(update,250);
+})();
+</script>
+
+
+<script id="ml-keyboard-arrow-navigation-v2">
+(()=>{
+ 'use strict';
+ const cellFields=['cf_m','cf_p','cf_b','cf_e'];
+ const fieldSelector='input:not([type="hidden"]):not([type="file"]):not([type="button"]):not([type="submit"]):not([type="reset"]),textarea,select,[contenteditable="true"]';
+ const isField=el=>!!(el&&el.matches&&el.matches(fieldSelector));
+ const visibleFields=()=>[...document.querySelectorAll(fieldSelector)].filter(el=>!el.disabled&&el.getClientRects().length&&!el.closest('[inert]'));
+ const focusField=(el,caret)=>{
+  if(!el)return;
+  el.focus({preventScroll:true});
+  if(typeof caret==='number'&&typeof el.setSelectionRange==='function')try{el.setSelectionRange(caret,caret)}catch(_){}
+  el.scrollIntoView({block:'nearest',inline:'nearest',behavior:'auto'});
+ };
+ const activeAtEdge=(el,key)=>{
+  if(typeof el.selectionStart!=='number'||typeof el.selectionEnd!=='number')return true;
+  if(el.selectionStart!==el.selectionEnd)return false;
+  return key==='ArrowLeft'?el.selectionStart===0:key==='ArrowRight'?el.selectionEnd===String(el.value||'').length:false;
+ };
+ const moveTableCell=(el,key)=>{
+  if(typeof S==='undefined'||!S.cell||!S.tid||typeof DB==='undefined')return false;
+  const fi=cellFields.indexOf(el.id);if(fi<0)return false;
+  const x=typeof curT==='function'?curT():null;if(!x||!x.rows)return false;
+  let r=S.cell.r,c=S.cell.c;
+  if(key==='ArrowLeft')c--;else if(key==='ArrowRight')c++;else if(key==='ArrowUp')r--;else if(key==='ArrowDown')r++;else return false;
+  if(r<0||r>=x.rows.length||c<0||!x.rows[r]||c>=x.rows[r].c.length)return true;
+  if(typeof syncT==='function')syncT();
+  S.cell={r,c};if(typeof body==='function')body();
+  requestAnimationFrame(()=>focusField(document.getElementById(cellFields[fi])));
+  return true;
+ };
+ const neighbor=(el,key,fields)=>{
+  const a=el.getBoundingClientRect(),acx=(a.left+a.right)/2,acy=(a.top+a.bottom)/2;
+  let best=null,bestScore=Infinity;
+  for(const f of fields){if(f===el)continue;const b=f.getBoundingClientRect(),cx=(b.left+b.right)/2,cy=(b.top+b.bottom)/2;
+   let primary,secondary;
+   if(key==='ArrowUp'||key==='ArrowDown'){
+    if(key==='ArrowUp'?cy>=acy-2:cy<=acy+2)continue;
+    primary=Math.abs(cy-acy);secondary=Math.abs(cx-acx);
+   }else{
+    if(key==='ArrowLeft'?cx>=acx-2:cx<=acx+2)continue;
+    primary=Math.abs(cx-acx);secondary=Math.abs(cy-acy);
+   }
+   const score=primary+secondary*1.8;
+   if(score<bestScore){best=f;bestScore=score;}
+  }
+  return best;
+ };
+ const textareaAtVerticalEdge=(el,key)=>{
+  if(el.tagName!=='TEXTAREA')return true;
+  const v=el.value||'',pos=el.selectionStart||0;
+  if(key==='ArrowUp')return !v.slice(0,pos).includes('\n');
+  if(key==='ArrowDown')return !v.slice(pos).includes('\n');
+  return true;
+ };
+ document.addEventListener('keydown',e=>{
+  if(e.altKey||e.ctrlKey||e.metaKey||e.shiftKey||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;
+  const el=document.activeElement;if(!isField(el))return;
+  // Sangbusa language inputs keep spreadsheet-like navigation between cells.
+  if(cellFields.includes(el.id)){
+   const shouldMove=e.key==='ArrowUp'||e.key==='ArrowDown'||((e.key==='ArrowLeft'||e.key==='ArrowRight')&&activeAtEdge(el,e.key));
+   if(shouldMove&&moveTableCell(el,e.key)){e.preventDefault();return;}
+  }
+  // Across all app pages, arrows move focus among visible inputs when appropriate.
+  // Left/right preserve normal caret editing until the caret reaches the text edge.
+  if((e.key==='ArrowLeft'||e.key==='ArrowRight')&&!activeAtEdge(el,e.key))return;
+  // Textareas retain native up/down cursor movement until the first/last line edge.
+  if((e.key==='ArrowUp'||e.key==='ArrowDown')&&!textareaAtVerticalEdge(el,e.key))return;
+  const fields=visibleFields();const next=neighbor(el,e.key,fields);if(!next)return;
+  e.preventDefault();focusField(next);
+ },true);
 })();
 </script>
 
