@@ -138,9 +138,9 @@ body.hidepp .pp,body.hidepp .pvp{visibility:hidden}
 .unm{background:none;border:0;padding:0;font:inherit;font-weight:600;color:inherit;cursor:pointer;text-decoration:none;display:inline}
 .nt{cursor:pointer}.nt.un{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 14%,var(--sf))}
 .verr{color:var(--rd);font-size:.9rem;margin:2px 0}
-.vimg{width:76px;height:76px;object-fit:cover;border-radius:12px;background:var(--bd);flex:0 0 auto}
-.v-compact .vimg{width:36px;height:36px;border-radius:8px}
-.gimg{display:block;max-width:100%;max-height:150px;margin:8px auto;border-radius:12px;object-fit:contain;background:var(--bd);cursor:default!important}.vimg{object-fit:contain;cursor:default!important}
+.vimg{width:76px;height:76px;aspect-ratio:1/1;object-fit:cover;border-radius:12px;background:var(--bd);flex:0 0 auto}
+.v-compact .vimg{width:36px;height:36px;aspect-ratio:1/1;border-radius:8px}
+.gimg{display:block;max-width:100%;max-height:150px;margin:8px auto;border-radius:12px;object-fit:contain;background:var(--bd);cursor:default!important}.vimg{object-fit:cover;cursor:default!important}
 .igrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
 .iopt{padding:6px!important;min-height:90px}
 .iopt .gimg{margin:0;width:100%;max-height:130px}
@@ -328,6 +328,27 @@ html.ml-scrolling .tw::-webkit-scrollbar-thumb, body.ml-scrolling .tw::-webkit-s
 /* Image tap/click opens the full-size viewer; keep hover visually clean (no zoom icon/cursor). */
 img[data-ik]{cursor:default!important}
 img[data-ik]:hover{filter:none!important;outline:none!important}
+/* v8.3: square VisualVocab viewer + square crop dialog */
+#pview.sq .pv-box{width:auto;max-width:96vw}
+#pview.sq .pv-frame{overflow:hidden}
+#pview.sq img{width:min(90vw,82vh,760px);height:min(90vw,82vh,760px);max-height:none;aspect-ratio:1/1;object-fit:contain;background:var(--bd)}
+#cropov{position:fixed;inset:0;z-index:2147483200;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:14px}
+#cropov .cr-box{background:var(--sf);color:var(--tx);border-radius:16px;padding:14px;max-width:96vw;box-shadow:0 18px 50px #0008;display:flex;flex-direction:column;align-items:center;gap:10px}
+#cropov .cr-title{font-weight:700}
+#cropov .cr-stage{position:relative;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;background:#000;border-radius:8px}
+#cropov .cr-img{position:absolute;left:0;top:0;width:100%;height:100%;display:block;pointer-events:none;-webkit-user-drag:none}
+#cropov .cr-sel{position:absolute;box-sizing:border-box;border:2px solid #fff;box-shadow:0 0 0 9999px rgba(0,0,0,.55);cursor:move;touch-action:none;background-image:linear-gradient(rgba(255,255,255,.35),rgba(255,255,255,.35)),linear-gradient(rgba(255,255,255,.35),rgba(255,255,255,.35)),linear-gradient(rgba(255,255,255,.35),rgba(255,255,255,.35)),linear-gradient(rgba(255,255,255,.35),rgba(255,255,255,.35));background-size:1px 100%,1px 100%,100% 1px,100% 1px;background-position:33.33% 0,66.66% 0,0 33.33%,0 66.66%;background-repeat:no-repeat}
+#cropov .cr-h{position:absolute;width:24px;height:24px;box-sizing:border-box;background:#fff;border:2px solid var(--pr);border-radius:50%;touch-action:none}
+#cropov .cr-h[data-c=nw]{left:-4px;top:-4px;cursor:nwse-resize}
+#cropov .cr-h[data-c=ne]{right:-4px;top:-4px;cursor:nesw-resize}
+#cropov .cr-h[data-c=sw]{left:-4px;bottom:-4px;cursor:nesw-resize}
+#cropov .cr-h[data-c=se]{right:-4px;bottom:-4px;cursor:nwse-resize}
+#cropov .cr-sz{display:flex;align-items:center;gap:8px;width:100%;max-width:340px;font-size:.85rem;color:var(--mu)}
+#cropov .cr-rng{flex:1;min-width:0}
+#cropov .cr-note{font-size:.8rem;color:var(--mu);text-align:center;max-width:340px}
+#cropov .cr-btns{display:flex;gap:8px;width:100%;max-width:340px}
+#cropov .cr-btns .btn{flex:1;margin:0}
+@media print{#cropov{display:none!important}}
 </style>
 </head>
 <body>
@@ -1155,9 +1176,66 @@ setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine!==fal
 // </CLOUD>
 
 function syncT(){const x=S.tid&&curT();if(!x||!$('#t_cap'))return;x.cap=val('t_cap');if(S.cell&&$('#cf_m')){const y=(x.rows[S.cell.r]||{c:[]}).c[S.cell.c];if(y){y.m=val('cf_m');y.p=val('cf_p');y.b=val('cf_b');y.e=val('cf_e')}}}
-function openPicView(src,prot){
+function openCrop(file,input){
+ const old=document.getElementById('cropov');if(old)old.remove();
+ const T=(en,bn)=>(typeof CFG!=='undefined'&&CFG&&CFG.lang==='bn')?bn:en;
+ const url=URL.createObjectURL(file),im=new Image();
+ im.onerror=()=>{URL.revokeObjectURL(url);if(file.size>IMG_MAX)showImgErr(input.id)};
+ im.onload=()=>{
+  const nw=im.naturalWidth,nh=im.naturalHeight;if(!nw||!nh){im.onerror();return}
+  const ov=document.createElement('div');ov.id='cropov';ov.setAttribute('role','dialog');ov.setAttribute('aria-label','Crop image');
+  ov.innerHTML=`<div class="cr-box"><div class="cr-title">${T('Crop image (square)','ছবি ক্রপ করুন (স্কয়ার)')}</div><div class="cr-stage"><img class="cr-img" alt="" draggable="false"><div class="cr-sel"><i class="cr-h" data-c="nw"></i><i class="cr-h" data-c="ne"></i><i class="cr-h" data-c="sw"></i><i class="cr-h" data-c="se"></i></div></div><div class="cr-sz"><span>${T('Small','ছোট')}</span><input type="range" class="cr-rng" min="10" max="100" value="100"><span>${T('Big','বড়')}</span></div><div class="cr-note">${T('Drag the square to move it. Drag a corner or use the slider to resize.','স্কয়ার টেনে সরান। কোণা টেনে বা স্লাইডার দিয়ে ছোট-বড় করুন।')}</div><div class="cr-btns"><button type="button" class="btn ghost" data-cr="cancel">${T('Cancel','বাতিল')}</button><button type="button" class="btn" data-cr="ok">${T('Crop','ক্রপ করুন')}</button></div></div>`;
+  document.body.appendChild(ov);
+  const stage=ov.querySelector('.cr-stage'),pic=ov.querySelector('.cr-img'),sel=ov.querySelector('.cr-sel'),rng=ov.querySelector('.cr-rng');
+  const sc=Math.min(Math.min(innerWidth*.86,560)/nw,Math.min(innerHeight*.5,560)/nh);
+  const dw=Math.max(40,Math.round(nw*sc)),dh=Math.max(40,Math.round(nh*sc));
+  stage.style.width=dw+'px';stage.style.height=dh+'px';pic.src=url;
+  const maxS=Math.min(dw,dh),minS=Math.max(24,maxS*.1);
+  let s=maxS,x=(dw-s)/2,y=(dh-s)/2;
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const apply=()=>{sel.style.left=x+'px';sel.style.top=y+'px';sel.style.width=s+'px';sel.style.height=s+'px';rng.value=String(Math.round(s/maxS*100))};
+  apply();
+  // pointer position in the stage's own pixel space (works even with the app's CSS zoom)
+  const loc=ev=>{const r=stage.getBoundingClientRect(),k=(r.width/dw)||1;return{x:(ev.clientX-r.left)/k,y:(ev.clientY-r.top)/k}};
+  let drag=null;
+  sel.addEventListener('pointerdown',ev=>{
+   ev.preventDefault();ev.stopPropagation();
+   const h=ev.target.closest('.cr-h'),p=loc(ev);
+   if(h){const c=h.dataset.c,dx=c==='ne'||c==='se'?1:-1,dy=c==='sw'||c==='se'?1:-1;
+    drag={m:'r',dx,dy,ax:dx>0?x:x+s,ay:dy>0?y:y+s}}
+   else drag={m:'m',px:p.x,py:p.y,x0:x,y0:y};
+  });
+  const onMove=ev=>{if(!drag)return;ev.preventDefault();const p=loc(ev);
+   if(drag.m==='m'){x=clamp(drag.x0+p.x-drag.px,0,dw-s);y=clamp(drag.y0+p.y-drag.py,0,dh-s)}
+   else{const d=Math.max((p.x-drag.ax)*drag.dx,(p.y-drag.ay)*drag.dy),lim=Math.min(drag.dx>0?dw-drag.ax:drag.ax,drag.dy>0?dh-drag.ay:drag.ay);
+    s=clamp(d,minS,Math.max(minS,lim));x=drag.dx>0?drag.ax:drag.ax-s;y=drag.dy>0?drag.ay:drag.ay-s}
+   apply()};
+  const onUp=()=>{drag=null};
+  document.addEventListener('pointermove',onMove,{passive:false});
+  document.addEventListener('pointerup',onUp);document.addEventListener('pointercancel',onUp);
+  rng.addEventListener('input',()=>{const ns=clamp(maxS*Number(rng.value)/100,minS,maxS),cx=x+s/2,cy=y+s/2;s=ns;x=clamp(cx-s/2,0,dw-s);y=clamp(cy-s/2,0,dh-s);apply()});
+  const onKey=ev=>{if(ev.key==='Escape')cancel()};
+  const close=()=>{document.removeEventListener('pointermove',onMove);document.removeEventListener('pointerup',onUp);document.removeEventListener('pointercancel',onUp);document.removeEventListener('keydown',onKey);ov.remove();URL.revokeObjectURL(url)};
+  const cancel=()=>{input.value='';const pv=document.getElementById('v_img_prev');if(pv)pv.remove();close()};
+  document.addEventListener('keydown',onKey);
+  ov.addEventListener('click',ev=>{
+   const b=ev.target.closest('[data-cr]');
+   if(b&&b.dataset.cr==='cancel'){cancel();return}
+   if(!b||b.dataset.cr!=='ok')return;
+   const k=nw/dw,ss=Math.min(s*k,nw,nh),sx=clamp(x*k,0,nw-ss),sy=clamp(y*k,0,nh-ss),out=Math.max(64,Math.min(1200,Math.round(ss)));
+   const c=document.createElement('canvas');c.width=c.height=out;const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,out,out);g.drawImage(im,sx,sy,ss,ss,0,0,out,out);
+   c.toBlob(bl=>{
+    if(!bl){cancel();return}
+    try{const nf=new File([bl],'crop-'+Date.now()+'.jpg',{type:'image/jpeg'}),dt=new DataTransfer();dt.items.add(nf);input.files=dt.files;
+     let pv=document.getElementById('v_img_prev');if(!pv){pv=document.createElement('img');pv.id='v_img_prev';pv.className='vimg';pv.alt='';pv.style.marginTop='6px';input.insertAdjacentElement('afterend',pv)}
+     if(pv.dataset.u)URL.revokeObjectURL(pv.dataset.u);pv.dataset.u=URL.createObjectURL(bl);pv.src=pv.dataset.u}
+    catch(e){/* browser cannot replace the file: keep the original selection */}
+    close()},'image/jpeg',.92)});
+ };
+ im.src=url}
+function openPicView(src,prot,sq){
  const old=document.getElementById('pview');if(old)old.remove();
- const ov=document.createElement('div');ov.id='pview';ov.setAttribute('role','dialog');ov.setAttribute('aria-label','Profile picture');
+ const ov=document.createElement('div');ov.id='pview';if(sq)ov.classList.add('sq');ov.setAttribute('role','dialog');ov.setAttribute('aria-label','Profile picture');
  ov.innerHTML=`<div class="pv-box"><button type="button" class="pv-x" aria-label="Close">✕</button><div class="pv-frame">${prot?'<div class="pvp"></div>':'<img alt="" draggable="false">'}</div></div>`;
  if(prot){const d=ov.querySelector('.pvp');d.style.backgroundImage="url('"+src+"')";const im=new Image();im.onload=()=>{d.style.aspectRatio=im.width+' / '+im.height};im.src=src}
  else ov.querySelector('img').src=src;
@@ -1168,7 +1246,7 @@ function pic(file){const im=new Image();im.onload=()=>{const c=document.createEl
 document.addEventListener('input',e=>{const el=e.target;if(el&&el.matches('[data-comment-input]')){S.cmd=el.value;S.cmp=el.dataset.commentInput;}if(/^f_(marma|pron|bn|en|cat|tense|sub)$/.test(el.id||'')&&S.col){const k=el.id.slice(2);if(S.edit==='new'){S.addDraft=S.addDraft||{};S.addDraft[S.col]=S.addDraft[S.col]||{};S.addDraft[S.col][k]=el.value}else if(S.edit!==null&&S.edit!==undefined){S.editDrafts=S.editDrafts||{};const key=`${S.col}:${S.edit}`;S.editDrafts[key]=S.editDrafts[key]||{};S.editDrafts[key][k]=el.value}}if(el.id==='q'){S.q=el.value;body()}});
 $('#pfile').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)pic(f)});
 $('#afile').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';const x=curT();if(!f||!S.tgt||!x||!isAdmin())return;const y=x.rows[S.tgt.r].c[S.tgt.c];adel(y.k);const k=uid();if(await aput(k,f))y.k=k;else alert(t('audioFail'));save();body()});
-document.addEventListener('change',e=>{if(e.target.id==='l_img'||e.target.id==='v_img'){const f=e.target.files[0],er=$('#'+e.target.id+'_err');if(er)er.textContent='';if(f&&f.size>IMG_MAX)showImgErr(e.target.id);return}const el=e.target.closest('[data-sort]');if(!el)return;CFG.sorts=CFG.sorts||{};CFG.sorts[el.dataset.sort]=el.value;store.set('ml_cfg',CFG);body()});
+document.addEventListener('change',e=>{if(e.target.id==='l_img'||e.target.id==='v_img'){const f=e.target.files[0],er=$('#'+e.target.id+'_err');if(er)er.textContent='';if(e.target.id==='v_img'&&f&&/^image\//.test(f.type)){openCrop(f,e.target);return}if(f&&f.size>IMG_MAX)showImgErr(e.target.id);return}const el=e.target.closest('[data-sort]');if(!el)return;CFG.sorts=CFG.sorts||{};CFG.sorts[el.dataset.sort]=el.value;store.set('ml_cfg',CFG);body()});
 // Broad Unicode emoji palette for comment/reply text.
 const COMMENT_EMOJIS = Array.from(new Set((`😀 😃 😄 😁 😆 😅 😂 🤣 🥲 ☺️ 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😙 😚 😋 😛 😜 🤪 😝 🤑 🤗 🤭 🫢 🫣 🤫 🤔 🫡 🤐 🤨 😐 😑 😶 🫥 😏 😒 🙄 😬 🤥 😔 😪 🤤 😴 😷 🤒 🤕 🤢 🤮 🤧 🥵 🥶 🥴 😵 🤯 🤠 🥳 🥸 😎 🤓 🧐 😕 🫤 😟 🙁 ☹️ 😮 😯 😲 😳 🥺 🥹 😦 😧 😨 😰 😥 😢 😭 😱 😖 😣 😞 😓 😩 😫 🥱 😤 😡 😠 🤬 😈 👿 💀 ☠️ 💩 🤡 👹 👺 👻 👽 👾 🤖 🎃 😺 😸 😹 😻 😼 😽 🙀 😿 😾 🙈 🙉 🙊 💋 💌 💘 💝 💖 💗 💓 💞 💕 💟 ❣️ 💔 ❤️ 🩷 🧡 💛 💚 💙 🩵 💜 🤎 🖤 🩶 🤍 ❤️‍🔥 ❤️‍🩹 💯 💢 💥 💫 💦 💨 🕳️ 💬 👁️‍🗨️ 🗨️ 🗯️ 💭 💤 👋 🤚 🖐️ ✋ 🖖 🫱 🫲 🫳 🫴 👌 🤌 🤏 ✌️ 🤞 🫰 🤟 🤘 🤙 👈 👉 👆 🖕 👇 ☝️ 🫵 👍 👎 ✊ 👊 🤛 🤜 👏 🙌 🫶 👐 🤲 🤝 🙏 ✍️ 💅 🤳 💪 🦾 🦿 🦵 🦶 👂 🦻 👃 🧠 🫀 🫁 🦷 🦴 👀 👁️ 👅 👄 🫦 👶 🧒 👦 👧 🧑 👨 👩 🧔 👱 👴 👵 🙍 🙎 🙅 🙆 💁 🙋 🧏 🙇 🤦 🤷 👮 🕵️ 💂 🥷 👷 🤴 👸 👳 👲 🧕 🤵 👰 🤰 🫃 🫄 🤱 👼 🎅 🤶 🧑‍🎄 🦸 🦹 🧙 🧚 🧛 🧜 🧝 🧞 🧟 💆 💇 🚶 🧍 🧎 🏃 💃 🕺 🕴️ 👯 🧖 🧗 🤺 🏇 ⛷️ 🏂 🏌️ 🏄 🚣 🏊 ⛹️ 🏋️ 🚴 🚵 🤸 🤼 🤽 🤾 🤹 🧘 🛀 🛌 👭 👫 👬 💏 💑 👪 🗣️ 👤 👥 🫂 🐶 🐱 🐭 🐹 🐰 🦊 🐻 🐼 🐻‍❄️ 🐨 🐯 🦁 🐮 🐷 🐸 🐵 🙈 🙉 🙊 🐒 🦍 🦧 🐔 🐧 🐦 🐤 🐣 🐥 🦆 🦅 🦉 🦇 🐺 🐗 🐴 🦄 🐝 🪱 🐛 🦋 🐌 🐞 🐜 🪰 🪲 🪳 🦟 🦗 🕷️ 🕸️ 🦂 🐢 🐍 🦎 🦖 🦕 🐙 🦑 🦐 🦞 🦀 🪼 🪸 🐡 🐠 🐟 🐬 🐳 🐋 🦈 🐊 🐅 🐆 🦓 🦍 🦣 🐘 🦛 🦏 🐪 🐫 🦒 🦘 🦬 🐃 🐂 🐄 🐎 🐖 🐏 🐑 🦙 🐐 🦌 🐕 🦮 🐕‍🦺 🐩 🐈 🐈‍⬛ 🪽 🪶 🐓 🦃 🦤 🦚 🦜 🦢 🪿 🦩 🕊️ 🐇 🦝 🦨 🦡 🦫 🦦 🦥 🐁 🐀 🐿️ 🦔 🐉 🐲 🌵 🎄 🌲 🌳 🌴 🪹 🪺 🌱 🌿 ☘️ 🍀 🎍 🪴 🎋 🍃 🍂 🍁 🍄 🪨 🌾 💐 🌷 🌹 🥀 🪻 🪷 🌺 🌸 🌼 🌻 🌞 🌝 🌛 🌜 🌚 🌕 🌖 🌗 🌘 🌑 🌒 🌓 🌔 🌙 🌎 🌍 🌏 🪐 💫 ⭐ 🌟 ✨ ⚡ ☄️ 💥 🔥 🌪️ 🌈 ☀️ 🌤️ ⛅ 🌥️ ☁️ 🌦️ 🌧️ ⛈️ 🌩️ 🌨️ ❄️ ☃️ ⛄ 🌬️ 💨 💧 💦 ☔ ☂️ 🌊 🍏 🍎 🍐 🍊 🍋 🍌 🍉 🍇 🍓 🫐 🍈 🍒 🍑 🥭 🍍 🥥 🥝 🍅 🫒 🥑 🍆 🥔 🥕 🌽 🌶️ 🫑 🥒 🥬 🥦 🧄 🧅 🍄 🥜 🫘 🌰 🍞 🥐 🥖 🫓 🥨 🥯 🥞 🧇 🧀 🍖 🍗 🥩 🥓 🍔 🍟 🍕 🌭 🥪 🌮 🌯 🫔 🥙 🧆 🥚 🍳 🥘 🍲 🫕 🥣 🥗 🍿 🧈 🧂 🥫 🍱 🍘 🍙 🍚 🍛 🍜 🍝 🍠 🍢 🍣 🍤 🍥 🥮 🍡 🥟 🥠 🥡 🦪 🍦 🍧 🍨 🍩 🍪 🎂 🍰 🧁 🥧 🍫 🍬 🍭 🍮 🍯 🍼 🥛 ☕ 🫖 🍵 🍶 🍾 🥂 🥃 🍷 🍸 🍹 🍺 🍻 🥤 🧋 🧃 🧉 🧊 🥢 🍽️ 🍴 🥄 🏺 ⚽ 🏀 🏈 ⚾ 🥎 🎾 🏐 🏉 🥏 🎱 🪀 🏓 🏸 🏒 🏑 🥍 🏏 🪃 🥅 ⛳ 🪁 🏹 🎣 🤿 🥊 🥋 🎽 🛹 🛼 🛷 ⛸️ 🥌 🎿 ⛷️ 🏂 🪂 🏋️ 🤼 🤸 ⛹️ 🤺 🏇 🏄 🚣 🏊 🚴 🚵 🧗 🏆 🥇 🥈 🥉 🏅 🎖️ 🏵️ 🎗️ 🎫 🎟️ 🎪 🤹 🎭 🩰 🎨 🎬 🎤 🎧 🎼 🎹 🥁 🪘 🎷 🎺 🪗 🎸 🪕 🎻 🪈 🎲 ♟️ 🎯 🎳 🎮 🕹️ 🎰 🧩 🧸 🪅 🪩 🪆 🪄 🎁 🎈 🎏 🎀 🎊 🎉 🎎 🏮 🎐 🧧 ✉️ 📩 📦 📫 📪 📬 📭 📮 🗳️ ✏️ ✒️ 🖋️ 🖊️ 🖌️ 🖍️ 📝 💼 📁 📂 🗂️ 📅 📆 🗒️ 📋 📌 📍 📎 🖇️ 📏 📐 ✂️ 🗃️ 🗄️ 🗑️ 🔒 🔓 🔏 🔐 🔑 🗝️ 🔨 🪓 ⛏️ ⚒️ 🛠️ 🗡️ ⚔️ 💣 🪃 🏹 🛡️ 🪚 🔧 🪛 🔩 ⚙️ 🗜️ ⚖️ 🦯 🔗 ⛓️ 🪝 🧰 🧲 🪜 🧪 🧫 🧬 🔬 🔭 📡 💉 🩸 💊 🩹 🩺 🩻 🚪 🛗 🪞 🪟 🛏️ 🛋️ 🪑 🚽 🪠 🚿 🛁 🪤 🪒 🧴 🧷 🧹 🧺 🧻 🪣 🧼 🫧 🪥 🧽 🧯 🛒 🚬 ⚰️ 🪦 ⚱️ 🧿 🪬 🗿 🪧 🪪 🏧 🚮 🚰 ♿ 🚹 🚺 🚻 🚼 🚾 🛂 🛃 🛄 🛅 ⚠️ 🚸 ⛔ 🚫 🚳 🚭 🚯 🚱 🚷 📵 🔞 ☢️ ☣️ ⬆️ ↗️ ➡️ ↘️ ⬇️ ↙️ ⬅️ ↖️ ↕️ ↔️ ↩️ ↪️ ⤴️ ⤵️ 🔃 🔄 🔙 🔚 🔛 🔜 🔝 🛐 ⚛️ 🕉️ ✡️ ☸️ ☯️ ✝️ ☦️ ☪️ ☮️ 🕎 🔯 🪯 ♈ ♉ ♊ ♋ ♌ ♍ ♎ ♏ ♐ ♑ ♒ ♓ ⛎ 🔀 🔁 🔂 ▶️ ⏩ ⏭️ ⏯️ ◀️ ⏪ ⏮️ 🔼 ⏫ 🔽 ⏬ ⏸️ ⏹️ ⏺️ ⏏️ 🎦 🔅 🔆 📶 🛜 📳 📴 ♀️ ♂️ ⚧️ ✖️ ➕ ➖ ➗ 🟰 ♾️ ‼️ ⁉️ ❓ ❔ ❕ ❗ 〰️ 💱 💲 ⚕️ ♻️ ⚜️ 🔱 📛 🔰 ⭕ ✅ ☑️ ✔️ ❌ ❎ ➰ ➿ 〽️ ✳️ ✴️ ❇️ ©️ ®️ ™️ 🔠 🔡 🔢 🔣 🔤 🅰️ 🆎 🅱️ 🆑 🆒 🆓 ℹ️ 🆔 Ⓜ️ 🆕 🆖 🅾️ 🆗 🅿️ 🆘 🆙 🆚 🈁 🈂️ 🈷️ 🈶 🈯 🉐 🈹 🈚 🈲 🉑 🈸 🈴 🈳 ㊗️ ㊙️ 🈺 🈵 🔴 🟠 🟡 🟢 🔵 🟣 🟤 ⚫ ⚪ 🟥 🟧 🟨 🟩 🟦 🟪 🟫 ⬛ ⬜ ◼️ ◻️ ◾ ◽ ▪️ ▫️ 🔶 🔷 🔸 🔹 🔺 🔻 💠 🔘 🔳 🔲 🏁 🚩 🎌 🏴 🏳️ 🏳️‍🌈 🏳️‍⚧️ 🇧🇩 🇺🇸 🇬🇧 🇮🇳 🇲🇲 🇹🇭 🇯🇵 🇰🇷 🇨🇳 🇳🇵 🇱🇰 🇵🇰 🇨🇦 🇦🇺 🇩🇪 🇫🇷 🇮🇹 🇧🇷 🇸🇦 🇦🇪 🇲🇾 🇸🇬 🇮🇩 🇳🇿 🇿🇦 🇺🇳`).split(/\s+/)));
 document.addEventListener('click',async e=>{
@@ -1184,7 +1262,7 @@ document.addEventListener('click',async e=>{
  if(S.reactOpen&&!insideReact){S.reactOpen=null;document.querySelectorAll('.post-tools .react-pop').forEach(n=>n.remove());document.querySelectorAll('[data-act=reacttoggle]').forEach(n=>n.classList.remove('on'));popChanged=true}
  if(S.cmReact&&!insideReact){S.cmReact=null;document.querySelectorAll('.comment-tools .react-pop').forEach(n=>n.remove());document.querySelectorAll('[data-act=cmreacttoggle]').forEach(n=>n.classList.remove('on'));popChanged=true}
  if(S.postMenu&&!insidePostMenu){S.postMenu=null;document.querySelectorAll('.post-menu').forEach(n=>n.remove());popChanged=true}
- if(e.target instanceof HTMLImageElement && e.target.matches('img[data-ik]') && e.target.src){e.preventDefault();openPicView(e.target.currentSrc||e.target.src,false);return}
+ if(e.target instanceof HTMLImageElement && e.target.matches('img[data-ik]') && e.target.src){e.preventDefault();openPicView(e.target.currentSrc||e.target.src,false,e.target.classList.contains('vimg'));return}
  const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,d=b.dataset,ADM=['saveitem','delitem','rmau','newtbl','edittbl','backtbl','deltbl','addcol','addrow','delcol','delrow','savetbl','cellau','cellrm','cellopen','cellsave','cellclose','addcat','iadd','iedit','catadd','catsave','catdel','litsave','catedit','litedit','catcancel','cedit','csave','ccancel','vadd','vedit','vdel','vsave','vrmimg','vrmau','vcancel'];
  if(ADM.includes(a)&&!isAdmin())return;
  if(a==='go'){S.view=d.v;S.err='';S.f=null;S.fp=null;render()}
