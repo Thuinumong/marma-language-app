@@ -371,8 +371,8 @@ img[data-ik]:hover{filter:none!important;outline:none!important}
 </style>
 
 <style id="ml-responsive-sidebar-brand-fix">
-/* Narrow and half-screen laptop widths use the same top navigation as mobile. */
-@media (max-width:999px){
+/* Widths below 750px use the same top navigation as mobile. */
+@media (max-width:749px){
  #app.shell{display:block!important;height:auto!important;min-height:100vh!important;overflow:visible!important;position:relative!important;padding:0!important}
  #app.shell::before{display:none!important}
  #app.shell header{display:flex!important;flex-direction:column!important;position:sticky!important;top:0!important;width:100%!important;box-sizing:border-box!important;z-index:100!important;background:var(--bg)!important}
@@ -386,8 +386,8 @@ img[data-ik]:hover{filter:none!important;outline:none!important}
  #app.shell header nav.tabs .tab,#app.shell header nav.tabs .mbtn{flex:0 0 auto!important;width:auto!important;max-width:100%!important;white-space:nowrap!important;padding:9px 12px!important}
  #app.shell main#body{display:block!important;grid-column:auto!important;grid-row:auto!important;width:100%!important;min-width:0!important;max-width:none!important;overflow:visible!important;padding:8px 14px 36px!important;box-sizing:border-box!important}
 }
-/* Wider laptop: search stays above the content; page navigation is a compact left sidebar. */
-@media (min-width:1000px){
+/* Widths of 750px and above use the laptop layout: page navigation left, content right. */
+@media (min-width:750px){
  #app.shell{display:grid!important;grid-template-columns:240px minmax(0,1fr)!important;grid-template-rows:76px minmax(0,1fr)!important;height:100vh!important;min-height:0!important;overflow:hidden!important;position:relative!important}
  #app.shell::before{display:block!important;left:0!important;top:0!important;bottom:0!important;width:240px!important}
  #app.shell header{display:contents!important}
