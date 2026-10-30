@@ -329,6 +329,38 @@ html.ml-scrolling .tw::-webkit-scrollbar-thumb, body.ml-scrolling .tw::-webkit-s
 img[data-ik]{cursor:default!important}
 img[data-ik]:hover{filter:none!important;outline:none!important}
 .game-sources{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.grammar-admin-actions .btn{max-width:100%}.grammar-cats{scrollbar-width:none;-webkit-overflow-scrolling:touch}.grammar-cats .tab{flex:0 0 auto}
+
+/* Global responsive layout repair: keep every page section in normal document flow. */
+*,*::before,*::after{box-sizing:border-box}
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+body{min-width:320px}
+main,#app,#root,.page,.content{min-width:0;max-width:100%;width:100%}
+main{overflow:visible}
+.card,.note,.menu,.wgrid,.grid,.row,.top,.acts{min-width:0;max-width:100%}
+.card{overflow-wrap:anywhere}
+.top{align-items:flex-start;flex-wrap:wrap}
+.acts{flex-wrap:wrap;gap:5px}
+/* Category chips must wrap onto additional rows instead of hiding below/behind the bar. */
+.tabs.catbar{display:flex!important;flex-wrap:wrap!important;align-items:center;justify-content:flex-start;gap:6px 8px;width:100%;max-width:100%;height:auto;min-height:0;overflow:visible!important;white-space:normal;padding:6px 0!important;position:relative;z-index:1}
+.tabs.catbar .chip,.tabs.catbar .cw{max-width:100%;margin:0;flex:0 0 auto}
+.tabs.catbar .cw{display:inline-flex;vertical-align:middle}
+.tabs.catbar .chip{white-space:normal;overflow-wrap:anywhere}
+/* Keep the main navigation horizontally scrollable, but never let it cover page content. */
+.tabs:not(.catbar){min-width:0;max-width:100%;overscroll-behavior-x:contain;position:relative;z-index:2}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:10px}
+input,textarea,select,button{max-width:100%;min-width:0}
+textarea{resize:vertical;overflow:auto}
+img,video,iframe,svg{max-width:100%}
+.tw{max-width:100%;overflow-x:auto}
+@media(max-width:600px){
+ main{padding-left:12px;padding-right:12px}
+ .card{padding:11px 12px}
+ .tabs.catbar{gap:6px!important}
+ .tabs.catbar .chip{padding:6px 10px;font-size:.9rem}
+ .top{gap:6px}
+ .acts{align-items:center}
+ .btn{white-space:normal;overflow-wrap:anywhere}
+}
 </style>
 <style>
 .home-welcome{padding:8px 0 24px}.home-greet{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-radius:18px;background:linear-gradient(115deg,#fff0c9,#f6e9c8);border:1px solid #ead8ac;margin:4px 0 14px;color:#123d3b}.home-eyebrow{font-size:.68rem;letter-spacing:.08em;font-weight:700;color:#0f6b62}.home-greet h1{font-size:1.6rem;line-height:1.15;margin:4px 0}.home-greet p{margin:0;color:#28615d;font-size:.94rem}.home-leaf{font-size:2.5rem}.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.home-tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:3px;min-height:122px;padding:13px;border:0;border-radius:15px;color:#fff;font:inherit;cursor:pointer;box-shadow:0 3px 8px #153c3a12}.tile-0{background:linear-gradient(135deg,#087d65,#159c78)}.tile-1{background:linear-gradient(135deg,#087f9e,#168fc0)}.tile-2{background:linear-gradient(135deg,#6541a6,#8b5bd0)}.tile-3{background:linear-gradient(135deg,#e57d11,#f6a11e)}.tile-4{background:linear-gradient(135deg,#147e89,#29a4a4)}.tile-5{background:linear-gradient(135deg,#249b78,#5bc49b)}.tile-6{background:linear-gradient(135deg,#126c64,#24988a)}.tile-7{background:linear-gradient(135deg,#465c7b,#738ba7)}.tile-icon{font-size:1.45rem;line-height:1.2}.home-tile b{font-size:1rem}.home-tile small{font-size:.75rem;opacity:.92}.tile-arrow{position:absolute;right:12px;bottom:9px;font-size:1.2rem}.home-quote{display:flex;align-items:center;gap:12px;padding:14px 16px;margin-top:12px;border-radius:15px;background:#fff2cb;color:#155b55}.home-quote span{font-size:1.6rem}.home-quote small{display:block;font-size:.78rem;color:#4f6963}.grammar-cats{top:0;z-index:8;margin:0 -2px 10px;padding:8px 2px!important}.grammar-card summary{display:flex;align-items:center;gap:12px;list-style:none}.grammar-card summary::-webkit-details-marker{display:none}.grammar-n{display:grid;place-items:center;flex:0 0 42px;height:42px;border-radius:13px;background:#d9f0e7;color:#087c69;font-size:1.25rem;font-weight:700}.grammar-card summary small{display:block;color:var(--mu);font-size:.8rem;font-weight:400}.grammar-arrow{margin-left:auto;font-size:1.5rem;color:var(--pr)}.grammar-detail{padding:4px 4px 0}.trans-seg{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.trans-seg button{flex:1 1 0;min-width:0;padding:9px 7px;font-size:.78rem;white-space:nowrap}.trans-card label{font-size:.9rem;color:var(--mu)}.trans-card textarea{min-height:110px;resize:vertical}.trans-count{text-align:right;color:var(--mu);font-size:.75rem;margin-top:-6px}.trans-result{background:linear-gradient(135deg,#f2faf4,#fffdf5)}.trans-output{font-size:1.15rem;color:var(--pr);white-space:pre-wrap;overflow-wrap:anywhere}
@@ -401,6 +433,36 @@ img[data-ik]:hover{filter:none!important;outline:none!important}
  #app.shell header nav.tabs{display:flex!important;grid-column:1!important;grid-row:2!important;position:relative!important;flex-direction:column!important;overflow-y:auto!important;overflow-x:hidden!important;align-self:stretch!important;align-items:stretch!important;width:100%!important;min-width:0!important;box-sizing:border-box!important;padding:8px 10px!important;gap:5px!important}
  #app.shell header nav.tabs .tab,#app.shell header nav.tabs .mbtn{display:flex!important;width:100%!important;min-width:0!important;flex:0 0 auto!important;justify-content:flex-start!important;text-align:left!important;white-space:normal!important;overflow-wrap:anywhere!important;padding:9px 10px!important;font-size:.88rem!important;box-sizing:border-box!important}
  #app.shell main#body{grid-column:2!important;grid-row:2!important;min-width:0!important;width:auto!important;max-width:none!important;overflow-y:auto!important;overflow-x:hidden!important;padding:8px 24px 40px!important;box-sizing:border-box!important}
+}
+</style>
+
+<style id="translator-layout-safety">
+/* Responsive layout safety: keep controls in normal document flow. */
+#app, #app main, #app main * { box-sizing: border-box; }
+#app main { min-width: 0; }
+#app main .trans-seg { display:flex; flex-wrap:wrap; gap:8px; align-items:stretch; width:100%; min-width:0; }
+#app main .trans-seg button { flex:1 1 110px; min-width:0; max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+#app main .trans-card, #app main .trans-result, #app main .trans-saved-list { width:100%; min-width:0; max-width:100%; overflow:visible; }
+#app main .trans-card .in, #app main .trans-card textarea, #app main .trans-card input, #app main .trans-card select { display:block; width:100%; max-width:100%; min-width:0; }
+#app main .trans-output, #app main .trans-saved-text, #app main .note { min-width:0; overflow-wrap:anywhere; word-break:break-word; }
+#app main details.card { width:100%; min-width:0; max-width:100%; overflow:visible; }
+#app main details.card > summary { cursor:pointer; overflow-wrap:anywhere; }
+#app main details.card .grammar-detail { display:flex; flex-direction:column; gap:10px; width:100%; min-width:0; }
+#app main details.card .grammar-detail > * { min-width:0; max-width:100%; margin-top:0; margin-bottom:0; }
+#app main details.card .grammar-detail .in, #app main details.card .grammar-detail textarea, #app main details.card .grammar-detail input, #app main details.card .grammar-detail select { display:block; width:100%; min-width:0; max-width:100%; }
+#app main .trans-saved-item { display:flex; align-items:flex-start; gap:10px; width:100%; min-width:0; }
+#app main .trans-saved-item .trans-saved-text { flex:1 1 auto; min-width:0; }
+#app main .trans-saved-item > button { flex:0 0 auto; }
+#app main .trans-count { text-align:right; }
+#app main button, #app main input, #app main select, #app main textarea { max-width:100%; }
+@media(max-width:520px) {
+ #app main { padding-left:12px; padding-right:12px; }
+ #app main .trans-seg button { flex:1 1 calc(50% - 8px); }
+ #app main .trans-saved-item { gap:6px; }
+ #app main .card { min-width:0; }
+}
+@media(min-width:521px) and (max-width:999px) {
+ #app main .trans-seg button { flex:1 1 130px; }
 }
 </style>
 </head>
@@ -945,9 +1007,25 @@ function grammarPage(){
  const adminTools=admin?`<section class="card grammar-admin"><b>Manage categories</b><div class="grammar-admin-actions"><button class="btn sm" data-act="gramcatadd">＋ Add New Category</button><button class="btn sm ghost" data-act="gramexport">Export JSON</button><label class="btn sm ghost" for="gramupload">Upload JSON</label><input id="gramupload" type="file" accept=".json,application/json" style="display:none"></div><div class="grammar-admin-actions">${cats.map(c=>`<button class="btn sm ghost" data-act="gramcatrename" data-c="${esc(c[0])}">✏️ Edit ${esc(c[1])}</button><button class="btn sm dng" data-act="gramcatremove" data-c="${esc(c[0])}" aria-label="Remove ${esc(c[1])}">×</button>`).join('')}</div></section>`:'';
  return `<h2>Grammar</h2><p class="en">Learn Marma grammar step by step with examples.</p>${adminTools}<nav class="tabs catbar grammar-cats">${cats.map(c=>`<button class="tab ${active===c[0]?'on':''}" data-act="gramcat" data-c="${esc(c[0])}">${CFG.lang==='bn'?esc(c[2]):esc(c[1])}</button>`).join('')}</nav>${admin?`<div class="grammar-admin-actions"><button class="btn sm" data-act="gramadd">＋ Add lesson to ${esc(cats.find(c=>c[0]===active)?.[1]||'this category')}</button></div>`:''}${form}${data.map((x,i)=>`<details class="card grammar-card"><summary><span class="grammar-n">${['A','文','◷','✦','♡'][i%5]}</span><span><b>${esc(x.title||'Untitled')}</b><small>${esc(x.detail||'')}</small></span><span class="grammar-arrow">›</span></summary><div class="grammar-detail"><p>${esc(x.detail||'')}</p>${x.example?`<p><b>Example:</b> ${esc(x.example)}</p>`:''}${x.structure?`<div class="grammar-structure"><b>Lesson structure:</b><p>${esc(x.structure)}</p></div>`:''}${x.audio?`<audio controls preload="none" class="grammar-audio" src="${esc(x.audio)}"></audio>`:''}${admin?`<div class="grammar-admin-actions"><button class="btn sm" data-act="gramedit" data-id="${esc(x.id)}">Edit</button><button class="btn sm dng" data-act="gramdelete" data-id="${esc(x.id)}">Remove</button></div>`:''}</div></details>`).join('')||`<p class="note">No lessons in this category yet.</p>`}`
 }
+function buildTranslatorContext(){
+ const clean=v=>String(v??'').replace(/\s+/g,' ').trim();
+ const rows=[];
+ const add=(section,fields)=>{for(const x of (fields||[])){const line=Object.entries(x).map(([k,v])=>`${k}: ${clean(v)}`).filter(z=>!z.endsWith(': ')).join(' | ');if(line)rows.push(`[${section}] ${line}`)}};
+ add('Dictionary',[...(DB.dict||[]),...(DB.words||[])].map(x=>({Marma:x.marma,Pronunciation:x.pron||x.pronunciation,Bangla:x.bn,English:x.en})));
+ add('Sentence',(DB.sentences||[]).map(x=>({Marma:x.marma,Pronunciation:x.pron||x.pronunciation,Bangla:x.bn,English:x.en,Context:x.tense})));
+ add('Sangbusa',(DB.tables||[]).flatMap(tb=>(tb.rows||[]).map(r=>{const cells=r.c||[];const vals={};(tb.cols||[]).forEach((h,i)=>{const c=cells[i]||{};const v=[c.m,c.p,c.b,c.e,c.t].filter(Boolean).join(' ');if(v)vals[clean(h)||`Column ${i+1}`]=v});return {Table:tb.cap,...vals}})));
+ add('Grammar',Object.values(DB.grammarLessons||{}).flat().map(x=>({Title:x.title,Explanation:x.detail,Example:x.example,Structure:x.structure})));
+ add('Admin Translation Rules',(DB.translatorRules||[]).map(x=>({Direction:x.direction,Rule:x.rule,Example:x.example,Note:x.note})));
+ add('Admin Translation References',(DB.translatorRefs||[]).map(x=>({Direction:x.direction,Source:x.source,Marma:x.marma,Bangla:x.bn,English:x.en,Note:x.note}))); 
+ add('VisualVocab',(DB.vocab||[]).map(x=>({Marma:x.marma,Pronunciation:x.pron,Bangla:x.bn,English:x.en,Category:x.cat,ImageDescription:x.description||''})));
+ return rows.join('\n').slice(0,18000);
+}
 function translatorPage(){
- const dir=S.trDir||'m2e',saved=store.get('ml_trans_saved_'+ME,[]);
- return `<h2>Translator</h2><div class="seg trans-seg"><button class="${dir==='m2b'?'on':''}" data-act="transdir" data-d="m2b">মা → বা</button><button class="${dir==='m2e'?'on':''}" data-act="transdir" data-d="m2e">মা → EN</button><button class="${dir==='e2m'?'on':''}" data-act="transdir" data-d="e2m">EN → মা</button><button class="${dir==='b2m'?'on':''}" data-act="transdir" data-d="b2m">বা → মা</button></div><div class="card trans-card"><label for="trans-input">${dir==='m2e'||dir==='m2b'?'Enter text in Marma':dir==='e2m'?'Enter text in English':'বাংলায় লিখুন'}</label><textarea class="in" id="trans-input" maxlength="500" placeholder="${dir==='m2e'||dir==='m2b'?'Type Marma text…':dir==='e2m'?'Type English text…':'বাংলা লিখুন…'}">${esc(S.transText||'')}</textarea><div class="trans-count">${(S.transText||'').length}/500</div><button class="btn" data-act="translate">➤ Translate</button></div>${S.transResult!==undefined?`<div class="card trans-result"><b>Translation</b><p class="trans-output">${esc(S.transResult||'No matching dictionary entry found yet. You can add verified translations to the Dictionary.')}</p><div class="trans-pron"><strong>Pronunciation:</strong> <span>${esc(S.transPron||S.transResult||'Translate a word to see pronunciation text.')}</span></div><div class="seg"><button data-act="transsave">☆ Save result</button><button data-act="transclear">✕ Clear</button></div></div>`:''}<section class="card trans-saved-list"><div class="top"><b>★ Saved translations (${saved.length})</b><button class="btn sm ghost" data-act="transsavedtoggle">${S.transSavedOpen?'Hide':'Show'}</button></div>${S.transSavedOpen?saved.map((x,i)=>`<div class="trans-saved-item"><div class="trans-saved-text"><b>${esc(x.input)}</b><div>${esc(x.result)}</div><small class="en">${esc(x.pron||'')}</small></div><button class="btn sm dng" data-act="transunsave" data-i="${i}">×</button></div>`).join('')||'<p class="note">No saved translations yet.</p>':''}</section><div class="note">💡 Translation checks matching phrases and words from Dictionary, Sangbusa tables, Sentence, and Grammar examples/structures. If a full sentence structure does not match, known words are still translated and unmatched words remain unchanged. This is dictionary-based, not AI translation.</div>`
+ const dir=S.trDir||'m2e',saved=store.get('ml_trans_saved_'+ME,[]),admin=isAdmin();
+ const ruleRows=(DB.translatorRules||[]).map(x=>`<div class="trans-saved-item"><div class="trans-saved-text"><b>${esc(x.direction||'all')}</b><div>${esc(x.rule||'')}</div><small>${esc(x.example||x.note||'')}</small></div><button class="btn sm dng" data-act="trrule-del" data-id="${esc(x.id)}">×</button></div>`).join('');
+ const refRows=(DB.translatorRefs||[]).map(x=>`<div class="trans-saved-item"><div class="trans-saved-text"><b>${esc(x.source||'')}</b><div>Marma: ${esc(x.marma||'')} · বাংলা: ${esc(x.bn||'')} · English: ${esc(x.en||'')}</div><small>${esc(x.direction||'all')} ${esc(x.note||'')}</small></div><button class="btn sm dng" data-act="trref-del" data-id="${esc(x.id)}">×</button></div>`).join('');
+ const adminPanel=admin?`<details class="card" style="margin-top:12px"><summary><b>Admin · Translator Grammar Rules & References</b></summary><div class="grammar-detail"><p class="note">এখানে যোগ করা নিয়ম ও reference AI-কে context হিসেবে দেওয়া হবে। AI কাজ না করলে verified word/reference matching দিয়েও অনুবাদ হবে।</p><h4>Add grammar / translation rule</h4><select class="in" id="tr-rule-dir"><option value="all">All directions</option><option value="e2m">English → Marma</option><option value="b2m">Bangla → Marma</option><option value="m2b">Marma → Bangla</option><option value="m2e">Marma → English</option></select><textarea class="in" id="tr-rule-text" rows="3" placeholder="Rule: e.g. English sentence order / Marma verb placement..."></textarea><input class="in" id="tr-rule-example" placeholder="Example (optional)"><button class="btn sm" data-act="trrule-add">＋ Save rule</button>${ruleRows||'<p class="note">No custom rules added.</p>'}<hr><h4>Add verified translation reference</h4><input class="in" id="tr-ref-source" placeholder="Source word / phrase"><input class="in" id="tr-ref-marma" placeholder="Marma meaning"><input class="in" id="tr-ref-bn" placeholder="Bangla meaning"><input class="in" id="tr-ref-en" placeholder="English meaning"><select class="in" id="tr-ref-dir"><option value="all">All directions</option><option value="e2m">English → Marma</option><option value="b2m">Bangla → Marma</option><option value="m2b">Marma → Bangla</option><option value="m2e">Marma → English</option></select><input class="in" id="tr-ref-note" placeholder="Context / note (optional)"><button class="btn sm" data-act="trref-add">＋ Save reference</button>${refRows||'<p class="note">No custom references added.</p>'}</div></details>`:'';
+ return `<h2>Translator</h2><div class="seg trans-seg"><button class="on">Translator</button></div><div class="seg trans-seg"><button class="${dir==='m2b'?'on':''}" data-act="transdir" data-d="m2b">মা → বা</button><button class="${dir==='m2e'?'on':''}" data-act="transdir" data-d="m2e">মা → EN</button><button class="${dir==='e2m'?'on':''}" data-act="transdir" data-d="e2m">EN → মা</button><button class="${dir==='b2m'?'on':''}" data-act="transdir" data-d="b2m">বা → মা</button></div><div class="card trans-card"><label for="trans-input">${dir==='m2e'||dir==='m2b'?'Enter text in Marma':dir==='e2m'?'Enter text in English':'বাংলায় লিখুন'}</label><textarea class="in" id="trans-input" maxlength="500" placeholder="${dir==='m2e'||dir==='m2b'?'Type Marma text…':dir==='e2m'?'Type English text…':'বাংলা লিখুন…'}">${esc(S.transText||'')}</textarea><div class="trans-count">${(S.transText||'').length}/500</div><button class="btn" data-act="translate">➤ Translate</button></div>${S.transResult!==undefined?`<div class="card trans-result"><b>Translation</b><p class="trans-output">${esc(S.transResult||'No matching dictionary entry found yet.')}</p><div class="trans-pron"><strong>Pronunciation:</strong> <span>${esc(S.transPron||S.transResult||'')}</span></div><small class="note">${esc(S.transSource||'')}</small><div class="seg"><button data-act="transsave">☆ Save result</button><button data-act="transclear">✕ Clear</button></div></div>`:''}<section class="card trans-saved-list"><div class="top"><b>★ Saved translations (${saved.length})</b><button class="btn sm ghost" data-act="transsavedtoggle">${S.transSavedOpen?'Hide':'Show'}</button></div>${S.transSavedOpen?saved.map((x,i)=>`<div class="trans-saved-item"><div class="trans-saved-text"><b>${esc(x.input)}</b><div>${esc(x.result)}</div><small class="en">${esc(x.pron||'')}</small></div><button class="btn sm dng" data-act="transunsave" data-i="${i}">×</button></div>`).join('')||'<p class="note">No saved translations yet.</p>':''}</section>${adminPanel}<div class="note">Translation uses Dictionary, Sangbusa, Sentence, Grammar and VisualVocab. Exact phrase, word-by-word matching and Gemini AI are used in sequence.</div>`;
 }
 function body0(){
  const B=$('#body');
@@ -1033,7 +1111,7 @@ const PHONE_DOMAIN='thuinumong.github.io'; // phone-number accounts use <phone>@
 let AUTH=store.get('ml_auth',null);
 let SYNC=store.get('ml_sync',null)||{init:false,last:null,snap:{},uid:null,pdirty:false,aq:[]};
 const saveSync=()=>store.set('ml_sync',SYNC),saveAuth=()=>store.set('ml_auth',AUTH);
-const emptyDB=()=>({ssubs:[],wcats:[],vcats:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:[],posts:[]},ratings:[],vocab:[],notifs:[]});
+const emptyDB=()=>({ssubs:[],wcats:[],vcats:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:[],posts:[]},ratings:[],vocab:[],notifs:[],translatorRules:[],translatorRefs:[]});
 const hsh=s=>{let x=5381;for(let i=0;i<s.length;i++)x=((x<<5)+x+s.charCodeAt(i))|0;return x+':'+s.length};
 const canon=v=>v===null||typeof v!=='object'?JSON.stringify(v):Array.isArray(v)?'['+v.map(x=>canon(x===undefined?null:x)).join(',')+']':'{'+Object.keys(v).filter(k=>v[k]!==undefined).sort().map(k=>JSON.stringify(k)+':'+canon(v[k])).join(',')+'}';
 const KCOL=k=>k.slice(0,k.indexOf('|')),KID=k=>k.slice(k.indexOf('|')+1);
@@ -1055,7 +1133,7 @@ async function rest(path,o={}){const tk=await getTok();return sb('/rest/v1'+path
 
 // ---- local DB <-> flat list of small items ----
 function flat(){const m={},add=(col,id,data)=>{m[col+'|'+id]={col,id:String(id),data}};
- ['dict','words','sentences'].forEach(c=>(DB[c]||[]).forEach(x=>add(c,x.id,x)));
+ ['dict','words','sentences','translatorRules','translatorRefs'].forEach(c=>(DB[c]||[]).forEach(x=>add(c,x.id,x)));
  (DB.tables||[]).forEach(x=>add('tables',x.id,x));
  (DB.updates||[]).forEach(x=>add('updates',x.id,x));
   (DB.vocab||[]).forEach(x=>add('vocab',x.id,x));(DB.notifs||[]).forEach(x=>add('notifs',x.id,x));
@@ -1066,11 +1144,11 @@ function flat(){const m={},add=(col,id,data)=>{m[col+'|'+id]={col,id:String(id),
   Object.entries(rx||{}).forEach(([e,L])=>(L||[]).forEach(u=>add('reactions',p.id+'|'+e+'|'+u,{post:p.id,e,by:u,ts:(p.rxt||{})[e+'|'+u]})))});
  (DB.ratings||[]).forEach(r=>add('ratings',r.by,r));
  return m}
-const PRI={vocab:1,notifs:7,ssubs:0,wcats:0,vcats:0,cats:0,dict:1,words:1,sentences:1,tables:2,updates:1,posts:3,comments:4,reactions:5,ratings:6};
+const PRI={vocab:1,notifs:7,ssubs:0,wcats:0,vcats:0,cats:0,dict:1,words:1,sentences:1,translatorRules:1,translatorRefs:1,tables:2,updates:1,posts:3,comments:4,reactions:5,ratings:6};
 function applyRemote(it){
  const {col,id,deleted}=it,d=it.data||{},same=(a,b)=>String(a)===String(b);
  const put=(arr,front)=>{const i=arr.findIndex(y=>same(y.id,id));if(deleted){if(i>=0)arr.splice(i,1);return}if(i>=0)arr[i]=d;else front?arr.unshift(d):arr.push(d)};
- if(col==='dict'||col==='words'||col==='sentences'||col==='vocab'){DB[col]=DB[col]||[];put(DB[col],true)}
+ if(col==='dict'||col==='words'||col==='sentences'||col==='vocab'||col==='translatorRules'||col==='translatorRefs'){DB[col]=DB[col]||[];put(DB[col],true)}
   else if(col==='notifs'){DB.notifs=DB.notifs||[];put(DB.notifs,true)}
  else if(col==='tables'){if(!deleted)normT(d);put(DB.tables,false)}
   else if(col==='updates'){DB.updates=DB.updates||[];put(DB.updates,true)}
@@ -1388,7 +1466,48 @@ document.addEventListener('click',async e=>{
  else if(a==='gramdelete'){if(!isAdmin()||!confirm('Remove this grammar lesson?'))return;Object.keys(DB.grammarLessons||{}).forEach(k=>DB.grammarLessons[k]=DB.grammarLessons[k].filter(x=>x.id!==d.id));save();body()}
  else if(a==='gramexport'){if(!isAdmin())return;const blob=new Blob([JSON.stringify({categories:DB.grammarCats||[],lessons:DB.grammarLessons||{}},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),ael=document.createElement('a');ael.href=url;ael.download='marma-grammar-lessons.json';ael.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
  else if(a==='transdir'){S.trDir=d.d;body()}
- else if(a==='translate'){S.transText=val('trans-input').trim();const dir=S.trDir||'m2e',srcKey=dir==='e2m'?'en':dir==='b2m'?'bn':'marma',dstKey=dir==='m2e'?'en':dir==='m2b'?'bn':'marma',norm=x=>String(x||'').trim().toLocaleLowerCase(),grammar=Object.values(DB.grammarLessons||{}).flat().map(x=>({marma:x.title,en:x.detail||x.title,bn:x.detail||x.title,pron:x.example||'',grammar:true})),tables=(DB.tables||[]).flatMap(tb=>(tb.rows||[]).map(r=>{const vals=(r.c||[]).map(c=>ctext(c));return {marma:vals[0]||'',pron:vals[1]||'',bn:vals[2]||'',en:vals[3]||'',table:tb.cap}})),items=[...(DB.words||[]),...(DB.dict||[]),...(DB.sentences||[]),...sangItems(),...tables,...grammar].filter(x=>x&&x[srcKey]&&x[dstKey]),input=S.transText,exact=items.filter(x=>norm(x[srcKey])===norm(input)&&x[dstKey]);if(exact.length){S.transResult=[...new Set(exact.map(x=>x[dstKey]).filter(Boolean))].join(' / ');S.transPron=[...new Set(exact.map(x=>x.pron||x.pronunciation||x.romanization).filter(Boolean))].join(' / ')||S.transResult}else{const candidates=items.filter(x=>x[srcKey]&&x[dstKey]).sort((a,b)=>String(b[srcKey]).trim().length-String(a[srcKey]).trim().length);let working=input,matches=[],pron=[];for(const item of candidates){const source=String(item[srcKey]).trim();if(source.length<2||!norm(working).includes(norm(source)))continue;const re=new RegExp(source.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');if(re.test(working)){working=working.replace(re,`⟦${matches.length}⟧`);matches.push({source,target:item[dstKey]});if(item.pron||item.pronunciation||item.romanization)pron.push(item.pron||item.pronunciation||item.romanization)}}let out=working;matches.forEach((m,i)=>{out=out.replace(`⟦${i}⟧`,m.target)});S.transResult=(out!==input||matches.length)?out:input;S.transPron=pron.join(' / ')||S.transResult}if(S.transText)logUserHistory('Translation',`${S.transText} → ${S.transResult||''}`);body()}
+ else if(a==='trrule-add'){if(!isAdmin())return;const rule=val('tr-rule-text').trim();if(!rule)return alert('Enter a grammar rule first.');DB.translatorRules=DB.translatorRules||[];DB.translatorRules.push({id:uid(),direction:val('tr-rule-dir')||'all',rule,example:val('tr-rule-example').trim()});save();body()}
+ else if(a==='trrule-del'){if(!isAdmin())return;DB.translatorRules=(DB.translatorRules||[]).filter(x=>String(x.id)!==String(d.id));save();body()}
+ else if(a==='trref-add'){if(!isAdmin())return;const source=val('tr-ref-source').trim(),marma=val('tr-ref-marma').trim();if(!source||!marma)return alert('Source and Marma meaning are required.');DB.translatorRefs=DB.translatorRefs||[];DB.translatorRefs.push({id:uid(),source,marma,bn:val('tr-ref-bn').trim(),en:val('tr-ref-en').trim(),direction:val('tr-ref-dir')||'all',note:val('tr-ref-note').trim()});save();body()}
+ else if(a==='trref-del'){if(!isAdmin())return;DB.translatorRefs=(DB.translatorRefs||[]).filter(x=>String(x.id)!==String(d.id));save();body()}
+ else if(a==='translate'){
+  S.transText=val('trans-input').trim();const input=S.transText,dir=S.trDir||'m2e';
+  const srcKey=dir==='e2m'?'en':dir==='b2m'?'bn':'marma',dstKey=dir==='m2e'?'en':dir==='m2b'?'bn':'marma';
+  const norm=x=>String(x||'').normalize('NFC').trim().toLocaleLowerCase();
+  const grammar=Object.values(DB.grammarLessons||{}).flat().map(x=>({marma:x.title,en:x.detail||'',bn:x.detail||'',pron:x.example||'',grammar:true}));
+  const tables=(DB.tables||[]).flatMap(tb=>(tb.rows||[]).map(r=>{const vals=(r.c||[]).map(c=>ctext(c));return {marma:vals[0]||'',pron:vals[1]||'',bn:vals[2]||'',en:vals[3]||'',table:tb.cap}}));
+  const refs=(DB.translatorRefs||[]).filter(x=>x.direction==='all'||x.direction===dir).map(x=>({marma:x.marma,en:x.en,bn:x.bn,pron:x.pron||'',source:x.source}));
+  const items=[...(DB.words||[]),...(DB.dict||[]),...(DB.sentences||[]),...sangItems(),...tables,...grammar,...refs].filter(x=>x&&x[srcKey]&&x[dstKey]);
+  const exact=items.filter(x=>norm(x[srcKey])===norm(input));
+  let result='',pron='',used=[];
+  if(exact.length){result=[...new Set(exact.map(x=>x[dstKey]).filter(Boolean))].join(' / ');pron=[...new Set(exact.map(x=>x.pron||x.pronunciation||x.romanization).filter(Boolean))].join(' / ');used.push('Exact reference match')}
+  else {
+   // Longest phrase first, then match remaining individual words independently.
+   const tokens=input.match(/[\p{L}\p{M}’'-]+|[^\p{L}\p{M}’'-]+/gu)||[input];
+   const candidates=items.filter(x=>String(x[srcKey]||'').trim()&&String(x[dstKey]||'').trim()).sort((a,b)=>String(b[srcKey]).trim().length-String(a[srcKey]).trim().length);
+   const output=[];let hit=0;const pronParts=[];
+   for(let i=0;i<tokens.length;){const tok=tokens[i];if(!/[\p{L}\p{M}]/u.test(tok)){output.push(tok);i++;continue}
+    let found=null,span=0;
+    for(let n=Math.min(6,tokens.length-i);n>=1;n--){const slice=tokens.slice(i,i+n);if(slice.some(t=>!/[\p{L}\p{M}’'-]+$/u.test(t)))continue;const phrase=slice.join(' ');found=candidates.find(x=>norm(x[srcKey])===norm(phrase));if(found){span=n;break}}
+    if(found){output.push(found[dstKey]);hit++;used.push(String(tokens.slice(i,i+span).join(' ')));const pp=found.pron||found.pronunciation||found.romanization;if(pp)pronParts.push(pp);i+=span;continue}
+    // Unknown word remains visible; do not silently fabricate a Marma equivalent.
+    output.push(tok);i++;
+   }
+   result=output.join('');pron=pronParts.join(' · ');if(hit)used.push('Word/phrase matches: '+hit);
+  }
+  S.transResult=result;S.transPron=pron||result;S.transSource=used.join(' | ')||'No local reference match';S.transByAI=false;
+  // Ask Gemini when local matching did not cover every source word or no match exists.
+  const sourceWords=(input.match(/[\p{L}\p{M}’'-]+/gu)||[]).length;
+  const matchedWords=used.length&&used.some(x=>x.startsWith('Word/phrase matches:'))?Number(used.find(x=>x.startsWith('Word/phrase matches:')).split(':')[1]):(exact.length?sourceWords:0);
+  if(input&&(!exact.length)&&matchedWords<sourceWords){
+   try{const token=await getTok();const aiContext=buildTranslatorContext();const ruleText=(DB.translatorRules||[]).filter(x=>x.direction==='all'||x.direction===dir).map(x=>x.rule+(x.example?' Example: '+x.example:'')).join('\n');
+    const res=await fetch(SB_URL+'/functions/v1/marma-translator',{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+(token||SB_KEY)},body:JSON.stringify({text:input,direction:dir,context:aiContext,admin_rules:ruleText})});
+    const data=await res.json();if(res.ok&&data.translation){S.transResult=data.translation;S.transPron=data.translation;S.transByAI=true;S.transSource='Gemini AI + app references'}
+    else {S.transSource+=(result!==input?' | AI unavailable; known words shown':' | AI unavailable; no verified translation')}
+   }catch(err){console.error('Gemini request failed:',err);S.transSource+=(result!==input?' | AI unavailable; known words shown':' | AI unavailable; no verified translation')}
+  }
+  if(S.transText)logUserHistory('Translation',`${S.transText} → ${S.transResult||''}`);body()}
+
  else if(a==='transspeak'){const txt=String(S.transPron||S.transResult||'').trim();if(!txt)return; if('speechSynthesis' in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);u.lang=(S.trDir==='m2e'?'en-US':S.trDir==='m2b'?'bn-BD':S.trDir==='b2m'?'my-MM':'my-MM');const voices=speechSynthesis.getVoices();const v=voices.find(v=>v.lang.toLowerCase().startsWith(u.lang.slice(0,2)));if(v)u.voice=v;speechSynthesis.speak(u)}else alert('Speech playback is not supported in this browser. Marma voice support depends on installed device voices.')}
   else if(a==='transsave'){if(!S.transText||S.transResult===undefined){alert('Translate something first.');return}const k='ml_trans_saved_'+ME,L=store.get(k,[]);if(!L.some(x=>x.input===S.transText&&x.result===S.transResult)){L.unshift({input:S.transText,result:S.transResult,pron:S.transPron||'',ts:Date.now()});store.set(k,L.slice(0,100))}S.transSavedOpen=true;body()}
  else if(a==='transsavedtoggle'){S.transSavedOpen=!S.transSavedOpen;body()}
@@ -1563,8 +1682,8 @@ else if(a==='delitem'){if(confirm(t('sure'))){const cc=d.c||S.col,x=DB[cc].find(
  else if(a==='cellsave'){syncT();S.cell=null;save();body()}
  else if(a==='cellclose'){S.cell=null;body()}
  else if(a==='export'&&isMain()){$('#io').value=JSON.stringify(DB,null,1)}
- else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];o.ssubs=o.ssubs||[];o.wcats=o.wcats||[];o.vcats=o.vcats||[];o.vocab=o.vocab||DB.vocab||[];o.notifs=o.notifs||DB.notifs||[];{const up=DB.updates||[];DB=o;DB.updates=up}DB.tables.forEach(normT);save();resetUndo();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
- else if(a==='clear'&&isMain()){if(confirm(t('sureAll'))){DB={ssubs:[],wcats:[],vcats:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:DB.lit.cats,posts:[]},ratings:[],vocab:[],notifs:[],updates:DB.updates||[]};save();S.tid=null;body()}}
+ else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];o.ssubs=o.ssubs||[];o.wcats=o.wcats||[];o.vcats=o.vcats||[];o.vocab=o.vocab||DB.vocab||[];o.notifs=o.notifs||DB.notifs||[];o.translatorRules=o.translatorRules||DB.translatorRules||[];o.translatorRefs=o.translatorRefs||DB.translatorRefs||[];{const up=DB.updates||[];DB=o;DB.updates=up}DB.tables.forEach(normT);save();resetUndo();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
+ else if(a==='clear'&&isMain()){if(confirm(t('sureAll'))){DB={ssubs:[],wcats:[],vcats:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:DB.lit.cats,posts:[]},ratings:[],vocab:[],notifs:[],translatorRules:DB.translatorRules||[],translatorRefs:DB.translatorRefs||[],updates:DB.updates||[]};save();S.tid=null;body()}}
  else if(a==='reset'&&isMain()){if(confirm(t('sureReset'))){{const up=DB.updates||[];DB=clone(SEED);DB.updates=up}save();S.tid=null;body()}}
 });
 
