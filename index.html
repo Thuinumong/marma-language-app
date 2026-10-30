@@ -1556,7 +1556,7 @@ else if(a==='delitem'){if(confirm(t('sure'))){const cc=d.c||S.col,x=DB[cc].find(
  else if(a==='addrow'){syncT();const x=curT();x.rows.push({id:uid(),c:x.cols.map(()=>E())});save();body()}
  else if(a==='delcol'){syncT();const x=curT(),i=+d.i;if(x.cols.length<2){alert(t('oneCol'));return}S.cell=null;x.cols.splice(i,1);x.rows.forEach(r=>{adel(r.c[i].k);r.c.splice(i,1)});save();body()}
  else if(a==='delrow'){syncT();const x=curT(),r=x.rows[+d.r];S.cell=null;r.c.forEach(y=>adel(y.k));x.rows.splice(+d.r,1);save();body()}
- else if(a==='savetbl'){syncT();S.newTblDraftId=null;S.tblBoxHidden=false;save();body();alert(t('saved'))}
+ else if(a==='savetbl'){syncT();S.newTblDraftId=null;S.tblBoxHidden=false;S.tid=null;S.cell=null;save();body();alert(t('saved'))}
  else if(a==='cellau'){syncT();save();S.tgt={r:+d.r,c:+d.c};$('#afile').click()}
  else if(a==='cellrm'){syncT();const y=curT().rows[+d.r].c[+d.c];adel(y.k);y.k=null;save();body()}
  else if(a==='cellopen'){syncT();S.cell={r:+d.r,c:+d.c};body()}
