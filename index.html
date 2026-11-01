@@ -857,7 +857,7 @@ function sentPage(){
  return `<h2>${t('sent')}</h2>${bar('sent',true)}${catBar('sent')}${addBox('sentences')}`+(L.length?L.map(i=>card('sentences',i,false)).join(''):`<p class="note">${t('empty')}</p>`)}
 function wordPage(){
  const L=sortItems(catFilter('word',DB.words),getSort('word'));
- return `<h2>${t('dict')}</h2>${bar('word',true)}${catBar('word')}`+(L.length?`<div class="wgrid">${L.map(i=>card('words',i,false)).join('')}</div>`:`<p class="note">${t('empty')}</p>`)}
+ return `<h2>${t('dict')}</h2>${bar('word',true)}${catBar('word')}${addBox('words')}`+(L.length?`<div class="wgrid">${L.map(i=>card('words',i,false)).join('')}</div>`:`<p class="note">${t('empty')}</p>`)}
 // Floating editors: touch-friendly drag/resize and pinch zoom; no visible action labels.
 (function(){
  let action=null, pinch=null;
@@ -1052,8 +1052,8 @@ function body0(){
  else if(S.tab==='home')h=homePage();
  else if(S.tab==='dict')h=wordPage();
  else if(S.tab==='word')h=wordPage();
-  else if(S.tab==='sang'){const A=isAdmin(),x=A&&S.tid&&curT();
-   h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(x?`<div id="newTableBox" style="${S.tblBoxHidden?'display:none;':''}">${tblEditor(x)}</div>`:'')+(tabs().map(x=>tblBlock(x,A)).join('')||`<p class="note">${t('empty')}</p>`)}
+  else if(S.tab==='sang'){const A=isAdmin();
+   h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(tabs().map(tb=>(A&&S.tid&&String(S.tid)===String(tb.id)?`<div id="newTableBox" style="${S.tblBoxHidden?'display:none;':''}">${tblEditor(tb)}</div>`:'')+tblBlock(tb,A)).join('')||`<p class="note">${t('empty')}</p>`)}
  else if(S.tab==='grammar')h=grammarPage();
  else if(S.tab==='translator')h=translatorPage();
  else if(S.tab==='game')h=gamePage();
@@ -1690,10 +1690,13 @@ else if(a==='delitem'){if(confirm(t('sure'))){const cc=d.c||S.col,x=DB[cc].find(
  else if(a==='newtbl'){const box=$('#newTableBox');if(S.newTblDraftId&&S.tid===S.newTblDraftId&&box){S.tblBoxHidden=box.style.display!=='none';box.style.display=S.tblBoxHidden?'none':'';return}const x={id:uid(),cap:'New table',cols:['',''],rows:[{id:uid(),c:[E(),E()]}]};DB.tables.push(x);S.tid=x.id;S.newTblDraftId=x.id;S.tblBoxHidden=false;S.cell=null;save();body()}
  else if(a==='canceltbl'){if(S.newTblDraftId){const x=DB.tables.find(y=>String(y.id)===String(S.newTblDraftId));if(x){x.rows.forEach(r=>r.c.forEach(y=>adel(y.k)));DB.tables=DB.tables.filter(y=>y!==x)}S.tid=null;S.cell=null;S.newTblDraftId=null;S.tblBoxHidden=false;save();body()}}
  else if(a==='edittbl'){
-  // Preserve the current table's unfinished caption/cell edits before switching to another table.
+  // Open the editor directly beneath the selected table, without jumping to page top.
   syncT();
   if(S.tid) save();
+  const target=document.querySelector(`.tblw[data-id="${CSS.escape(String(d.id))}"]`);
+  const anchorTop=target?target.getBoundingClientRect().top:null;
   S.tid=d.id; S.cell=null; S.tblBoxHidden=false; body();
+  if(anchorTop!==null)requestAnimationFrame(()=>{const now=document.querySelector(`.tblw[data-id="${CSS.escape(String(d.id))}"]`);if(now){const delta=now.getBoundingClientRect().top-anchorTop;if(Math.abs(delta)>1)window.scrollBy(0,delta)}});
  }
  else if(a==='backtbl'){if(S.newTblDraftId){const x=DB.tables.find(y=>String(y.id)===String(S.newTblDraftId));if(x){x.rows.forEach(r=>r.c.forEach(y=>adel(y.k)));DB.tables=DB.tables.filter(y=>y!==x)}S.newTblDraftId=null}else{syncT();save()}S.tid=null;S.cell=null;S.tblBoxHidden=false;body()}
  else if(a==='deltbl'){if(confirm(t('sure'))){const x=DB.tables.find(x=>x.id===d.id);x.rows.forEach(r=>r.c.forEach(y=>adel(y.k)));DB.tables=DB.tables.filter(y=>y!==x);save();body()}}
@@ -1701,7 +1704,12 @@ else if(a==='delitem'){if(confirm(t('sure'))){const cc=d.c||S.col,x=DB[cc].find(
  else if(a==='addrow'){syncT();const x=curT();x.rows.push({id:uid(),c:x.cols.map(()=>E())});save();body()}
  else if(a==='delcol'){syncT();const x=curT(),i=+d.i;if(x.cols.length<2){alert(t('oneCol'));return}S.cell=null;x.cols.splice(i,1);x.rows.forEach(r=>{adel(r.c[i].k);r.c.splice(i,1)});save();body()}
  else if(a==='delrow'){syncT();const x=curT(),r=x.rows[+d.r];S.cell=null;r.c.forEach(y=>adel(y.k));x.rows.splice(+d.r,1);save();body()}
- else if(a==='savetbl'){syncT();S.newTblDraftId=null;S.tblBoxHidden=false;S.tid=null;S.cell=null;save();body();alert(t('saved'))}
+ else if(a==='savetbl'){
+  syncT();const savedId=S.tid;const anchor=document.querySelector(`.tblw[data-id="${CSS.escape(String(savedId||''))}"]`);const anchorTop=anchor?anchor.getBoundingClientRect().top:null;
+  S.newTblDraftId=null;S.tblBoxHidden=false;S.tid=null;S.cell=null;save();body();
+  if(savedId&&anchorTop!==null)requestAnimationFrame(()=>{const now=document.querySelector(`.tblw[data-id="${CSS.escape(String(savedId))}"]`);if(now){const delta=now.getBoundingClientRect().top-anchorTop;if(Math.abs(delta)>1)window.scrollBy(0,delta)}});
+  alert(t('saved'))
+ }
  else if(a==='cellau'){syncT();save();S.tgt={r:+d.r,c:+d.c};$('#afile').click()}
  else if(a==='cellrm'){syncT();const y=curT().rows[+d.r].c[+d.c];adel(y.k);y.k=null;save();body()}
  else if(a==='cellopen'){syncT();S.cell={r:+d.r,c:+d.c};body()}
@@ -2109,3 +2117,8 @@ main .catbar{
 </style>
 
 
+
+<style id="ml-grammar-categories-wrap-final">
+.grammar-cats{display:flex!important;flex-wrap:wrap!important;overflow-x:visible!important;overflow-y:visible!important;white-space:normal!important;gap:8px!important;align-items:center!important;position:relative!important;top:auto!important}
+.grammar-cats .tab{flex:0 0 auto!important;white-space:nowrap!important}
+</style>
