@@ -857,7 +857,7 @@ function sentPage(){
  return `<h2>${t('sent')}</h2>${bar('sent',true)}${catBar('sent')}${addBox('sentences')}`+(L.length?L.map(i=>card('sentences',i,false)).join(''):`<p class="note">${t('empty')}</p>`)}
 function wordPage(){
  const L=sortItems(catFilter('word',DB.words),getSort('word'));
- return `<h2>${t('dict')}</h2>${bar('word',true)}${catBar('word')}${addBox('words')}`+(L.length?`<div class="wgrid">${L.map(i=>card('words',i,false)).join('')}</div>`:`<p class="note">${t('empty')}</p>`)}
+ return `<h2>${t('dict')}</h2>${bar('word',true)}<section class="dictionary-category-add-flow">${catBar('word')}</section><div class="dictionary-add-flow">${addBox('words')}</div>`+(L.length?`<div class="wgrid">${L.map(i=>card('words',i,false)).join('')}</div>`:`<p class="note">${t('empty')}</p>`)}
 // Floating editors: touch-friendly drag/resize and pinch zoom; no visible action labels.
 (function(){
  let action=null, pinch=null;
@@ -1064,7 +1064,7 @@ function body0(){
   else h=menu();
 const IC={dict:'dict',word:'words',sent:'sentences'}[S.tab];
 
- if(!q&&S.tab==='word'&&isAdmin()){const m=['words'];h=h.replace(/<div class="vbar">/,`<button class="btn" data-act="iadd" data-c="words">＋ ${t('addNew')}</button>${S.inl&&S.edit&&m.includes(S.col)?itemForm(S.col):''}<div class="vbar">`)}
+ // Dictionary Add New is rendered only by wordPage(), immediately after the category manager.
  if(hasNew()&&!S.updHide){const u=updSorted()[0];h=`<div class="card" style="border-color:var(--ac)"><div class="top"><div><b>🔔 ${t('newVer')}: ${esc(u.ver)}</b>${u.note?`<div class="en">${esc(u.note)}</div>`:''}</div><button class="x" data-act="updhide" aria-label="close">✕</button></div>${safeLink(u.link)?`<a class="btn sm" href="${esc(u.link)}" target="_blank" rel="noopener">⬇ ${t('download')}</a>`:''}</div>`+h}
  {const v=q?'grid':getView(S.tab);B.className=(v==='list'?'narrow':'grid')+(v==='compact'?' v-compact':'')}B.innerHTML=h;
  // Dictionary: keep only one floating editor. Older layouts could leave a second
@@ -2130,4 +2130,15 @@ main .catbar{
 <style id="ml-grammar-categories-wrap-final">
 .grammar-cats{display:flex!important;flex-wrap:wrap!important;overflow-x:visible!important;overflow-y:visible!important;white-space:normal!important;gap:8px!important;align-items:center!important;position:relative!important;top:auto!important}
 .grammar-cats .tab{flex:0 0 auto!important;white-space:nowrap!important}
+</style>
+
+<style id="dictionary-order-fix-v14">
+/* Dictionary admin flow: category chips, Create Category form, one Add New, then words. */
+.dictionary-category-add-flow{display:block!important;position:relative!important;float:none!important;clear:both!important;width:100%!important;overflow:visible!important;z-index:1!important}
+.dictionary-add-flow{display:block!important;position:relative!important;float:none!important;clear:both!important;width:100%!important;margin:12px 0!important;overflow:visible!important;z-index:1!important}
+.dictionary-add-flow>[data-act="iadd"]{display:inline-flex!important;position:relative!important;float:none!important;margin:0 0 10px!important}
+.dictionary-add-flow #itemFormBox{position:relative!important;left:auto!important;right:auto!important;top:auto!important;width:min(100%,520px)!important;height:auto!important;max-height:none!important;overflow:visible!important;margin:8px 0 14px!important}
+#page .wgrid{clear:both!important;display:grid!important}
+.grammar-cats{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;align-items:center!important;align-content:flex-start!important;justify-content:flex-start!important;gap:7px!important;overflow:visible!important;white-space:normal!important;width:100%!important}
+.grammar-cats .tab{flex:0 0 auto!important;width:auto!important;min-width:0!important;max-width:100%!important;white-space:nowrap!important;padding:7px 11px!important}
 </style>
