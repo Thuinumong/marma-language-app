@@ -784,10 +784,24 @@ addEventListener('popstate',e=>{if(NAVSKIP>0){NAVSKIP--;return}
  NAVPOP=true;try{render0()}finally{NAVPOP=false}
  try{const m=$('#body');if(m)m.scrollTop=0;scrollTo(0,0)}catch(x){}});
 function render(){render0();navSync()}
-(function(){let ly=0,tk=false;addEventListener('scroll',()=>{if(tk)return;tk=true;requestAnimationFrame(()=>{tk=false;
- const h=document.querySelector('#app.shell header');if(!h)return;
- const y=Math.max(0,scrollY),d=y-ly,ae=document.activeElement;
- h.classList.remove('hh');ly=y;return})},{passive:true})})();
+(function(){
+ let lastY=Math.max(0,window.scrollY||0), raf=false, idle=null;
+ const getHeader=()=>document.querySelector('#app.shell header');
+ const hide=()=>{const h=getHeader();if(h&&Math.max(window.scrollY||0,document.documentElement.scrollTop||0)>24&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName||''))h.classList.add('hh')};
+ const reveal=()=>{const h=getHeader();if(h)h.classList.remove('hh');clearTimeout(idle);idle=setTimeout(hide,900)};
+ addEventListener('scroll',()=>{
+  if(raf)return;raf=true;requestAnimationFrame(()=>{raf=false;
+   const y=Math.max(0,window.scrollY||document.documentElement.scrollTop||0),delta=y-lastY;
+   const h=getHeader();if(!h){lastY=y;return}
+   if(y<=24){h.classList.remove('hh');clearTimeout(idle)}
+   else if(delta>3){reveal()} // scrolling down: show header briefly
+   else if(delta< -3){h.classList.add('hh');clearTimeout(idle)} // scrolling up: hide for more screen space
+   lastY=y;
+  });
+ },{passive:true});
+ // If scrolling stops deep in the page, keep the header hidden.
+ addEventListener('scroll',()=>{clearTimeout(idle);idle=setTimeout(hide,900)},{passive:true});
+})();
 function body(){const _m0=$('#body'),_y0=_m0?_m0.scrollTop:0,_w0=window.scrollY||0,_bars=[...document.querySelectorAll('#body .catbar')].map((n,i)=>({i,left:n.scrollLeft})),_tw=[...document.querySelectorAll('#body .tw')].map((n,i)=>({i,left:n.scrollLeft}));body0();requestAnimationFrame(()=>{const m=$('#body');if(m)m.scrollTop=_y0;window.scrollTo(0,_w0);const bars=[...document.querySelectorAll('#body .catbar')],tw=[...document.querySelectorAll('#body .tw')];_bars.forEach(o=>{if(bars[o.i])bars[o.i].scrollLeft=o.left});_tw.forEach(o=>{if(tw[o.i])tw[o.i].scrollLeft=o.left})});navSync()}
 function render0(){
  const _headerWasHidden=!!document.querySelector('#app.shell header.hh');
@@ -843,7 +857,7 @@ function sentPage(){
  return `<h2>${t('sent')}</h2>${bar('sent',true)}${catBar('sent')}${addBox('sentences')}`+(L.length?L.map(i=>card('sentences',i,false)).join(''):`<p class="note">${t('empty')}</p>`)}
 function wordPage(){
  const L=sortItems(catFilter('word',DB.words),getSort('word'));
- return `<h2>${t('dict')}</h2>${bar('word',true)}${catBar('word')}${addBox('words')}`+(L.length?`<div class="wgrid">${L.map(i=>card('words',i,false)).join('')}</div>`:`<p class="note">${t('empty')}</p>`)}
+ return `<h2>${t('dict')}</h2>${bar('word',true)}${catBar('word')}`+(L.length?`<div class="wgrid">${L.map(i=>card('words',i,false)).join('')}</div>`:`<p class="note">${t('empty')}</p>`)}
 // Floating editors: touch-friendly drag/resize and pinch zoom; no visible action labels.
 (function(){
  let action=null, pinch=null;
@@ -857,6 +871,7 @@ function wordPage(){
  function remember(el){try{const r=el.getBoundingClientRect();localStorage.setItem('ml_float_'+(el.id||'editor'),JSON.stringify({left:r.left,top:r.top,width:r.width,height:r.height,zoom:el.dataset.floatZoom||'1'}))}catch(e){}}
  function restore(el){
   if(!el||el.dataset.positioned)return;
+  if(el.id==='itemFormBox'){try{localStorage.removeItem('ml_float_'+(el.id||'editor'))}catch(e){} el.style.left='18px';el.style.right='auto';el.style.top='110px';el.dataset.positioned='1';return;}
   try{const p=JSON.parse(localStorage.getItem('ml_float_'+(el.id||'editor'))||'null');if(p){
    el.style.left=Math.max(0,Math.min(innerWidth-100,p.left))+'px';
    el.style.top=Math.max(0,Math.min(innerHeight-70,p.top))+'px';
@@ -1052,6 +1067,17 @@ const IC={dict:'dict',word:'words',sent:'sentences'}[S.tab];
  if(!q&&S.tab==='word'&&isAdmin()){const m=['words'];h=h.replace(/<div class="vbar">/,`<button class="btn" data-act="iadd" data-c="words">＋ ${t('addNew')}</button>${S.inl&&S.edit&&m.includes(S.col)?itemForm(S.col):''}<div class="vbar">`)}
  if(hasNew()&&!S.updHide){const u=updSorted()[0];h=`<div class="card" style="border-color:var(--ac)"><div class="top"><div><b>🔔 ${t('newVer')}: ${esc(u.ver)}</b>${u.note?`<div class="en">${esc(u.note)}</div>`:''}</div><button class="x" data-act="updhide" aria-label="close">✕</button></div>${safeLink(u.link)?`<a class="btn sm" href="${esc(u.link)}" target="_blank" rel="noopener">⬇ ${t('download')}</a>`:''}</div>`+h}
  {const v=q?'grid':getView(S.tab);B.className=(v==='list'?'narrow':'grid')+(v==='compact'?' v-compact':'')}B.innerHTML=h;
+ // Dictionary: keep only one floating editor. Older layouts could leave a second
+ // editor panel on the right; remove duplicate editor instances and stale clones.
+ if(S.tab==='word'||S.tab==='dict'){
+   const editors=[...B.querySelectorAll('#itemFormBox.float-editor, .dict-floating-editor')];
+   editors.slice(1).forEach(el=>el.remove());
+   const rightSide=[...B.querySelectorAll('.float-editor')].filter(el=>{
+     const r=el.getBoundingClientRect();
+     return r.width && r.left > (window.innerWidth/2);
+   });
+   rightSide.forEach(el=>{ if(el.id!=='itemFormBox') el.remove(); });
+ }
  hydrate();try{updateBadge()}catch(e){}}
 function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button>`;
  if(S.sub==='profile')return `${back}<h2>${t('profile')}</h2><div class="card" style="text-align:center">${avView(96)}<div style="margin-top:8px"><b>${esc(u.name)}</b></div><div class="en">${t('role_'+u.role)}</div>${u.bio?`<div class="pbody" style="margin:4px 0">${esc(u.bio)}</div>`:''}${u.profession?`<div style="margin-top:4px">💼 ${esc(u.profession)}</div>`:''}${u.hometown?`<div>📍 ${esc(u.hometown)}</div>`:''}<div style="margin-top:6px">${u.email?`<div>✉️ ${esc(u.email)}</div>`:''}${u.phone?`<div>📞 ${esc(u.phone)}</div>`:''}</div></div><button class="btn" data-act="sub" data-s="editprofile">✏️ ${t('editProfile')}</button><div class="seg" style="margin-top:12px"><button class="on" type="button">Timeline</button></div><div class="timeline-posts">${(()=>{const shares=store.get('ml_post_shares_'+ME,[]),own=DB.lit.posts.filter(p=>String(p.by)===String(ME)),shared=shares.map(x=>({x,p:DB.lit.posts.find(p=>String(p.id)===String(x.id))})).filter(z=>z.p);const seen=new Set();const oh=own.map(p=>{seen.add(String(p.id));return post(p)}).join('');const sh=shared.filter(z=>!seen.has(String(z.p.id))).map(z=>post(z.p,{shared:true,sharedName:u.name})).join('');return oh+sh||`<p class="note">${t('noPosts')}</p>`})()}</div><h3>${t('blockedUsers')}</h3>${(u.blocked||[]).map(id=>`<div class="card top"><div>${esc(nameOf(id))}</div><button class="btn sm" data-act="unblock" data-u="${esc(id)}">${t('unblock')}</button></div>`).join('')||`<p class="note">${t('noBlocked')}</p>`}`;
@@ -1787,7 +1813,7 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
 (()=>{
  const bar=document.getElementById('ml-page-scrollbar'); if(!bar)return;
  const thumb=bar.querySelector('.ml-thumb'),track=bar.querySelector('.ml-track');
- let timer=0,drag=false,startY=0,startScroll=0,dragTarget=null;
+ let timer=0,drag=false,startY=0,startScroll=0,dragTarget=null,lastScrollY=null;
  const candidates=()=>{
   const main=document.querySelector('#app.shell main#body')||document.querySelector('#app.shell main')||document.querySelector('#body');
   return [main,document.scrollingElement,document.documentElement,document.body].filter((x,i,a)=>x&&a.indexOf(x)===i);
@@ -1806,9 +1832,10 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
   bar.setAttribute('aria-valuenow',String(Math.round(100*el.scrollTop/max)));
  }
  function show(){update();bar.classList.add('ml-visible');clearTimeout(timer);if(!drag)timer=setTimeout(()=>bar.classList.remove('ml-visible'),850);}
- document.addEventListener('scroll',show,{capture:true,passive:true});
- document.addEventListener('touchmove',show,{capture:true,passive:true});
- document.addEventListener('wheel',show,{passive:true});
+ function onScroll(){const el=getTarget(),now=el.scrollTop;if(lastScrollY===null){lastScrollY=now;return;}const prev=lastScrollY;lastScrollY=now;if(now>prev+1)show();else if(now<prev-1&&!drag){bar.classList.remove('ml-visible');clearTimeout(timer);update();}}
+ document.addEventListener('scroll',onScroll,{capture:true,passive:true});
+ document.addEventListener('touchmove',()=>{const el=getTarget();if(lastScrollY===null)lastScrollY=el.scrollTop;},{capture:true,passive:true});
+ document.addEventListener('wheel',e=>{if(e.deltaY>0)show();else if(e.deltaY<0&&!drag){bar.classList.remove('ml-visible');clearTimeout(timer);}},{passive:true});
  window.addEventListener('resize',update,{passive:true});
  // A tap or drag on the thumb/track scrolls the current page vertically.
  function pointerStart(e){
@@ -1968,15 +1995,6 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
 </style>
 
 
-<style id="ml-grammar-categories-horizontal-v4">
-/* Grammar category tabs stay in one horizontal row; swipe sideways when needed. */
-#body nav.tabs.grammar-cats{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;white-space:nowrap!important;padding:8px 4px!important;margin:0 0 12px!important;position:sticky!important;top:0!important;z-index:20!important;background:var(--bg)!important;}
-#body nav.tabs.grammar-cats>.tab{display:inline-flex!important;flex:0 0 auto!important;width:auto!important;min-width:max-content!important;max-width:none!important;white-space:nowrap!important;margin:0!important;}
-/* Admin category management buttons also flow side by side and wrap only when row is full. */
-#body .grammar-admin .grammar-admin-actions{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;width:100%!important;}
-#body .grammar-admin .grammar-admin-actions>.btn{display:inline-flex!important;flex:0 0 auto!important;width:auto!important;max-width:100%!important;white-space:nowrap!important;}
-</style>
-
 </body>
 </html>
 
@@ -2023,8 +2041,8 @@ html{touch-action:pan-x pan-y}
 </style>
 
 <style id="stable-header-and-inline-grammar-fix">
-#app.shell header{position:sticky!important;top:0!important;transform:none!important;will-change:auto!important;z-index:50;background:var(--bg)}
-#app.shell header.hh{transform:none!important}
+#app.shell header{position:sticky!important;top:0!important;transform:translateY(0)!important;transition:transform .22s ease!important;will-change:transform!important;z-index:50;background:var(--bg)}
+#app.shell header.hh{transform:translateY(calc(-100% - env(safe-area-inset-top,0px) - 6px))!important}
 .grammar-admin.float-editor{position:static!important;left:auto!important;top:auto!important;width:auto!important;height:auto!important;max-height:none!important;resize:none!important;overflow:visible!important;z-index:auto!important;box-shadow:none!important;border:1px solid var(--bd)!important;padding:12px!important;margin:12px 0!important}
 .grammar-admin .float-handle{display:none!important}
 .brand b{font-size:1.15rem!important;font-weight:700!important}
@@ -2089,3 +2107,5 @@ main .catbar{
  #app.shell main#body .catbar,#app.shell main .catbar,main#body .catbar,main .catbar{top:72px!important}
 }
 </style>
+
+
