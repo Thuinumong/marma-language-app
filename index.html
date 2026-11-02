@@ -86,7 +86,7 @@ textarea.in{min-height:90px}.pbody{white-space:pre-wrap;margin:8px 0}.badge{font
 .opt.ok{background:rgba(31,140,80,.18);border-color:#1f8c50;color:var(--tx)}.opt.bad{background:rgba(179,38,30,.15);border-color:var(--rd);color:var(--tx)}.opt:disabled{cursor:default}
 .wgrid{grid-column:1/-1;width:100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:0 12px;align-items:start}
 .narrow .wgrid,.v-compact .wgrid{grid-template-columns:1fr}
-.catbar{position:relative!important;top:auto!important;z-index:1!important;background:var(--bg);padding:8px 0!important;display:flex!important;flex-wrap:wrap!important;align-items:flex-start;gap:6px;overflow:visible!important;max-width:100%;height:auto!important;min-height:0;box-shadow:none!important}.catbar .chip,.catbar .cw{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.catbar{position:sticky;top:0;z-index:8;background:var(--bg);padding:6px 0!important;overscroll-behavior-x:contain;scroll-behavior:auto;box-shadow:0 3px 8px #0000000a}
 #app.shell main.grid .wgrid{grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr))}
 #app.shell main.grid.v-compact .wgrid{grid-template-columns:1fr}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
@@ -329,38 +329,6 @@ html.ml-scrolling .tw::-webkit-scrollbar-thumb, body.ml-scrolling .tw::-webkit-s
 img[data-ik]{cursor:default!important}
 img[data-ik]:hover{filter:none!important;outline:none!important}
 .game-sources{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.grammar-admin-actions .btn{max-width:100%}.grammar-cats{scrollbar-width:none;-webkit-overflow-scrolling:touch}.grammar-cats .tab{flex:0 0 auto}
-
-/* Global responsive layout repair: keep every page section in normal document flow. */
-*,*::before,*::after{box-sizing:border-box}
-html,body{width:100%;max-width:100%;overflow-x:hidden}
-body{min-width:320px}
-main,#app,#root,.page,.content{min-width:0;max-width:100%;width:100%}
-main{overflow:visible}
-.card,.note,.menu,.wgrid,.grid,.row,.top,.acts{min-width:0;max-width:100%}
-.card{overflow-wrap:anywhere}
-.top{align-items:flex-start;flex-wrap:wrap}
-.acts{flex-wrap:wrap;gap:5px}
-/* Category chips must wrap onto additional rows instead of hiding below/behind the bar. */
-.tabs.catbar{display:flex!important;flex-wrap:wrap!important;align-items:center;justify-content:flex-start;gap:6px 8px;width:100%;max-width:100%;height:auto;min-height:0;overflow:visible!important;white-space:normal;padding:6px 0!important;position:relative;z-index:1}
-.tabs.catbar .chip,.tabs.catbar .cw{max-width:100%;margin:0;flex:0 0 auto}
-.tabs.catbar .cw{display:inline-flex;vertical-align:middle}
-.tabs.catbar .chip{white-space:normal;overflow-wrap:anywhere}
-/* Keep the main navigation horizontally scrollable, but never let it cover page content. */
-.tabs:not(.catbar){min-width:0;max-width:100%;overscroll-behavior-x:contain;position:relative;z-index:2}
-.wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:10px}
-input,textarea,select,button{max-width:100%;min-width:0}
-textarea{resize:vertical;overflow:auto}
-img,video,iframe,svg{max-width:100%}
-.tw{max-width:100%;overflow-x:auto}
-@media(max-width:600px){
- main{padding-left:12px;padding-right:12px}
- .card{padding:11px 12px}
- .tabs.catbar{gap:6px!important}
- .tabs.catbar .chip{padding:6px 10px;font-size:.9rem}
- .top{gap:6px}
- .acts{align-items:center}
- .btn{white-space:normal;overflow-wrap:anywhere}
-}
 </style>
 <style>
 .home-welcome{padding:8px 0 24px}.home-greet{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-radius:18px;background:linear-gradient(115deg,#fff0c9,#f6e9c8);border:1px solid #ead8ac;margin:4px 0 14px;color:#123d3b}.home-eyebrow{font-size:.68rem;letter-spacing:.08em;font-weight:700;color:#0f6b62}.home-greet h1{font-size:1.6rem;line-height:1.15;margin:4px 0}.home-greet p{margin:0;color:#28615d;font-size:.94rem}.home-leaf{font-size:2.5rem}.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.home-tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:3px;min-height:122px;padding:13px;border:0;border-radius:15px;color:#fff;font:inherit;cursor:pointer;box-shadow:0 3px 8px #153c3a12}.tile-0{background:linear-gradient(135deg,#087d65,#159c78)}.tile-1{background:linear-gradient(135deg,#087f9e,#168fc0)}.tile-2{background:linear-gradient(135deg,#6541a6,#8b5bd0)}.tile-3{background:linear-gradient(135deg,#e57d11,#f6a11e)}.tile-4{background:linear-gradient(135deg,#147e89,#29a4a4)}.tile-5{background:linear-gradient(135deg,#249b78,#5bc49b)}.tile-6{background:linear-gradient(135deg,#126c64,#24988a)}.tile-7{background:linear-gradient(135deg,#465c7b,#738ba7)}.tile-icon{font-size:1.45rem;line-height:1.2}.home-tile b{font-size:1rem}.home-tile small{font-size:.75rem;opacity:.92}.tile-arrow{position:absolute;right:12px;bottom:9px;font-size:1.2rem}.home-quote{display:flex;align-items:center;gap:12px;padding:14px 16px;margin-top:12px;border-radius:15px;background:#fff2cb;color:#155b55}.home-quote span{font-size:1.6rem}.home-quote small{display:block;font-size:.78rem;color:#4f6963}.grammar-cats{top:0;z-index:8;margin:0 -2px 10px;padding:8px 2px!important}.grammar-card summary{display:flex;align-items:center;gap:12px;list-style:none}.grammar-card summary::-webkit-details-marker{display:none}.grammar-n{display:grid;place-items:center;flex:0 0 42px;height:42px;border-radius:13px;background:#d9f0e7;color:#087c69;font-size:1.25rem;font-weight:700}.grammar-card summary small{display:block;color:var(--mu);font-size:.8rem;font-weight:400}.grammar-arrow{margin-left:auto;font-size:1.5rem;color:var(--pr)}.grammar-detail{padding:4px 4px 0}.trans-seg{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.trans-seg button{flex:1 1 0;min-width:0;padding:9px 7px;font-size:.78rem;white-space:nowrap}.trans-card label{font-size:.9rem;color:var(--mu)}.trans-card textarea{min-height:110px;resize:vertical}.trans-count{text-align:right;color:var(--mu);font-size:.75rem;margin-top:-6px}.trans-result{background:linear-gradient(135deg,#f2faf4,#fffdf5)}.trans-output{font-size:1.15rem;color:var(--pr);white-space:pre-wrap;overflow-wrap:anywhere}
@@ -433,36 +401,6 @@ img,video,iframe,svg{max-width:100%}
  #app.shell header nav.tabs{display:flex!important;grid-column:1!important;grid-row:2!important;position:relative!important;flex-direction:column!important;overflow-y:auto!important;overflow-x:hidden!important;align-self:stretch!important;align-items:stretch!important;width:100%!important;min-width:0!important;box-sizing:border-box!important;padding:8px 10px!important;gap:5px!important}
  #app.shell header nav.tabs .tab,#app.shell header nav.tabs .mbtn{display:flex!important;width:100%!important;min-width:0!important;flex:0 0 auto!important;justify-content:flex-start!important;text-align:left!important;white-space:normal!important;overflow-wrap:anywhere!important;padding:9px 10px!important;font-size:.88rem!important;box-sizing:border-box!important}
  #app.shell main#body{grid-column:2!important;grid-row:2!important;min-width:0!important;width:auto!important;max-width:none!important;overflow-y:auto!important;overflow-x:hidden!important;padding:8px 24px 40px!important;box-sizing:border-box!important}
-}
-</style>
-
-<style id="translator-layout-safety">
-/* Responsive layout safety: keep controls in normal document flow. */
-#app, #app main, #app main * { box-sizing: border-box; }
-#app main { min-width: 0; }
-#app main .trans-seg { display:flex; flex-wrap:wrap; gap:8px; align-items:stretch; width:100%; min-width:0; }
-#app main .trans-seg button { flex:1 1 110px; min-width:0; max-width:100%; white-space:normal; overflow-wrap:anywhere; }
-#app main .trans-card, #app main .trans-result, #app main .trans-saved-list { width:100%; min-width:0; max-width:100%; overflow:visible; }
-#app main .trans-card .in, #app main .trans-card textarea, #app main .trans-card input, #app main .trans-card select { display:block; width:100%; max-width:100%; min-width:0; }
-#app main .trans-output, #app main .trans-saved-text, #app main .note { min-width:0; overflow-wrap:anywhere; word-break:break-word; }
-#app main details.card { width:100%; min-width:0; max-width:100%; overflow:visible; }
-#app main details.card > summary { cursor:pointer; overflow-wrap:anywhere; }
-#app main details.card .grammar-detail { display:flex; flex-direction:column; gap:10px; width:100%; min-width:0; }
-#app main details.card .grammar-detail > * { min-width:0; max-width:100%; margin-top:0; margin-bottom:0; }
-#app main details.card .grammar-detail .in, #app main details.card .grammar-detail textarea, #app main details.card .grammar-detail input, #app main details.card .grammar-detail select { display:block; width:100%; min-width:0; max-width:100%; }
-#app main .trans-saved-item { display:flex; align-items:flex-start; gap:10px; width:100%; min-width:0; }
-#app main .trans-saved-item .trans-saved-text { flex:1 1 auto; min-width:0; }
-#app main .trans-saved-item > button { flex:0 0 auto; }
-#app main .trans-count { text-align:right; }
-#app main button, #app main input, #app main select, #app main textarea { max-width:100%; }
-@media(max-width:520px) {
- #app main { padding-left:12px; padding-right:12px; }
- #app main .trans-seg button { flex:1 1 calc(50% - 8px); }
- #app main .trans-saved-item { gap:6px; }
- #app main .card { min-width:0; }
-}
-@media(min-width:521px) and (max-width:999px) {
- #app main .trans-seg button { flex:1 1 130px; }
 }
 </style>
 </head>
@@ -784,24 +722,10 @@ addEventListener('popstate',e=>{if(NAVSKIP>0){NAVSKIP--;return}
  NAVPOP=true;try{render0()}finally{NAVPOP=false}
  try{const m=$('#body');if(m)m.scrollTop=0;scrollTo(0,0)}catch(x){}});
 function render(){render0();navSync()}
-(function(){
- let lastY=Math.max(0,window.scrollY||0), raf=false, idle=null;
- const getHeader=()=>document.querySelector('#app.shell header');
- const hide=()=>{const h=getHeader();if(h&&Math.max(window.scrollY||0,document.documentElement.scrollTop||0)>24&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName||''))h.classList.add('hh')};
- const reveal=()=>{const h=getHeader();if(h)h.classList.remove('hh');clearTimeout(idle);idle=setTimeout(hide,900)};
- addEventListener('scroll',()=>{
-  if(raf)return;raf=true;requestAnimationFrame(()=>{raf=false;
-   const y=Math.max(0,window.scrollY||document.documentElement.scrollTop||0),delta=y-lastY;
-   const h=getHeader();if(!h){lastY=y;return}
-   if(y<=24){h.classList.remove('hh');clearTimeout(idle)}
-   else if(delta>3){reveal()} // scrolling down: show header briefly
-   else if(delta< -3){h.classList.add('hh');clearTimeout(idle)} // scrolling up: hide for more screen space
-   lastY=y;
-  });
- },{passive:true});
- // If scrolling stops deep in the page, keep the header hidden.
- addEventListener('scroll',()=>{clearTimeout(idle);idle=setTimeout(hide,900)},{passive:true});
-})();
+(function(){let ly=0,tk=false;addEventListener('scroll',()=>{if(tk)return;tk=true;requestAnimationFrame(()=>{tk=false;
+ const h=document.querySelector('#app.shell header');if(!h)return;
+ const y=Math.max(0,scrollY),d=y-ly,ae=document.activeElement;
+ h.classList.remove('hh');ly=y;return})},{passive:true})})();
 function body(){const _m0=$('#body'),_y0=_m0?_m0.scrollTop:0,_w0=window.scrollY||0,_bars=[...document.querySelectorAll('#body .catbar')].map((n,i)=>({i,left:n.scrollLeft})),_tw=[...document.querySelectorAll('#body .tw')].map((n,i)=>({i,left:n.scrollLeft}));body0();requestAnimationFrame(()=>{const m=$('#body');if(m)m.scrollTop=_y0;window.scrollTo(0,_w0);const bars=[...document.querySelectorAll('#body .catbar')],tw=[...document.querySelectorAll('#body .tw')];_bars.forEach(o=>{if(bars[o.i])bars[o.i].scrollLeft=o.left});_tw.forEach(o=>{if(tw[o.i])tw[o.i].scrollLeft=o.left})});navSync()}
 function render0(){
  const _headerWasHidden=!!document.querySelector('#app.shell header.hh');
@@ -857,7 +781,7 @@ function sentPage(){
  return `<h2>${t('sent')}</h2>${bar('sent',true)}${catBar('sent')}${addBox('sentences')}`+(L.length?L.map(i=>card('sentences',i,false)).join(''):`<p class="note">${t('empty')}</p>`)}
 function wordPage(){
  const L=sortItems(catFilter('word',DB.words),getSort('word'));
- return `<h2>${t('dict')}</h2>${bar('word',true)}<section class="dictionary-category-add-flow">${catBar('word')}</section><div class="dictionary-add-flow">${addBox('words')}</div>`+(L.length?`<div class="wgrid">${L.map(i=>card('words',i,false)).join('')}</div>`:`<p class="note">${t('empty')}</p>`)}
+ return `<h2>${t('dict')}</h2>${bar('word',true)}${catBar('word')}${addBox('words')}`+(L.length?`<div class="wgrid">${L.map(i=>card('words',i,false)).join('')}</div>`:`<p class="note">${t('empty')}</p>`)}
 // Floating editors: touch-friendly drag/resize and pinch zoom; no visible action labels.
 (function(){
  let action=null, pinch=null;
@@ -871,7 +795,6 @@ function wordPage(){
  function remember(el){try{const r=el.getBoundingClientRect();localStorage.setItem('ml_float_'+(el.id||'editor'),JSON.stringify({left:r.left,top:r.top,width:r.width,height:r.height,zoom:el.dataset.floatZoom||'1'}))}catch(e){}}
  function restore(el){
   if(!el||el.dataset.positioned)return;
-  if(el.id==='itemFormBox'){try{localStorage.removeItem('ml_float_'+(el.id||'editor'))}catch(e){} el.style.left='18px';el.style.right='auto';el.style.top='110px';el.dataset.positioned='1';return;}
   try{const p=JSON.parse(localStorage.getItem('ml_float_'+(el.id||'editor'))||'null');if(p){
    el.style.left=Math.max(0,Math.min(innerWidth-100,p.left))+'px';
    el.style.top=Math.max(0,Math.min(innerHeight-70,p.top))+'px';
@@ -1030,17 +953,12 @@ function buildTranslatorContext(){
  add('Sentence',(DB.sentences||[]).map(x=>({Marma:x.marma,Pronunciation:x.pron||x.pronunciation,Bangla:x.bn,English:x.en,Context:x.tense})));
  add('Sangbusa',(DB.tables||[]).flatMap(tb=>(tb.rows||[]).map(r=>{const cells=r.c||[];const vals={};(tb.cols||[]).forEach((h,i)=>{const c=cells[i]||{};const v=[c.m,c.p,c.b,c.e,c.t].filter(Boolean).join(' ');if(v)vals[clean(h)||`Column ${i+1}`]=v});return {Table:tb.cap,...vals}})));
  add('Grammar',Object.values(DB.grammarLessons||{}).flat().map(x=>({Title:x.title,Explanation:x.detail,Example:x.example,Structure:x.structure})));
- add('Admin Translation Rules',(DB.translatorRules||[]).map(x=>({Direction:x.direction,Rule:x.rule,Example:x.example,Note:x.note})));
- add('Admin Translation References',(DB.translatorRefs||[]).map(x=>({Direction:x.direction,Source:x.source,Marma:x.marma,Bangla:x.bn,English:x.en,Note:x.note}))); 
  add('VisualVocab',(DB.vocab||[]).map(x=>({Marma:x.marma,Pronunciation:x.pron,Bangla:x.bn,English:x.en,Category:x.cat,ImageDescription:x.description||''})));
  return rows.join('\n').slice(0,18000);
 }
 function translatorPage(){
- const dir=S.trDir||'m2e',saved=store.get('ml_trans_saved_'+ME,[]),admin=isAdmin();
- const ruleRows=(DB.translatorRules||[]).map(x=>`<div class="trans-saved-item"><div class="trans-saved-text"><b>${esc(x.direction||'all')}</b><div>${esc(x.rule||'')}</div><small>${esc(x.example||x.note||'')}</small></div><button class="btn sm dng" data-act="trrule-del" data-id="${esc(x.id)}">×</button></div>`).join('');
- const refRows=(DB.translatorRefs||[]).map(x=>`<div class="trans-saved-item"><div class="trans-saved-text"><b>${esc(x.source||'')}</b><div>Marma: ${esc(x.marma||'')} · বাংলা: ${esc(x.bn||'')} · English: ${esc(x.en||'')}</div><small>${esc(x.direction||'all')} ${esc(x.note||'')}</small></div><button class="btn sm dng" data-act="trref-del" data-id="${esc(x.id)}">×</button></div>`).join('');
- const adminPanel=admin?`<details class="card" style="margin-top:12px"><summary><b>Admin · Translator Grammar Rules & References</b></summary><div class="grammar-detail"><p class="note">এখানে যোগ করা নিয়ম ও reference AI-কে context হিসেবে দেওয়া হবে। AI কাজ না করলে verified word/reference matching দিয়েও অনুবাদ হবে।</p><h4>Add grammar / translation rule</h4><select class="in" id="tr-rule-dir"><option value="all">All directions</option><option value="e2m">English → Marma</option><option value="b2m">Bangla → Marma</option><option value="m2b">Marma → Bangla</option><option value="m2e">Marma → English</option></select><textarea class="in" id="tr-rule-text" rows="3" placeholder="Rule: e.g. English sentence order / Marma verb placement..."></textarea><input class="in" id="tr-rule-example" placeholder="Example (optional)"><button class="btn sm" data-act="trrule-add">＋ Save rule</button>${ruleRows||'<p class="note">No custom rules added.</p>'}<hr><h4>Add verified translation reference</h4><input class="in" id="tr-ref-source" placeholder="Source word / phrase"><input class="in" id="tr-ref-marma" placeholder="Marma meaning"><input class="in" id="tr-ref-bn" placeholder="Bangla meaning"><input class="in" id="tr-ref-en" placeholder="English meaning"><select class="in" id="tr-ref-dir"><option value="all">All directions</option><option value="e2m">English → Marma</option><option value="b2m">Bangla → Marma</option><option value="m2b">Marma → Bangla</option><option value="m2e">Marma → English</option></select><input class="in" id="tr-ref-note" placeholder="Context / note (optional)"><button class="btn sm" data-act="trref-add">＋ Save reference</button>${refRows||'<p class="note">No custom references added.</p>'}</div></details>`:'';
- return `<h2>Translator</h2><div class="seg trans-seg"><button class="on">Translator</button></div><div class="seg trans-seg"><button class="${dir==='m2b'?'on':''}" data-act="transdir" data-d="m2b">মা → বা</button><button class="${dir==='m2e'?'on':''}" data-act="transdir" data-d="m2e">মা → EN</button><button class="${dir==='e2m'?'on':''}" data-act="transdir" data-d="e2m">EN → মা</button><button class="${dir==='b2m'?'on':''}" data-act="transdir" data-d="b2m">বা → মা</button></div><div class="card trans-card"><label for="trans-input">${dir==='m2e'||dir==='m2b'?'Enter text in Marma':dir==='e2m'?'Enter text in English':'বাংলায় লিখুন'}</label><textarea class="in" id="trans-input" maxlength="500" placeholder="${dir==='m2e'||dir==='m2b'?'Type Marma text…':dir==='e2m'?'Type English text…':'বাংলা লিখুন…'}">${esc(S.transText||'')}</textarea><div class="trans-count">${(S.transText||'').length}/500</div><button class="btn" data-act="translate">➤ Translate</button></div>${S.transResult!==undefined?`<div class="card trans-result"><b>Translation</b><p class="trans-output">${esc(S.transResult||'No matching dictionary entry found yet.')}</p><div class="trans-pron"><strong>Pronunciation:</strong> <span>${esc(S.transPron||S.transResult||'')}</span></div><div class="seg"><button data-act="transsave">☆ Save result</button><button data-act="transclear">✕ Clear</button></div></div>`:''}<section class="card trans-saved-list"><div class="top"><b>★ Saved translations (${saved.length})</b><button class="btn sm ghost" data-act="transsavedtoggle">${S.transSavedOpen?'Hide':'Show'}</button></div>${S.transSavedOpen?saved.map((x,i)=>`<div class="trans-saved-item"><div class="trans-saved-text"><b>${esc(x.input)}</b><div>${esc(x.result)}</div><small class="en">${esc(x.pron||'')}</small></div><button class="btn sm dng" data-act="transunsave" data-i="${i}">×</button></div>`).join('')||'<p class="note">No saved translations yet.</p>':''}</section>${adminPanel}<div class="note">Translation uses Dictionary, Sangbusa, Sentence, Grammar and VisualVocab. Exact phrase, word-by-word matching and Gemini AI are used in sequence.</div>`;
+ const dir=S.trDir||'m2e',saved=store.get('ml_trans_saved_'+ME,[]);
+ return `<h2>Translator</h2><div class="seg trans-seg"><button class="${dir==='m2b'?'on':''}" data-act="transdir" data-d="m2b">মা → বা</button><button class="${dir==='m2e'?'on':''}" data-act="transdir" data-d="m2e">মা → EN</button><button class="${dir==='e2m'?'on':''}" data-act="transdir" data-d="e2m">EN → মা</button><button class="${dir==='b2m'?'on':''}" data-act="transdir" data-d="b2m">বা → মা</button></div><div class="card trans-card"><label for="trans-input">${dir==='m2e'||dir==='m2b'?'Enter text in Marma':dir==='e2m'?'Enter text in English':'বাংলায় লিখুন'}</label><textarea class="in" id="trans-input" maxlength="500" placeholder="${dir==='m2e'||dir==='m2b'?'Type Marma text…':dir==='e2m'?'Type English text…':'বাংলা লিখুন…'}">${esc(S.transText||'')}</textarea><div class="trans-count">${(S.transText||'').length}/500</div><button class="btn" data-act="translate">➤ Translate</button></div>${S.transResult!==undefined?`<div class="card trans-result"><b>Translation</b><p class="trans-output">${esc(S.transResult||'No matching dictionary entry found yet. You can add verified translations to the Dictionary.')}</p><div class="trans-pron"><strong>Pronunciation:</strong> <span>${esc(S.transPron||S.transResult||'Translate a word to see pronunciation text.')}</span></div><div class="seg"><button data-act="transsave">☆ Save result</button><button data-act="transclear">✕ Clear</button></div></div>`:''}<section class="card trans-saved-list"><div class="top"><b>★ Saved translations (${saved.length})</b><button class="btn sm ghost" data-act="transsavedtoggle">${S.transSavedOpen?'Hide':'Show'}</button></div>${S.transSavedOpen?saved.map((x,i)=>`<div class="trans-saved-item"><div class="trans-saved-text"><b>${esc(x.input)}</b><div>${esc(x.result)}</div><small class="en">${esc(x.pron||'')}</small></div><button class="btn sm dng" data-act="transunsave" data-i="${i}">×</button></div>`).join('')||'<p class="note">No saved translations yet.</p>':''}</section><div class="note">💡 Translation uses Dictionary, Sangbusa, Sentence, Grammar and VisualVocab as reference material. Gemini AI uses these sections as context when an exact dictionary match is unavailable.</div>`
 }
 function body0(){
  const B=$('#body');
@@ -1052,8 +970,8 @@ function body0(){
  else if(S.tab==='home')h=homePage();
  else if(S.tab==='dict')h=wordPage();
  else if(S.tab==='word')h=wordPage();
-  else if(S.tab==='sang'){const A=isAdmin();
-   h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(tabs().map(tb=>(A&&S.tid&&String(S.tid)===String(tb.id)?`<div id="newTableBox" style="${S.tblBoxHidden?'display:none;':''}">${tblEditor(tb)}</div>`:'')+tblBlock(tb,A)).join('')||`<p class="note">${t('empty')}</p>`)}
+  else if(S.tab==='sang'){const A=isAdmin(),x=A&&S.tid&&curT();
+   h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(x?`<div id="newTableBox" style="${S.tblBoxHidden?'display:none;':''}">${tblEditor(x)}</div>`:'')+(tabs().map(x=>tblBlock(x,A)).join('')||`<p class="note">${t('empty')}</p>`)}
  else if(S.tab==='grammar')h=grammarPage();
  else if(S.tab==='translator')h=translatorPage();
  else if(S.tab==='game')h=gamePage();
@@ -1064,20 +982,9 @@ function body0(){
   else h=menu();
 const IC={dict:'dict',word:'words',sent:'sentences'}[S.tab];
 
- // Dictionary Add New is rendered only by wordPage(), immediately after the category manager.
+ if(!q&&S.tab==='word'&&isAdmin()){const m=['words'];h=h.replace(/<div class="vbar">/,`<button class="btn" data-act="iadd" data-c="words">＋ ${t('addNew')}</button>${S.inl&&S.edit&&m.includes(S.col)?itemForm(S.col):''}<div class="vbar">`)}
  if(hasNew()&&!S.updHide){const u=updSorted()[0];h=`<div class="card" style="border-color:var(--ac)"><div class="top"><div><b>🔔 ${t('newVer')}: ${esc(u.ver)}</b>${u.note?`<div class="en">${esc(u.note)}</div>`:''}</div><button class="x" data-act="updhide" aria-label="close">✕</button></div>${safeLink(u.link)?`<a class="btn sm" href="${esc(u.link)}" target="_blank" rel="noopener">⬇ ${t('download')}</a>`:''}</div>`+h}
  {const v=q?'grid':getView(S.tab);B.className=(v==='list'?'narrow':'grid')+(v==='compact'?' v-compact':'')}B.innerHTML=h;
- // Dictionary: keep only one floating editor. Older layouts could leave a second
- // editor panel on the right; remove duplicate editor instances and stale clones.
- if(S.tab==='word'||S.tab==='dict'){
-   const editors=[...B.querySelectorAll('#itemFormBox.float-editor, .dict-floating-editor')];
-   editors.slice(1).forEach(el=>el.remove());
-   const rightSide=[...B.querySelectorAll('.float-editor')].filter(el=>{
-     const r=el.getBoundingClientRect();
-     return r.width && r.left > (window.innerWidth/2);
-   });
-   rightSide.forEach(el=>{ if(el.id!=='itemFormBox') el.remove(); });
- }
  hydrate();try{updateBadge()}catch(e){}}
 function menu(){const u=user(),back=`<button class="back" data-act="sub" data-s="" aria-label="${t('menu')}">← ${burger(16)}</button>`;
  if(S.sub==='profile')return `${back}<h2>${t('profile')}</h2><div class="card" style="text-align:center">${avView(96)}<div style="margin-top:8px"><b>${esc(u.name)}</b></div><div class="en">${t('role_'+u.role)}</div>${u.bio?`<div class="pbody" style="margin:4px 0">${esc(u.bio)}</div>`:''}${u.profession?`<div style="margin-top:4px">💼 ${esc(u.profession)}</div>`:''}${u.hometown?`<div>📍 ${esc(u.hometown)}</div>`:''}<div style="margin-top:6px">${u.email?`<div>✉️ ${esc(u.email)}</div>`:''}${u.phone?`<div>📞 ${esc(u.phone)}</div>`:''}</div></div><button class="btn" data-act="sub" data-s="editprofile">✏️ ${t('editProfile')}</button><div class="seg" style="margin-top:12px"><button class="on" type="button">Timeline</button></div><div class="timeline-posts">${(()=>{const shares=store.get('ml_post_shares_'+ME,[]),own=DB.lit.posts.filter(p=>String(p.by)===String(ME)),shared=shares.map(x=>({x,p:DB.lit.posts.find(p=>String(p.id)===String(x.id))})).filter(z=>z.p);const seen=new Set();const oh=own.map(p=>{seen.add(String(p.id));return post(p)}).join('');const sh=shared.filter(z=>!seen.has(String(z.p.id))).map(z=>post(z.p,{shared:true,sharedName:u.name})).join('');return oh+sh||`<p class="note">${t('noPosts')}</p>`})()}</div><h3>${t('blockedUsers')}</h3>${(u.blocked||[]).map(id=>`<div class="card top"><div>${esc(nameOf(id))}</div><button class="btn sm" data-act="unblock" data-u="${esc(id)}">${t('unblock')}</button></div>`).join('')||`<p class="note">${t('noBlocked')}</p>`}`;
@@ -1137,7 +1044,7 @@ const PHONE_DOMAIN='thuinumong.github.io'; // phone-number accounts use <phone>@
 let AUTH=store.get('ml_auth',null);
 let SYNC=store.get('ml_sync',null)||{init:false,last:null,snap:{},uid:null,pdirty:false,aq:[]};
 const saveSync=()=>store.set('ml_sync',SYNC),saveAuth=()=>store.set('ml_auth',AUTH);
-const emptyDB=()=>({ssubs:[],wcats:[],vcats:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:[],posts:[]},ratings:[],vocab:[],notifs:[],translatorRules:[],translatorRefs:[]});
+const emptyDB=()=>({ssubs:[],wcats:[],vcats:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:[],posts:[]},ratings:[],vocab:[],notifs:[]});
 const hsh=s=>{let x=5381;for(let i=0;i<s.length;i++)x=((x<<5)+x+s.charCodeAt(i))|0;return x+':'+s.length};
 const canon=v=>v===null||typeof v!=='object'?JSON.stringify(v):Array.isArray(v)?'['+v.map(x=>canon(x===undefined?null:x)).join(',')+']':'{'+Object.keys(v).filter(k=>v[k]!==undefined).sort().map(k=>JSON.stringify(k)+':'+canon(v[k])).join(',')+'}';
 const KCOL=k=>k.slice(0,k.indexOf('|')),KID=k=>k.slice(k.indexOf('|')+1);
@@ -1159,7 +1066,7 @@ async function rest(path,o={}){const tk=await getTok();return sb('/rest/v1'+path
 
 // ---- local DB <-> flat list of small items ----
 function flat(){const m={},add=(col,id,data)=>{m[col+'|'+id]={col,id:String(id),data}};
- ['dict','words','sentences','translatorRules','translatorRefs'].forEach(c=>(DB[c]||[]).forEach(x=>add(c,x.id,x)));
+ ['dict','words','sentences'].forEach(c=>(DB[c]||[]).forEach(x=>add(c,x.id,x)));
  (DB.tables||[]).forEach(x=>add('tables',x.id,x));
  (DB.updates||[]).forEach(x=>add('updates',x.id,x));
   (DB.vocab||[]).forEach(x=>add('vocab',x.id,x));(DB.notifs||[]).forEach(x=>add('notifs',x.id,x));
@@ -1170,11 +1077,11 @@ function flat(){const m={},add=(col,id,data)=>{m[col+'|'+id]={col,id:String(id),
   Object.entries(rx||{}).forEach(([e,L])=>(L||[]).forEach(u=>add('reactions',p.id+'|'+e+'|'+u,{post:p.id,e,by:u,ts:(p.rxt||{})[e+'|'+u]})))});
  (DB.ratings||[]).forEach(r=>add('ratings',r.by,r));
  return m}
-const PRI={vocab:1,notifs:7,ssubs:0,wcats:0,vcats:0,cats:0,dict:1,words:1,sentences:1,translatorRules:1,translatorRefs:1,tables:2,updates:1,posts:3,comments:4,reactions:5,ratings:6};
+const PRI={vocab:1,notifs:7,ssubs:0,wcats:0,vcats:0,cats:0,dict:1,words:1,sentences:1,tables:2,updates:1,posts:3,comments:4,reactions:5,ratings:6};
 function applyRemote(it){
  const {col,id,deleted}=it,d=it.data||{},same=(a,b)=>String(a)===String(b);
  const put=(arr,front)=>{const i=arr.findIndex(y=>same(y.id,id));if(deleted){if(i>=0)arr.splice(i,1);return}if(i>=0)arr[i]=d;else front?arr.unshift(d):arr.push(d)};
- if(col==='dict'||col==='words'||col==='sentences'||col==='vocab'||col==='translatorRules'||col==='translatorRefs'){DB[col]=DB[col]||[];put(DB[col],true)}
+ if(col==='dict'||col==='words'||col==='sentences'||col==='vocab'){DB[col]=DB[col]||[];put(DB[col],true)}
   else if(col==='notifs'){DB.notifs=DB.notifs||[];put(DB.notifs,true)}
  else if(col==='tables'){if(!deleted)normT(d);put(DB.tables,false)}
   else if(col==='updates'){DB.updates=DB.updates||[];put(DB.updates,true)}
@@ -1492,48 +1399,7 @@ document.addEventListener('click',async e=>{
  else if(a==='gramdelete'){if(!isAdmin()||!confirm('Remove this grammar lesson?'))return;Object.keys(DB.grammarLessons||{}).forEach(k=>DB.grammarLessons[k]=DB.grammarLessons[k].filter(x=>x.id!==d.id));save();body()}
  else if(a==='gramexport'){if(!isAdmin())return;const blob=new Blob([JSON.stringify({categories:DB.grammarCats||[],lessons:DB.grammarLessons||{}},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),ael=document.createElement('a');ael.href=url;ael.download='marma-grammar-lessons.json';ael.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
  else if(a==='transdir'){S.trDir=d.d;body()}
- else if(a==='trrule-add'){if(!isAdmin())return;const rule=val('tr-rule-text').trim();if(!rule)return alert('Enter a grammar rule first.');DB.translatorRules=DB.translatorRules||[];DB.translatorRules.push({id:uid(),direction:val('tr-rule-dir')||'all',rule,example:val('tr-rule-example').trim()});save();body()}
- else if(a==='trrule-del'){if(!isAdmin())return;DB.translatorRules=(DB.translatorRules||[]).filter(x=>String(x.id)!==String(d.id));save();body()}
- else if(a==='trref-add'){if(!isAdmin())return;const source=val('tr-ref-source').trim(),marma=val('tr-ref-marma').trim();if(!source||!marma)return alert('Source and Marma meaning are required.');DB.translatorRefs=DB.translatorRefs||[];DB.translatorRefs.push({id:uid(),source,marma,bn:val('tr-ref-bn').trim(),en:val('tr-ref-en').trim(),direction:val('tr-ref-dir')||'all',note:val('tr-ref-note').trim()});save();body()}
- else if(a==='trref-del'){if(!isAdmin())return;DB.translatorRefs=(DB.translatorRefs||[]).filter(x=>String(x.id)!==String(d.id));save();body()}
- else if(a==='translate'){
-  S.transText=val('trans-input').trim();const input=S.transText,dir=S.trDir||'m2e';
-  const srcKey=dir==='e2m'?'en':dir==='b2m'?'bn':'marma',dstKey=dir==='m2e'?'en':dir==='m2b'?'bn':'marma';
-  const norm=x=>String(x||'').normalize('NFC').trim().toLocaleLowerCase();
-  const grammar=Object.values(DB.grammarLessons||{}).flat().map(x=>({marma:x.title,en:x.detail||'',bn:x.detail||'',pron:x.example||'',grammar:true}));
-  const tables=(DB.tables||[]).flatMap(tb=>(tb.rows||[]).map(r=>{const vals=(r.c||[]).map(c=>ctext(c));return {marma:vals[0]||'',pron:vals[1]||'',bn:vals[2]||'',en:vals[3]||'',table:tb.cap}}));
-  const refs=(DB.translatorRefs||[]).filter(x=>x.direction==='all'||x.direction===dir).map(x=>({marma:x.marma,en:x.en,bn:x.bn,pron:x.pron||'',source:x.source}));
-  const items=[...(DB.words||[]),...(DB.dict||[]),...(DB.sentences||[]),...sangItems(),...tables,...grammar,...refs].filter(x=>x&&x[srcKey]&&x[dstKey]);
-  const exact=items.filter(x=>norm(x[srcKey])===norm(input));
-  let result='',pron='',used=[];
-  if(exact.length){result=[...new Set(exact.map(x=>x[dstKey]).filter(Boolean))].join(' / ');pron=[...new Set(exact.map(x=>x.pron||x.pronunciation||x.romanization).filter(Boolean))].join(' / ');used.push('Exact reference match')}
-  else {
-   // Longest phrase first, then match remaining individual words independently.
-   const tokens=input.match(/[\p{L}\p{M}’'-]+|[^\p{L}\p{M}’'-]+/gu)||[input];
-   const candidates=items.filter(x=>String(x[srcKey]||'').trim()&&String(x[dstKey]||'').trim()).sort((a,b)=>String(b[srcKey]).trim().length-String(a[srcKey]).trim().length);
-   const output=[];let hit=0;const pronParts=[];
-   for(let i=0;i<tokens.length;){const tok=tokens[i];if(!/[\p{L}\p{M}]/u.test(tok)){output.push(tok);i++;continue}
-    let found=null,span=0;
-    for(let n=Math.min(6,tokens.length-i);n>=1;n--){const slice=tokens.slice(i,i+n);if(slice.some(t=>!/[\p{L}\p{M}’'-]+$/u.test(t)))continue;const phrase=slice.join(' ');found=candidates.find(x=>norm(x[srcKey])===norm(phrase));if(found){span=n;break}}
-    if(found){output.push(found[dstKey]);hit++;used.push(String(tokens.slice(i,i+span).join(' ')));const pp=found.pron||found.pronunciation||found.romanization;if(pp)pronParts.push(pp);i+=span;continue}
-    // Unknown word remains visible; do not silently fabricate a Marma equivalent.
-    output.push(tok);i++;
-   }
-   result=output.join('');pron=pronParts.join(' · ');if(hit)used.push('Word/phrase matches: '+hit);
-  }
-  S.transResult=result;S.transPron=pron||result;S.transSource=used.join(' | ')||'No local reference match';S.transByAI=false;
-  // Ask Gemini when local matching did not cover every source word or no match exists.
-  const sourceWords=(input.match(/[\p{L}\p{M}’'-]+/gu)||[]).length;
-  const matchedWords=used.length&&used.some(x=>x.startsWith('Word/phrase matches:'))?Number(used.find(x=>x.startsWith('Word/phrase matches:')).split(':')[1]):(exact.length?sourceWords:0);
-  if(input&&(!exact.length)&&matchedWords<sourceWords){
-   try{const token=await getTok();const aiContext=buildTranslatorContext();const ruleText=(DB.translatorRules||[]).filter(x=>x.direction==='all'||x.direction===dir).map(x=>x.rule+(x.example?' Example: '+x.example:'')).join('\n');
-    const res=await fetch(SB_URL+'/functions/v1/marma-translator',{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+(token||SB_KEY)},body:JSON.stringify({text:input,direction:dir,context:aiContext,admin_rules:ruleText})});
-    const data=await res.json();if(res.ok&&data.translation){S.transResult=data.translation;S.transPron=data.translation;S.transByAI=true;S.transSource='Gemini AI + app references'}
-    else {S.transSource+=(result!==input?' | AI unavailable; known words shown':' | AI unavailable; no verified translation')}
-   }catch(err){console.error('Gemini request failed:',err);S.transSource+=(result!==input?' | AI unavailable; known words shown':' | AI unavailable; no verified translation')}
-  }
-  if(S.transText)logUserHistory('Translation',`${S.transText} → ${S.transResult||''}`);body()}
-
+ else if(a==='translate'){S.transText=val('trans-input').trim();const dir=S.trDir||'m2e',srcKey=dir==='e2m'?'en':dir==='b2m'?'bn':'marma',dstKey=dir==='m2e'?'en':dir==='m2b'?'bn':'marma',norm=x=>String(x||'').trim().toLocaleLowerCase(),grammar=Object.values(DB.grammarLessons||{}).flat().map(x=>({marma:x.title,en:x.detail||x.title,bn:x.detail||x.title,pron:x.example||'',grammar:true})),tables=(DB.tables||[]).flatMap(tb=>(tb.rows||[]).map(r=>{const vals=(r.c||[]).map(c=>ctext(c));return {marma:vals[0]||'',pron:vals[1]||'',bn:vals[2]||'',en:vals[3]||'',table:tb.cap}})),items=[...(DB.words||[]),...(DB.dict||[]),...(DB.sentences||[]),...sangItems(),...tables,...grammar].filter(x=>x&&x[srcKey]&&x[dstKey]),input=S.transText,exact=items.filter(x=>norm(x[srcKey])===norm(input)&&x[dstKey]);if(exact.length){S.transResult=[...new Set(exact.map(x=>x[dstKey]).filter(Boolean))].join(' / ');S.transPron=[...new Set(exact.map(x=>x.pron||x.pronunciation||x.romanization).filter(Boolean))].join(' / ')||S.transResult}else{const candidates=items.filter(x=>x[srcKey]&&x[dstKey]).sort((a,b)=>String(b[srcKey]).trim().length-String(a[srcKey]).trim().length);let working=input,matches=[],pron=[];for(const item of candidates){const source=String(item[srcKey]).trim();if(source.length<2||!norm(working).includes(norm(source)))continue;const re=new RegExp(source.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');if(re.test(working)){working=working.replace(re,`⟦${matches.length}⟧`);matches.push({source,target:item[dstKey]});if(item.pron||item.pronunciation||item.romanization)pron.push(item.pron||item.pronunciation||item.romanization)}}let out=working;matches.forEach((m,i)=>{out=out.replace(`⟦${i}⟧`,m.target)});S.transResult=(out!==input||matches.length)?out:input;S.transPron=pron.join(' / ')||S.transResult}if(input&&(!exact.length)){try{const token=await getTok();const aiContext=buildTranslatorContext();const aiRes=await fetch(SB_URL+'/functions/v1/marma-translator',{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+(token||SB_KEY)},body:JSON.stringify({text:input,direction:dir,context:aiContext})});const aiData=await aiRes.json();if(aiRes.ok&&aiData.translation){S.transResult=aiData.translation;S.transPron=aiData.translation;S.transByAI=true}else{console.warn('Gemini translation unavailable:',aiData.error||aiRes.status);S.transResult=input+'\n\n(AI translation unavailable. Please try again.)'}}catch(err){console.error('Gemini request failed:',err);S.transResult=input+'\n\n(AI translation unavailable. Please try again.)'}}if(S.transText)logUserHistory('Translation',`${S.transText} → ${S.transResult||''}`);body()}
  else if(a==='transspeak'){const txt=String(S.transPron||S.transResult||'').trim();if(!txt)return; if('speechSynthesis' in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);u.lang=(S.trDir==='m2e'?'en-US':S.trDir==='m2b'?'bn-BD':S.trDir==='b2m'?'my-MM':'my-MM');const voices=speechSynthesis.getVoices();const v=voices.find(v=>v.lang.toLowerCase().startsWith(u.lang.slice(0,2)));if(v)u.voice=v;speechSynthesis.speak(u)}else alert('Speech playback is not supported in this browser. Marma voice support depends on installed device voices.')}
   else if(a==='transsave'){if(!S.transText||S.transResult===undefined){alert('Translate something first.');return}const k='ml_trans_saved_'+ME,L=store.get(k,[]);if(!L.some(x=>x.input===S.transText&&x.result===S.transResult)){L.unshift({input:S.transText,result:S.transResult,pron:S.transPron||'',ts:Date.now()});store.set(k,L.slice(0,100))}S.transSavedOpen=true;body()}
  else if(a==='transsavedtoggle'){S.transSavedOpen=!S.transSavedOpen;body()}
@@ -1600,7 +1466,7 @@ document.addEventListener('click',async e=>{
  else if(a==='gflip'){S.game.flip=!S.game.flip;body()}
  else if(a==='gknow'){const g=S.game;if(d.v==='1')g.known++;else g.again.push(g.deck[g.i]);g.i++;g.flip=false;body()}
  else if(a==='gretry'){const g=S.game,n=mkFlash(g.src,g.again,g.pic);if(n){n.id=g.id;n.gl=g.gl;S.game=n;body()}}
- else if(a==='cat'){const _winY=window.scrollY||window.pageYOffset||0;const _bodyEl=$('#body');const _bodyY=_bodyEl?_bodyEl.scrollTop:0;const _catTop=e.target.closest('[data-act=cat]')?.getBoundingClientRect().top;S[CATS[d.k].sel]=d.c;body();requestAnimationFrame(()=>{const _m=$('#body');if(_m)_m.scrollTop=_bodyY;window.scrollTo(0,_winY);const _chips=document.querySelector('.catbar');if(_chips&&_catTop!=null){const _now=_chips.getBoundingClientRect().top;const _delta=_now-_catTop;if(Math.abs(_delta)>1){window.scrollBy(0,_delta);if(_m)_m.scrollTop=_bodyY;}}})}
+ else if(a==='cat'){const _winY=window.scrollY||window.pageYOffset||0;const _bodyEl=$('#body');const _bodyY=_bodyEl?_bodyEl.scrollTop:0;const _oldBar=e.target.closest('.catbar');const _barLeft=_oldBar?_oldBar.scrollLeft:0;const _catTop=e.target.closest('[data-act=cat]')?.getBoundingClientRect().top;S[CATS[d.k].sel]=d.c;body();requestAnimationFrame(()=>{const _m=$('#body');if(_m)_m.scrollTop=_bodyY;window.scrollTo(0,_winY);const _bars=[...document.querySelectorAll('#body .catbar')];const _chips=_bars.find(x=>x.querySelector('[data-act=cat]'));if(_chips){_chips.scrollLeft=_barLeft;if(_catTop!=null){const _now=_chips.getBoundingClientRect().top;const _delta=_now-_catTop;if(Math.abs(_delta)>1){window.scrollBy(0,_delta);if(_m)_m.scrollTop=_bodyY;}}}})}
  else if(a==='catadd'){const k=d.k,c=CATS[k],n=val('ct_name');if(!n)return;DB[c.store]=DB[c.store]||[];
   if(c.byId){const x={id:uid(),name:n};DB[c.store].push(x);S[c.sel]=x.id}
   else{if(!catList(k).some(x=>x.name===n))DB[c.store].push({id:uid(),name:n});S[c.sel]=n}
@@ -1690,13 +1556,10 @@ else if(a==='delitem'){if(confirm(t('sure'))){const cc=d.c||S.col,x=DB[cc].find(
  else if(a==='newtbl'){const box=$('#newTableBox');if(S.newTblDraftId&&S.tid===S.newTblDraftId&&box){S.tblBoxHidden=box.style.display!=='none';box.style.display=S.tblBoxHidden?'none':'';return}const x={id:uid(),cap:'New table',cols:['',''],rows:[{id:uid(),c:[E(),E()]}]};DB.tables.push(x);S.tid=x.id;S.newTblDraftId=x.id;S.tblBoxHidden=false;S.cell=null;save();body()}
  else if(a==='canceltbl'){if(S.newTblDraftId){const x=DB.tables.find(y=>String(y.id)===String(S.newTblDraftId));if(x){x.rows.forEach(r=>r.c.forEach(y=>adel(y.k)));DB.tables=DB.tables.filter(y=>y!==x)}S.tid=null;S.cell=null;S.newTblDraftId=null;S.tblBoxHidden=false;save();body()}}
  else if(a==='edittbl'){
-  // Open the editor directly beneath the selected table, without jumping to page top.
+  // Preserve the current table's unfinished caption/cell edits before switching to another table.
   syncT();
   if(S.tid) save();
-  const target=document.querySelector(`.tblw[data-id="${CSS.escape(String(d.id))}"]`);
-  const anchorTop=target?target.getBoundingClientRect().top:null;
   S.tid=d.id; S.cell=null; S.tblBoxHidden=false; body();
-  if(anchorTop!==null)requestAnimationFrame(()=>{const now=document.querySelector(`.tblw[data-id="${CSS.escape(String(d.id))}"]`);if(now){const delta=now.getBoundingClientRect().top-anchorTop;if(Math.abs(delta)>1)window.scrollBy(0,delta)}});
  }
  else if(a==='backtbl'){if(S.newTblDraftId){const x=DB.tables.find(y=>String(y.id)===String(S.newTblDraftId));if(x){x.rows.forEach(r=>r.c.forEach(y=>adel(y.k)));DB.tables=DB.tables.filter(y=>y!==x)}S.newTblDraftId=null}else{syncT();save()}S.tid=null;S.cell=null;S.tblBoxHidden=false;body()}
  else if(a==='deltbl'){if(confirm(t('sure'))){const x=DB.tables.find(x=>x.id===d.id);x.rows.forEach(r=>r.c.forEach(y=>adel(y.k)));DB.tables=DB.tables.filter(y=>y!==x);save();body()}}
@@ -1704,20 +1567,15 @@ else if(a==='delitem'){if(confirm(t('sure'))){const cc=d.c||S.col,x=DB[cc].find(
  else if(a==='addrow'){syncT();const x=curT();x.rows.push({id:uid(),c:x.cols.map(()=>E())});save();body()}
  else if(a==='delcol'){syncT();const x=curT(),i=+d.i;if(x.cols.length<2){alert(t('oneCol'));return}S.cell=null;x.cols.splice(i,1);x.rows.forEach(r=>{adel(r.c[i].k);r.c.splice(i,1)});save();body()}
  else if(a==='delrow'){syncT();const x=curT(),r=x.rows[+d.r];S.cell=null;r.c.forEach(y=>adel(y.k));x.rows.splice(+d.r,1);save();body()}
- else if(a==='savetbl'){
-  syncT();const savedId=S.tid;const anchor=document.querySelector(`.tblw[data-id="${CSS.escape(String(savedId||''))}"]`);const anchorTop=anchor?anchor.getBoundingClientRect().top:null;
-  S.newTblDraftId=null;S.tblBoxHidden=false;S.tid=null;S.cell=null;save();body();
-  if(savedId&&anchorTop!==null)requestAnimationFrame(()=>{const now=document.querySelector(`.tblw[data-id="${CSS.escape(String(savedId))}"]`);if(now){const delta=now.getBoundingClientRect().top-anchorTop;if(Math.abs(delta)>1)window.scrollBy(0,delta)}});
-  alert(t('saved'))
- }
+ else if(a==='savetbl'){syncT();S.newTblDraftId=null;S.tblBoxHidden=false;S.tid=null;S.cell=null;save();body();alert(t('saved'))}
  else if(a==='cellau'){syncT();save();S.tgt={r:+d.r,c:+d.c};$('#afile').click()}
  else if(a==='cellrm'){syncT();const y=curT().rows[+d.r].c[+d.c];adel(y.k);y.k=null;save();body()}
  else if(a==='cellopen'){syncT();S.cell={r:+d.r,c:+d.c};body()}
  else if(a==='cellsave'){syncT();S.cell=null;save();body()}
  else if(a==='cellclose'){S.cell=null;body()}
  else if(a==='export'&&isMain()){$('#io').value=JSON.stringify(DB,null,1)}
- else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];o.ssubs=o.ssubs||[];o.wcats=o.wcats||[];o.vcats=o.vcats||[];o.vocab=o.vocab||DB.vocab||[];o.notifs=o.notifs||DB.notifs||[];o.translatorRules=o.translatorRules||DB.translatorRules||[];o.translatorRefs=o.translatorRefs||DB.translatorRefs||[];{const up=DB.updates||[];DB=o;DB.updates=up}DB.tables.forEach(normT);save();resetUndo();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
- else if(a==='clear'&&isMain()){if(confirm(t('sureAll'))){DB={ssubs:[],wcats:[],vcats:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:DB.lit.cats,posts:[]},ratings:[],vocab:[],notifs:[],translatorRules:DB.translatorRules||[],translatorRefs:DB.translatorRefs||[],updates:DB.updates||[]};save();S.tid=null;body()}}
+ else if(a==='import'&&isMain()){try{const o=JSON.parse($('#io').value);if(!o.words||!o.sentences||!o.tables)throw 0;o.lit=o.lit||clone(SEED.lit);o.ratings=o.ratings||[];o.dict=o.dict||[];o.ssubs=o.ssubs||[];o.wcats=o.wcats||[];o.vcats=o.vcats||[];o.vocab=o.vocab||DB.vocab||[];o.notifs=o.notifs||DB.notifs||[];{const up=DB.updates||[];DB=o;DB.updates=up}DB.tables.forEach(normT);save();resetUndo();S.tid=null;body();alert(t('okImp'))}catch(x){alert(t('badJson'))}}
+ else if(a==='clear'&&isMain()){if(confirm(t('sureAll'))){DB={ssubs:[],wcats:[],vcats:[],dict:[],words:[],sentences:[],tables:[],lit:{cats:DB.lit.cats,posts:[]},ratings:[],vocab:[],notifs:[],updates:DB.updates||[]};save();S.tid=null;body()}}
  else if(a==='reset'&&isMain()){if(confirm(t('sureReset'))){{const up=DB.updates||[];DB=clone(SEED);DB.updates=up}save();S.tid=null;body()}}
 });
 
@@ -1821,7 +1679,7 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
 (()=>{
  const bar=document.getElementById('ml-page-scrollbar'); if(!bar)return;
  const thumb=bar.querySelector('.ml-thumb'),track=bar.querySelector('.ml-track');
- let timer=0,drag=false,startY=0,startScroll=0,dragTarget=null,lastScrollY=null;
+ let timer=0,drag=false,startY=0,startScroll=0,dragTarget=null;
  const candidates=()=>{
   const main=document.querySelector('#app.shell main#body')||document.querySelector('#app.shell main')||document.querySelector('#body');
   return [main,document.scrollingElement,document.documentElement,document.body].filter((x,i,a)=>x&&a.indexOf(x)===i);
@@ -1840,10 +1698,9 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
   bar.setAttribute('aria-valuenow',String(Math.round(100*el.scrollTop/max)));
  }
  function show(){update();bar.classList.add('ml-visible');clearTimeout(timer);if(!drag)timer=setTimeout(()=>bar.classList.remove('ml-visible'),850);}
- function onScroll(){const el=getTarget(),now=el.scrollTop;if(lastScrollY===null){lastScrollY=now;return;}const prev=lastScrollY;lastScrollY=now;if(now>prev+1)show();else if(now<prev-1&&!drag){bar.classList.remove('ml-visible');clearTimeout(timer);update();}}
- document.addEventListener('scroll',onScroll,{capture:true,passive:true});
- document.addEventListener('touchmove',()=>{const el=getTarget();if(lastScrollY===null)lastScrollY=el.scrollTop;},{capture:true,passive:true});
- document.addEventListener('wheel',e=>{if(e.deltaY>0)show();else if(e.deltaY<0&&!drag){bar.classList.remove('ml-visible');clearTimeout(timer);}},{passive:true});
+ document.addEventListener('scroll',show,{capture:true,passive:true});
+ document.addEventListener('touchmove',show,{capture:true,passive:true});
+ document.addEventListener('wheel',show,{passive:true});
  window.addEventListener('resize',update,{passive:true});
  // A tap or drag on the thumb/track scrolls the current page vertically.
  function pointerStart(e){
@@ -2003,15 +1860,43 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
 </style>
 
 
-
-<style id="ml-final-dictionary-addnew-and-grammar-wrap-v12">
-/* Dictionary: keep the single Add New control above the category/create-category area. */
-#page .wgrid{clear:both}
-/* Grammar categories: compact chips sized to their labels; wrap only when the row is full. */
-#page .grammar-cats{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;align-items:center!important;justify-content:flex-start!important;gap:7px!important;overflow:visible!important;white-space:normal!important;width:100%!important;max-width:100%!important}
-#page .grammar-cats .tab{display:inline-flex!important;flex:0 0 auto!important;width:max-content!important;max-width:100%!important;min-width:0!important;white-space:nowrap!important;padding:7px 12px!important;margin:0!important}
+<style id="ml-category-bars-horizontal-sticky-final-v15">
+/* Dictionary/Sangbusa/etc category bars: one horizontal row, horizontally scrollable, sticky while page scrolls. */
+#app.shell main#body .catbar,
+#app.shell main .catbar,
+main#body .catbar, main .catbar{
+  display:flex!important; flex-direction:row!important; flex-wrap:nowrap!important;
+  align-items:center!important; justify-content:flex-start!important;
+  gap:7px!important; width:100%!important; min-width:0!important;
+  height:auto!important; max-height:none!important;
+  overflow-x:auto!important; overflow-y:hidden!important;
+  white-space:nowrap!important; overscroll-behavior-x:contain!important;
+  -webkit-overflow-scrolling:touch!important; scrollbar-width:none!important;
+  position:sticky!important; top:72px!important; z-index:35!important;
+  background:var(--bg)!important; padding:9px 2px 11px!important;
+  margin:8px 0 12px!important; box-sizing:border-box!important;
+}
+#app.shell main#body .catbar::-webkit-scrollbar, #app.shell main .catbar::-webkit-scrollbar{display:none!important}
+#app.shell main#body .catbar .chip, #app.shell main .catbar .chip, main .catbar .chip{
+  flex:0 0 auto!important; width:auto!important; max-width:none!important;
+  white-space:nowrap!important; position:relative!important;
+}
+/* Grammar categories use the same horizontal sticky bar; no wrapping to a second row. */
+#app.shell main#body .grammar-cats, #app.shell main .grammar-cats, main .grammar-cats{
+  display:flex!important; flex-wrap:nowrap!important; flex-direction:row!important;
+  overflow-x:auto!important; overflow-y:hidden!important; white-space:nowrap!important;
+  position:sticky!important; top:72px!important; z-index:35!important;
+  background:var(--bg)!important; width:100%!important; min-width:0!important;
+  scrollbar-width:none!important; -webkit-overflow-scrolling:touch!important;
+}
+#app.shell main#body .grammar-cats .tab, #app.shell main .grammar-cats .tab, main .grammar-cats .tab{
+  flex:0 0 auto!important; width:auto!important; white-space:nowrap!important;
+}
+@media(max-width:759px){
+ #app.shell main#body .catbar,#app.shell main .catbar,main#body .catbar,main .catbar,
+ #app.shell main#body .grammar-cats,#app.shell main .grammar-cats,main .grammar-cats{top:132px!important}
+}
 </style>
-
 </body>
 </html>
 
@@ -2058,87 +1943,11 @@ html{touch-action:pan-x pan-y}
 </style>
 
 <style id="stable-header-and-inline-grammar-fix">
-#app.shell header{position:sticky!important;top:0!important;transform:translateY(0)!important;transition:transform .22s ease!important;will-change:transform!important;z-index:50;background:var(--bg)}
-#app.shell header.hh{transform:translateY(calc(-100% - env(safe-area-inset-top,0px) - 6px))!important}
+#app.shell header{position:sticky!important;top:0!important;transform:none!important;will-change:auto!important;z-index:50;background:var(--bg)}
+#app.shell header.hh{transform:none!important}
 .grammar-admin.float-editor{position:static!important;left:auto!important;top:auto!important;width:auto!important;height:auto!important;max-height:none!important;resize:none!important;overflow:visible!important;z-index:auto!important;box-shadow:none!important;border:1px solid var(--bd)!important;padding:12px!important;margin:12px 0!important}
 .grammar-admin .float-handle{display:none!important}
 .brand b{font-size:1.15rem!important;font-weight:700!important}
 @media(max-width:600px){.brand b{font-size:1.02rem!important}}
 .trans-saved-list{margin-top:10px}.trans-saved-item{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}.trans-saved-item .trans-saved-text{min-width:0;overflow-wrap:anywhere}
-
-/* Global visibility and category layout repair */
-html,body{height:auto!important;min-height:100%;overflow-x:hidden!important;overflow-y:auto!important}
-#app,#app.shell{height:auto!important;min-height:100vh!important;overflow:visible!important}
-#app.shell main,#body,main{min-width:0!important;min-height:0!important;overflow:visible!important}
-main.grid{align-content:start!important;align-items:start!important;grid-auto-rows:max-content}
-main.grid>*{min-width:0!important;max-width:100%}
-.catbar{position:static!important;display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;align-content:flex-start!important;justify-content:flex-start!important;gap:6px!important;width:100%!important;max-height:none!important;height:auto!important;overflow:visible!important;white-space:normal!important;margin:8px 0 14px!important;padding:8px 0!important}
-.catbar .chip,.catbar .cw{flex:0 0 auto!important;margin:0!important;max-width:100%!important}
-.wgrid{position:relative!important;display:grid!important;width:100%!important;min-width:0!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))!important;gap:12px!important;overflow:visible!important;clear:both!important;margin-top:12px!important}
-.wgrid>*{min-width:0!important;max-width:100%!important;overflow-wrap:anywhere}
-.card,.tblw,.gcard,.trans-card,.trans-result{min-width:0!important;max-width:100%!important;overflow-wrap:anywhere}
-.card{height:auto!important;max-height:none!important}
-@media(max-width:600px){.wgrid{grid-template-columns:minmax(0,1fr)!important}.catbar .chip{font-size:14px!important;padding:7px 11px!important}}
-</style>
-<style id="ml-sticky-category-bar-no-obstruction-v3">
-/* Keep category chips visible while scrolling, with a reserved offset below the site header. */
-#app.shell main#body .catbar,
-#app.shell main .catbar,
-main#body .catbar,
-main .catbar{
-  position:sticky!important;
-  top:72px!important;
-  z-index:30!important;
-  display:flex!important;
-  flex-direction:row!important;
-  flex-wrap:wrap!important;
-  align-items:center!important;
-  align-content:flex-start!important;
-  gap:7px!important;
-  width:100%!important;
-  height:auto!important;
-  max-height:none!important;
-  overflow:visible!important;
-  white-space:normal!important;
-  background:var(--bg)!important;
-  padding:10px 0 12px!important;
-  margin:8px 0 12px!important;
-  box-shadow:0 5px 10px -8px #0008;
-}
-#app.shell main#body .catbar .chip,
-#app.shell main .catbar .chip{position:relative!important;flex:0 0 auto!important;white-space:normal!important;max-width:100%!important}
-/* Admin category editor/add-category cards remain in normal flow directly after the sticky bar. */
-#app.shell main#body .catbar+.card,
-#app.shell main .catbar+.card,
-#app.shell main#body .catbar~.card,
-#app.shell main .catbar~.card{position:relative!important;z-index:1!important;clear:both!important}
-#app.shell main#body .catbar~.wgrid,
-#app.shell main .catbar~.wgrid,
-#app.shell main#body .wgrid{position:relative!important;z-index:1!important;clear:both!important;margin-top:14px!important;padding-top:2px!important}
-#app.shell main#body .catbar~.note,
-#app.shell main .catbar~.note{position:relative!important;z-index:1!important;margin-top:14px!important}
-@media(max-width:759px){
- #app.shell main#body .catbar,#app.shell main .catbar,main#body .catbar,main .catbar{top:132px!important;padding:10px 0 12px!important}
-}
-@media(min-width:760px) and (max-width:999px){
- #app.shell main#body .catbar,#app.shell main .catbar,main#body .catbar,main .catbar{top:72px!important}
-}
-</style>
-
-
-
-<style id="ml-grammar-categories-wrap-final">
-.grammar-cats{display:flex!important;flex-wrap:wrap!important;overflow-x:visible!important;overflow-y:visible!important;white-space:normal!important;gap:8px!important;align-items:center!important;position:relative!important;top:auto!important}
-.grammar-cats .tab{flex:0 0 auto!important;white-space:nowrap!important}
-</style>
-
-<style id="dictionary-order-fix-v14">
-/* Dictionary admin flow: category chips, Create Category form, one Add New, then words. */
-.dictionary-category-add-flow{display:block!important;position:relative!important;float:none!important;clear:both!important;width:100%!important;overflow:visible!important;z-index:1!important}
-.dictionary-add-flow{display:block!important;position:relative!important;float:none!important;clear:both!important;width:100%!important;margin:12px 0!important;overflow:visible!important;z-index:1!important}
-.dictionary-add-flow>[data-act="iadd"]{display:inline-flex!important;position:relative!important;float:none!important;margin:0 0 10px!important}
-.dictionary-add-flow #itemFormBox{position:relative!important;left:auto!important;right:auto!important;top:auto!important;width:min(100%,520px)!important;height:auto!important;max-height:none!important;overflow:visible!important;margin:8px 0 14px!important}
-#page .wgrid{clear:both!important;display:grid!important}
-.grammar-cats{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;align-items:center!important;align-content:flex-start!important;justify-content:flex-start!important;gap:7px!important;overflow:visible!important;white-space:normal!important;width:100%!important}
-.grammar-cats .tab{flex:0 0 auto!important;width:auto!important;min-width:0!important;max-width:100%!important;white-space:nowrap!important;padding:7px 11px!important}
 </style>
