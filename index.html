@@ -403,6 +403,23 @@ img[data-ik]:hover{filter:none!important;outline:none!important}
  #app.shell main#body{grid-column:2!important;grid-row:2!important;min-width:0!important;width:auto!important;max-width:none!important;overflow-y:auto!important;overflow-x:hidden!important;padding:8px 24px 40px!important;box-sizing:border-box!important}
 }
 </style>
+
+<style id="ml-sangbusa-inline-table-editor-and-grammar-desktop-width-v21">
+/* Keep an edited Sangbusa table at its own position in the table list. */
+#newTableBox{display:block;width:100%;min-width:0;box-sizing:border-box;margin:8px 0 16px;}
+#newTableBox .tw{width:100%;min-width:0;}
+/* Grammar category strip spans the complete content column on laptop/desktop. */
+@media (min-width:760px){
+  #app.shell main#body .grammar-cats,
+  #app.shell main .grammar-cats,
+  main#body .grammar-cats, main .grammar-cats{
+    grid-column:1 / -1!important; justify-self:stretch!important; align-self:stretch!important;
+    display:flex!important; width:100%!important; max-width:100%!important; min-width:0!important;
+    box-sizing:border-box!important; flex-wrap:nowrap!important; flex-direction:row!important;
+    overflow-x:auto!important; overflow-y:hidden!important;
+  }
+}
+</style>
 </head>
 <body>
 <div id="app"></div>
@@ -970,8 +987,8 @@ function body0(){
  else if(S.tab==='home')h=homePage();
  else if(S.tab==='dict')h=wordPage();
  else if(S.tab==='word')h=wordPage();
-  else if(S.tab==='sang'){const A=isAdmin(),x=A&&S.tid&&curT();
-   h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(x?`<div id="newTableBox" style="${S.tblBoxHidden?'display:none;':''}">${tblEditor(x)}</div>`:'')+(tabs().map(x=>tblBlock(x,A)).join('')||`<p class="note">${t('empty')}</p>`)}
+  else if(S.tab==='sang'){const A=isAdmin(),editingId=A&&S.tid?String(S.tid):null,tableList=tabs();
+   h=`<h2>${t('sang')}</h2>${bar('sang',false)}`+(A?`<button class="btn" data-act="newtbl">${t('newTbl')}</button>`:'')+(tableList.map(tb=>String(tb.id)===editingId?`<div id="newTableBox" style="${S.tblBoxHidden?'display:none;':''}">${tblEditor(tb)}</div>`:tblBlock(tb,A)).join('')||`<p class="note">${t('empty')}</p>`)}
  else if(S.tab==='grammar')h=grammarPage();
  else if(S.tab==='translator')h=translatorPage();
  else if(S.tab==='game')h=gamePage();
