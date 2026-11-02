@@ -1861,7 +1861,7 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
 
 
 <style id="ml-category-bars-horizontal-sticky-final-v15">
-/* Dictionary/Sangbusa/etc category bars: one horizontal row, horizontally scrollable, sticky while page scrolls. */
+/* Dictionary/Sangbusa/etc category bars: one horizontal row, horizontally scrollable, scrolls away with the page. */
 #app.shell main#body .catbar,
 #app.shell main .catbar,
 main#body .catbar, main .catbar{
@@ -1872,7 +1872,7 @@ main#body .catbar, main .catbar{
   overflow-x:auto!important; overflow-y:hidden!important;
   white-space:nowrap!important; overscroll-behavior-x:contain!important;
   -webkit-overflow-scrolling:touch!important; scrollbar-width:none!important;
-  position:sticky!important; top:72px!important; z-index:35!important;
+  position:relative!important; top:auto!important; z-index:auto!important;
   background:var(--bg)!important; padding:9px 2px 11px!important;
   margin:8px 0 12px!important; box-sizing:border-box!important;
 }
@@ -1881,11 +1881,11 @@ main#body .catbar, main .catbar{
   flex:0 0 auto!important; width:auto!important; max-width:none!important;
   white-space:nowrap!important; position:relative!important;
 }
-/* Grammar categories use the same horizontal sticky bar; no wrapping to a second row. */
+/* Grammar categories use the same horizontal scrolling bar; no wrapping to a second row. */
 #app.shell main#body .grammar-cats, #app.shell main .grammar-cats, main .grammar-cats{
   display:flex!important; flex-wrap:nowrap!important; flex-direction:row!important;
   overflow-x:auto!important; overflow-y:hidden!important; white-space:nowrap!important;
-  position:sticky!important; top:72px!important; z-index:35!important;
+  position:relative!important; top:auto!important; z-index:auto!important;
   background:var(--bg)!important; width:100%!important; min-width:0!important;
   scrollbar-width:none!important; -webkit-overflow-scrolling:touch!important;
 }
@@ -1893,8 +1893,28 @@ main#body .catbar, main .catbar{
   flex:0 0 auto!important; width:auto!important; white-space:nowrap!important;
 }
 @media(max-width:759px){
- #app.shell main#body .catbar,#app.shell main .catbar,main#body .catbar,main .catbar,
- #app.shell main#body .grammar-cats,#app.shell main .grammar-cats,main .grammar-cats{top:132px!important}
+}
+</style>
+
+<style id="ml-grammar-category-full-width-fix-v19">
+/* Keep the Grammar category strip stretched across the complete content area. */
+#app.shell main#body .grammar-cats,
+#app.shell main .grammar-cats,
+main#body .grammar-cats, main .grammar-cats {
+  display:flex!important; flex-direction:row!important; flex-wrap:nowrap!important;
+  width:100%!important; max-width:none!important; min-width:0!important;
+  box-sizing:border-box!important; align-self:stretch!important;
+  margin-left:0!important; margin-right:0!important;
+  padding-left:2px!important; padding-right:2px!important;
+  overflow-x:auto!important; overflow-y:hidden!important;
+  justify-content:flex-start!important;
+  position:relative!important; top:auto!important;
+}
+#app.shell main#body .grammar-cats .tab,
+#app.shell main .grammar-cats .tab,
+main#body .grammar-cats .tab, main .grammar-cats .tab {
+  flex:0 0 auto!important; width:auto!important; max-width:none!important;
+  white-space:nowrap!important;
 }
 </style>
 </body>
