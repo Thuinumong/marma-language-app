@@ -1971,3 +1971,28 @@ html{touch-action:pan-x pan-y}
 @media(max-width:600px){.brand b{font-size:1.02rem!important}}
 .trans-saved-list{margin-top:10px}.trans-saved-item{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}.trans-saved-item .trans-saved-text{min-width:0;overflow-wrap:anywhere}
 </style>
+
+<style id="ml-grammar-category-full-available-width-v20">
+/* Grammar category bar fills the available content width; category buttons stay side-by-side and overflow scrolls horizontally. */
+#app.shell main#body nav.tabs.grammar-cats,
+#app.shell main nav.tabs.grammar-cats,
+main#body nav.tabs.grammar-cats,
+main nav.tabs.grammar-cats {
+  display:flex!important; flex-flow:row nowrap!important;
+  flex:0 0 100%!important; align-self:stretch!important;
+  width:100%!important; min-width:0!important; max-width:none!important;
+  box-sizing:border-box!important;
+  justify-content:flex-start!important;
+  overflow-x:auto!important; overflow-y:hidden!important;
+  white-space:nowrap!important;
+  padding-inline:2px!important; margin-inline:0!important;
+  scrollbar-width:thin!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+#app.shell main#body nav.tabs.grammar-cats > .tab,
+#app.shell main nav.tabs.grammar-cats > .tab,
+main nav.tabs.grammar-cats > .tab {
+  flex:0 0 auto!important; width:max-content!important;
+  max-width:none!important; white-space:nowrap!important;
+}
+</style>
